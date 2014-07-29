@@ -1,11 +1,13 @@
-package com.comcast.csv.cucumber.devices
+package com.comcast.csv.zucchini
 
 import static org.testng.Assert.assertEquals
 import static org.testng.Assert.assertFalse
 
 import org.testng.annotations.Test
 
-class DevicesTest {
+import com.comcast.csv.zucchini.ObjectUnderTest;
+
+class ObjectUnderTestTest {
 
     @Test
     void 'Verify Thread Unique Values'() { 
@@ -29,17 +31,17 @@ class DevicesTest {
 
         @Override
         public void run() {
-            Devices.setLocal(expected)
-            assertEquals(Devices.getLocal(), expected)
+            ObjectUnderTest.set(expected)
+            assertEquals(ObjectUnderTest.get(), expected)
 
             for (int i = 0; i < 10; i++) {
                 Thread.sleep((int) Math.random() * 50)
-                assertEquals(Devices.getLocal(), expected)
+                assertEquals(ObjectUnderTest.get(), expected)
             }
 
-            Devices.releaseLocal()
+            ObjectUnderTest.remove()
             Thread.sleep((int) Math.random() * 50)
-            assertEquals(Devices.getLocal(), null)
+            assertEquals(ObjectUnderTest.get(), null)
 
             fail = false
         }

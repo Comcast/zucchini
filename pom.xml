@@ -8,8 +8,7 @@
     <version>1.0.52</version>
   </parent>
 
-  <groupId>com.comcast.csv.test</groupId>
-  <artifactId>cucumber-devices</artifactId>
+  <groupId>com.comcast.csv.zucchini</groupId>
   <version>1.0-SNAPSHOT</version>
   <name>(${project.organization.name}) ${project.artifactId}</name>
 
@@ -86,4 +85,5 @@
     </dependency>
   </dependencies>
 
+  <artifactId>zucchini</artifactId>
 </project>
