@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 
@@ -11,27 +12,21 @@ import cucumber.api.testng.TestNGCucumberRunner
 
 
 /**
- * Constructs a suite of Cucumber tests for every object under test as returned by the
- * {@link #getObjectsToTest()} method. This should be used when working with either external
+ * Constructs a suite of Cucumber tests for every TestContext as returned by the
+ * {@link #getTestContexts()} method. This should be used when working with either external
  * hardware or a virtual device (like a browser) to run the same cucumber tests but against
  * a different test target.
  * 
  * To do this correctly, each step ("given", "when" or "then") should get access to the object
- * under test by calling {@link ObjectUnderTest.get()}.
- * 
- * Note: This can only handle up to 64 max targets to test.
+ * under test by calling {@link TestContext.getCurrent()}.
  * 
  * @author Clark Malmgren
- *
- * @param <T> the test object type
  */
-abstract class AbstractZucchiniTest<T> {
+abstract class AbstractZucchiniTest {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class)
 
-    private AtomicInteger count = new AtomicInteger(0)
-
-    private List<T> outs
+    protected List<TestContext> contexts
 
     /**
      * Internal method that gathers all objects under test so that they will be available during 
@@ -39,26 +34,32 @@ abstract class AbstractZucchiniTest<T> {
      */
     @BeforeClass
     public void intakeTestObjects() {
-        this.outs = getObjectsToTest();
+        this.contexts = getTestContexts()
     }
-
+    
     /**
-     * Actually runs the test in parallel.
-     * 
-     * @throws IOException if it breaks, don't question it
+     * Provides some protection to ensure that actual tests extend AbstractParallelZucchiniTest or AbstractSerialZucchiniTest
+     * instead of this directly. 
      */
-    @Test(threadPoolSize = 64, invocationCount = 64)
-    public void run() throws IOException {
-        int index = count.getAndIncrement();
-        if (index < outs.size()) {
-            T out = outs.get(index);
-            ObjectUnderTest.set(out);
+    @BeforeClass
+    void verifyProperInheritence() {
+        Assert.fail("Do not extend AbstractZucchiniTest directly, instead extend AbstractParallelZucchiniTest or AbstractSerialZucchiniTest")
+    } 
+    
+    /**
+     * Run all configured cucumber features and scenarios against the given TestContext.
+     * 
+     * @param context the test context
+     */
+    protected void run(TestContext context) {
+        TestContext.setCurrent(context)
 
-            logger.debug("ParallelCucumberTest[${index}] for ObjectUnderTest[${out}] starting")
-            new TestNGCucumberRunner(getClass()).runCukes();
-            logger.debug("ParallelCucumberTest[${index}] for ObjectUnderTest[${out}] finished")
-            cleanup(out)
-        }
+        logger.debug("ZucchiniTest[${context.name}] starting")
+        new TestNGCucumberRunner(getClass()).runCukes();
+        logger.debug("ZucchiniTest[${context.name}] finished")
+        
+        cleanup(context)
+        TestContext.removeCurrent()
     }
 
     /**
@@ -67,14 +68,14 @@ abstract class AbstractZucchiniTest<T> {
      * 
      * @return the full list of objects to test against.
      */
-    public abstract List<T> getObjectsToTest();
+    public abstract List<TestContext> getTestContexts();
 
     /**
      * Optionally override this method to do custom cleanup for the object under test
      * 
      * @param out the object under test to cleanup
      */
-    void cleanup(T out) {
+    void cleanup(TestContext out) {
         logger.debug("Cleanup method was not implemented for ${out}")
     }
 }

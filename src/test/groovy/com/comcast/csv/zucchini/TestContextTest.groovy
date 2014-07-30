@@ -5,9 +5,9 @@ import static org.testng.Assert.assertFalse
 
 import org.testng.annotations.Test
 
-import com.comcast.csv.zucchini.ObjectUnderTest;
+import com.comcast.csv.zucchini.TestContext;
 
-class ObjectUnderTestTest {
+class TestContextTest {
 
     @Test
     void 'Verify Thread Unique Values'() { 
@@ -31,17 +31,17 @@ class ObjectUnderTestTest {
 
         @Override
         public void run() {
-            ObjectUnderTest.set(expected)
-            assertEquals(ObjectUnderTest.get(), expected)
+            TestContext.setCurrent(new TestContext(expected))
+            assertEquals(TestContext.getCurrent().name, expected)
 
             for (int i = 0; i < 10; i++) {
                 Thread.sleep((int) Math.random() * 50)
-                assertEquals(ObjectUnderTest.get(), expected)
+                assertEquals(TestContext.getCurrent().name, expected)
             }
 
-            ObjectUnderTest.remove()
+            TestContext.removeCurrent()
             Thread.sleep((int) Math.random() * 50)
-            assertEquals(ObjectUnderTest.get(), null)
+            assertEquals(TestContext.getCurrent(), null)
 
             fail = false
         }
