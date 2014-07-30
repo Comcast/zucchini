@@ -25,41 +25,69 @@ import cucumber.api.testng.TestNGCucumberRunner
 abstract class AbstractZucchiniTest {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class)
-
-    protected List<TestContext> contexts
-
-    /**
-     * Internal method that gathers all objects under test so that they will be available during 
-     * the test runs. DO NOT OVERLOAD THIS METHOD.
-     */
-    @BeforeClass
-    public void intakeTestObjects() {
-        this.contexts = getTestContexts()
+    
+    @Test
+    public void run() {
+        List<TestContext> contexts = getTestContexts()
+        isParallel() ? runParallel(contexts) : runSerial(contexts)
     }
     
-    /**
-     * Provides some protection to ensure that actual tests extend AbstractParallelZucchiniTest or AbstractSerialZucchiniTest
-     * instead of this directly. 
-     */
-    @BeforeClass
-    void verifyProperInheritence() {
-        Assert.fail("Do not extend AbstractZucchiniTest directly, instead extend AbstractParallelZucchiniTest or AbstractSerialZucchiniTest")
-    } 
+    void runParallel(List<TestContext> contexts) {
+        List<Thread> threads = []
+        int failures = 0
+        
+        contexts.each { TestContext context ->
+            threads.push(Thread.start {
+                failures += runWith(context) ? 0 : 1
+            })
+        }
+        
+        threads.each { it.join() }
+        
+        Assert.assertEquals(failures, 0, "There were ${failures} executions against a TestContext")
+    }
+    
+    void runSerial(List<TestContext> contexts) {
+        int failures = 0
+
+        contexts.each {
+            failures += runWith(it) ? 0 : 1
+        }
+
+        Assert.assertEquals(failures, 0, "There were ${failures} executions against a TestContext")
+    }
     
     /**
      * Run all configured cucumber features and scenarios against the given TestContext.
      * 
      * @param context the test context
+     * @return true if successful, otherwise false
      */
-    protected void run(TestContext context) {
-        TestContext.setCurrent(context)
+    boolean runWith(TestContext context) {
+        try {
+            TestContext.setCurrent(context)
+    
+            logger.debug("ZucchiniTest[${context.name}] starting")
+            new TestNGCucumberRunner(getClass()).runCukes();
+            logger.debug("ZucchiniTest[${context.name}] finished")
+            
+            cleanup(context)
+            TestContext.removeCurrent()
+            return true;
+        } catch (Throwable t) {
+            t.printStackTrace()
+            return false
+        }
+    }
 
-        logger.debug("ZucchiniTest[${context.name}] starting")
-        new TestNGCucumberRunner(getClass()).runCukes();
-        logger.debug("ZucchiniTest[${context.name}] finished")
-        
-        cleanup(context)
-        TestContext.removeCurrent()
+    /**
+     * If this returns true, all cucumber features will run against each TestContext in parallel, otherwise
+     * they will run one after the other (in order). Override this method to change the output.
+     * 
+     * <b>The default value is <code>true</code> so the default behavior is parallel execution.</b>
+     */
+    public boolean isParallel() {
+        return true
     }
 
     /**
@@ -75,7 +103,7 @@ abstract class AbstractZucchiniTest {
      * 
      * @param out the object under test to cleanup
      */
-    void cleanup(TestContext out) {
+    public void cleanup(TestContext out) {
         logger.debug("Cleanup method was not implemented for ${out}")
     }
 }
