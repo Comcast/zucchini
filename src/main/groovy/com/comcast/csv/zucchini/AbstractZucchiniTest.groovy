@@ -72,9 +72,9 @@ abstract class AbstractZucchiniTest<T> {
     /**
      * Optionally override this method to do custom cleanup for the object under test
      * 
-     * @param device the device to cleanup
+     * @param out the object under test to cleanup
      */
-    void cleanup(T objectUnderTest) {
-        logger.debug("Cleanup method was not implemented for ${device}")
+    void cleanup(T out) {
+        logger.debug("Cleanup method was not implemented for ${out}")
     }
 }
