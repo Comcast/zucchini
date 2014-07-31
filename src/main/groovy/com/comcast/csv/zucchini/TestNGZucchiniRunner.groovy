@@ -32,8 +32,10 @@ class TestNGZucchiniRunner {
         RuntimeOptionsFactory runtimeOptionsFactory = new RuntimeOptionsFactory(clazz, annotationClasses);
         RuntimeOptions runtimeOptions = runtimeOptionsFactory.create();
 
+        /* Add the custom Zucchini Formatter */
         CucumberJSONFormatter formatter = new CucumberJSONFormatter(output);
         runtimeOptions.addFormatter(formatter);
+        
         ClassFinder classFinder = new ResourceLoaderClassFinder(resourceLoader, classLoader);
         runtime = new cucumber.runtime.Runtime(resourceLoader, classFinder, classLoader, runtimeOptions);
     }

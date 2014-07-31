@@ -2,10 +2,12 @@ package com.comcast.csv.zucchini
 
 import cucumber.api.CucumberOptions
 
+
 @CucumberOptions(
     glue     = ["com.comcast.csv.zucchini.glue"],
     features = ["src/test/resources"]
 )
+@ZucchiniOutput('target/zucchini.json')
 class ParallelZucchiniCukesTest extends AbstractZucchiniTest {
 
     @Override

@@ -29,7 +29,12 @@ abstract class AbstractZucchiniTest {
         List<TestContext> contexts = getTestContexts()
         isParallel() ? runParallel(contexts) : runSerial(contexts)
         
-        def writer = new FileWriter(new File("target/zucchini.json"))
+        /* Determine Output File Location */
+        ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput)
+        File target = new File(options ? options.value() : "target/zucchini.json")
+        
+        /* Write the "pretty" output */
+        def writer = new FileWriter(target)
         writer << new JsonBuilder(features).toPrettyString()
         writer.close()
     }
