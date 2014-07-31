@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.comcast.tvx</groupId>
@@ -8,6 +9,7 @@
   </parent>
 
   <groupId>com.comcast.csv.zucchini</groupId>
+  <artifactId>zucchini</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>(${project.organization.name}) ${project.artifactId}</name>
 
@@ -16,6 +18,30 @@
     <slf4j.version>1.6.4</slf4j.version>
     <logback.version>1.0.1</logback.version>
   </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>net.masterthought</groupId>
+        <artifactId>maven-cucumber-reporting</artifactId>
+        <version>0.0.6</version>
+        <executions>
+          <execution>
+            <id>execution</id>
+            <phase>test</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <projectname>cukes-test</projectname>
+              <outputdirectory>${project.build.directory}/cucumber-html-reports</outputdirectory>
+              <cucumberoutput>${project.build.directory}/cucumber.json</cucumberoutput>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
@@ -44,7 +70,7 @@
       <version>6.8.8</version>
       <scope>compile</scope>
     </dependency>
-  
+
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
@@ -78,6 +104,4 @@
       </exclusions>
     </dependency>
   </dependencies>
-
-  <artifactId>zucchini</artifactId>
 </project>
