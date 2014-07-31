@@ -1,15 +1,12 @@
 package com.comcast.csv.zucchini;
 
-import java.util.concurrent.atomic.AtomicInteger
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass
+import org.testng.Assert
 import org.testng.annotations.Test
-
-import cucumber.api.testng.TestNGCucumberRunner
-
 
 /**
  * Constructs a suite of Cucumber tests for every TestContext as returned by the
@@ -25,11 +22,21 @@ import cucumber.api.testng.TestNGCucumberRunner
 abstract class AbstractZucchiniTest {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class)
+    private List features = []
     
     @Test
     public void run() {
         List<TestContext> contexts = getTestContexts()
         isParallel() ? runParallel(contexts) : runSerial(contexts)
+        
+        /* Determine Output File Location */
+        ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput)
+        File target = new File(options ? options.value() : "target/zucchini.json")
+        
+        /* Write the "pretty" output */
+        def writer = new FileWriter(target)
+        writer << new JsonBuilder(features).toPrettyString()
+        writer.close()
     }
     
     void runParallel(List<TestContext> contexts) {
@@ -68,8 +75,19 @@ abstract class AbstractZucchiniTest {
             TestContext.setCurrent(context)
     
             logger.debug("ZucchiniTest[${context.name}] starting")
-            new TestNGCucumberRunner(getClass()).runCukes();
+            def runner = new TestNGZucchiniRunner(getClass())
+            runner.runCukes();
             logger.debug("ZucchiniTest[${context.name}] finished")
+            
+            synchronized(features) {
+                def results = new JsonSlurper().parseText(runner.getJSONOutput())
+                features.addAll(results.collect {
+                    it.id = "--zucchini--${context.name}-${it.id}"
+                    it.uri = "--zucchini--${context.name}-${it.uri}"
+                    it.name = "ZucchiniTestContext[${context.name}]:: ${it.name}"
+                    return it
+                })
+            }
             
             cleanup(context)
             TestContext.removeCurrent()
