@@ -3,7 +3,6 @@ package com.comcast.csv.zucchini
 import cucumber.api.CucumberOptions
 
 @CucumberOptions(
-    format   = ["json:target/cucumber.json"],
     glue     = ["com.comcast.csv.zucchini.glue"],
     features = ["src/test/resources"]
 )

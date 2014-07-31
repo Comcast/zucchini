@@ -33,9 +33,9 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <projectname>cukes-test</projectname>
-              <outputdirectory>${project.build.directory}/cucumber-html-reports</outputdirectory>
-              <cucumberoutput>${project.build.directory}/cucumber.json</cucumberoutput>
+              <projectName>Zucchini Test</projectName>
+              <outputDirectory>${project.build.directory}/zucchini-reports</outputDirectory>
+              <cucumberOutput>${project.build.directory}/zucchini.json</cucumberOutput>
             </configuration>
           </execution>
         </executions>
