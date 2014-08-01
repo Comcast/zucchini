@@ -7,7 +7,7 @@ import cucumber.api.CucumberOptions
     glue     = ["com.comcast.csv.zucchini.glue"],
     features = ["src/test/resources"]
 )
-@ZucchiniOutput('target/zucchini.json')
+@ZucchiniOutput()
 class ParallelZucchiniCukesTest extends AbstractZucchiniTest {
 
     @Override

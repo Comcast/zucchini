@@ -11,11 +11,18 @@ import java.lang.annotation.Target
 @Retention(RetentionPolicy.RUNTIME)
 @Target([ElementType.TYPE])
 public @interface ZucchiniOutput {
-
+    
     /**
      * The relative path from the execution directory where the combined JSON file should be saved.
-     * 
+     *
      * @return where to write the final output
      */
-    String value();
+    String json() default "target/zucchini.json";
+    
+    /**
+     * The relative path from the execution directory where the HTML output folder should be generated.
+     * 
+     * @return where to write the final HTML output
+     */
+    String html() default "target/zucchini-reports";
 }

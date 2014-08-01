@@ -2,10 +2,13 @@ package com.comcast.csv.zucchini;
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
+import net.masterthought.cucumber.ReportBuilder;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.testng.Assert
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test
 
 /**
@@ -24,19 +27,32 @@ abstract class AbstractZucchiniTest {
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class)
     private List features = []
     
+    @AfterClass
+    public void generateReports() {
+        /* Determine Output File Location */
+        ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput)
+        File json = new File(options ? options.json() : "target/zucchini.json")
+        
+        /* Write the "pretty" output */
+        def writer = new FileWriter(json)
+        writer << new JsonBuilder(features).toPrettyString()
+        writer.close()
+        
+        /* Generate the Results */
+        File html = new File(options ? options.html() : "target/zucchini-reports")
+        def reportBuilder = new ReportBuilder([ json.absolutePath ], html, "", "1", "Zucchini", false, false, true, false, false, "", false);
+        reportBuilder.generateReports();
+
+        boolean buildResult = reportBuilder.getBuildStatus();
+        if (!buildResult) {
+            throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+        }
+    }
+    
     @Test
     public void run() {
         List<TestContext> contexts = getTestContexts()
         isParallel() ? runParallel(contexts) : runSerial(contexts)
-        
-        /* Determine Output File Location */
-        ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput)
-        File target = new File(options ? options.value() : "target/zucchini.json")
-        
-        /* Write the "pretty" output */
-        def writer = new FileWriter(target)
-        writer << new JsonBuilder(features).toPrettyString()
-        writer.close()
     }
     
     void runParallel(List<TestContext> contexts) {
@@ -71,12 +87,18 @@ abstract class AbstractZucchiniTest {
      * @return true if successful, otherwise false
      */
     boolean runWith(TestContext context) {
+        TestContext.setCurrent(context)
+
+        logger.debug("ZucchiniTest[${context.name}] starting")
+        def runner = new TestNGZucchiniRunner(getClass())
+        
         try {
-            TestContext.setCurrent(context)
-    
-            logger.debug("ZucchiniTest[${context.name}] starting")
-            def runner = new TestNGZucchiniRunner(getClass())
             runner.runCukes();
+            return true;
+        } catch (Throwable t) {
+            t.printStackTrace()
+            return false
+        } finally {
             logger.debug("ZucchiniTest[${context.name}] finished")
             
             synchronized(features) {
@@ -91,10 +113,6 @@ abstract class AbstractZucchiniTest {
             
             cleanup(context)
             TestContext.removeCurrent()
-            return true;
-        } catch (Throwable t) {
-            t.printStackTrace()
-            return false
         }
     }
 
