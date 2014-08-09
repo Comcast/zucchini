@@ -4,12 +4,12 @@
   <parent>
     <groupId>com.comcast.tvx</groupId>
     <artifactId>tvx-pom</artifactId>
-    <version>1.0.52</version>
+    <version>1.0.53</version>
   </parent>
 
   <groupId>com.comcast.csv.zucchini</groupId>
   <artifactId>zucchini</artifactId>
-  <version>1.0.10</version>
+  <version>1.0.12</version>
   <name>(${project.organization.name}) ${project.artifactId}</name>
 
   <properties>
