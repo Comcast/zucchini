@@ -16,28 +16,31 @@
     <java.compile.version>1.7</java.compile.version>
     <slf4j.version>1.6.4</slf4j.version>
     <logback.version>1.0.1</logback.version>
+    <cucumber.jvm.version>1.1.8</cucumber.jvm.version>
+    <cucumber.reporting.version>0.0.23</cucumber.reporting.version>
+    <testng.version>6.8.8</testng.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>info.cukes</groupId>
       <artifactId>cucumber-java</artifactId>
-      <version>1.1.8</version>
+      <version>${cucumber.version}</version>
     </dependency>
     <dependency>
       <groupId>info.cukes</groupId>
       <artifactId>cucumber-testng</artifactId>
-      <version>1.1.8</version>
+      <version>${cucumber.version}</version>
     </dependency>
     <dependency>
       <groupId>net.masterthought</groupId>
       <artifactId>cucumber-reporting</artifactId>
-      <version>0.0.23</version>
+      <version>${cucumber.reporting.version}</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.8.8</version>
+      <version>${testng.version}</version>
       <scope>compile</scope>
     </dependency>
 
