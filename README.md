@@ -17,8 +17,11 @@ How do I use it?
 
 How do I add it to my pom?
 --------------------------
-*Group ID* - com.comcast.csv.zucchini
-*Artifact ID* - zucchini
-*Version* - find latest release in [nexus](http://nexus.cvs.ula.comcast.net:8081/nexus/content/repositories/releases/com/comcast/csv/zucchini/zucchini/)
-
+```xml
+<dependency>
+  <groupId>com.comcast.zucchini</groupId>
+  <artifactId>zucchini</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</dependency>
+```
 
