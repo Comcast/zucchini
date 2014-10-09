@@ -32,13 +32,20 @@
   </developers>
 
   <properties>
+    <!-- Compilation Info -->
     <java.compile.version>1.7</java.compile.version>
+    
+    <!-- Dependency Versions -->
     <slf4j.version>1.6.4</slf4j.version>
     <logback.version>1.0.1</logback.version>
     <cucumber.version>1.1.8</cucumber.version>
     <cucumber.reporting.version>0.0.23</cucumber.reporting.version>
     <testng.version>6.8.8</testng.version>
+    
+    <!-- Plugin Versions -->
     <gmaven.plugin.version>1.5</gmaven.plugin.version>
+    <maven.source.plugin.version>2.3</maven.source.plugin.version>
+    <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
   </properties>
 
   <build>
@@ -52,6 +59,7 @@
           <target>${java.compile.version}</target>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
@@ -70,6 +78,33 @@
         <configuration>
           <providerSelection>1.7</providerSelection>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven.source.plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven.javadoc.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -137,44 +172,4 @@
       </exclusions>
     </dependency>
   </dependencies>
-
-
-  <profiles>
-    <profile>
-      <id>release-profile</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>${maven.source.plugin.version}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven.javadoc.plugin.version}</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
