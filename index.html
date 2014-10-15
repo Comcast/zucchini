@@ -4,40 +4,32 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Zucchini by Comcast</title>
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
+    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/Comcast/zucchini">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/Comcast/zucchini/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/Comcast/zucchini/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
-
     <div class="wrapper">
+      <header>
+        <h1 class="header">Zucchini</h1>
+        <p class="header">An army of zucchini zombies to take your cucumber testing to the next level</p>
 
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/Comcast/zucchini/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/Comcast/zucchini/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/Comcast/zucchini">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/Comcast">Comcast</a></p>
+
+
+      </header>
       <section>
-        <div id="title">
-          <h1>Zucchini</h1>
-          <p>An army of zucchini zombies to take your cucumber testing to the next level</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/Comcast">Comcast</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
         <h1>
 <a name="what-is-it" class="anchor" href="#what-is-it"><span class="octicon octicon-link"></span></a>What is it?</h1>
 
@@ -174,21 +166,28 @@
 <h1>
 <a name="test-reporting" class="anchor" href="#test-reporting"><span class="octicon octicon-link"></span></a>Test Reporting</h1>
 
-<p>Coming soon!</p>
+<p>Zucchini incorporates the <a href="https://github.com/masterthought/cucumber-reporting">cucumber-reporting</a> plugin developed by masterthought as a means by which beautiful test reports can be generated to be dispersed to your stakeholders.  You can invoke this plugin by simply adding the following annotation on your AbstractZucchiniTest</p>
+
+<div class="highlight highlight-java"><pre><span class="nd">@ZucchiniOutput</span>
+</pre></div>
+
+<p>Alternatively, you can include the plugin (or any of the other nice cucumber reporting plugins available through the cucumber-jvm community) through the standard means (as described on their site)</p>
 
 <h1>
 <a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h1>
 
 <p>We welcome contributions to the project.  Please see <a href="https://github.com/Comcast/zucchini/blob/develop/CONTRIBUTING.txt">CONTRIBUTING</a> for more details</p>
 
-<h1>
-<a name="reporting-issues" class="anchor" href="#reporting-issues"><span class="octicon octicon-link"></span></a>Reporting issues</h1>
+<h2>
+<a name="reporting-issues" class="anchor" href="#reporting-issues"><span class="octicon octicon-link"></span></a>Reporting issues</h2>
 
-<p>Coming soon!</p>
+<p>If you find an bug with zucchini, please feel free to submit a github issue for it.  Please include reproducible steps and, ideally, a cucumber feature file which can be used to expose the defect.</p>
       </section>
-
+      <footer>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
+		
   </body>
 </html>
