@@ -149,7 +149,7 @@ abstract class AbstractZucchiniTest {
 	 *
 	 * @param out the object under test to setup
 	 */
-	public void setup(TestContext out) {
-		logger.debug("Setup method was not implemented for ${out}")
-	}
+    public void setup(TestContext out) {
+        logger.debug("Setup method was not implemented for ${out}")
+    }
 }
