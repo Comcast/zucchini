@@ -108,6 +108,7 @@ abstract class AbstractZucchiniTest {
         def runner = new TestNGZucchiniRunner(getClass())
         
         try {
+			setup(context);
             runner.runCukes();
             return true;
         } catch (Throwable t) {
@@ -156,5 +157,14 @@ abstract class AbstractZucchiniTest {
      */
     public void cleanup(TestContext out) {
         logger.debug("Cleanup method was not implemented for ${out}")
+    }
+	
+	/**
+	 * Optionally override this method to do custom setup for the object under test
+	 *
+	 * @param out the object under test to setup
+	 */
+    public void setup(TestContext out) {
+        logger.debug("Setup method was not implemented for ${out}")
     }
 }
