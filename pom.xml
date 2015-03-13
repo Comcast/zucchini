@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.comcast.tvx</groupId>
     <artifactId>tvx-pom</artifactId>
-    <version>1.0.78</version>
+    <version>1.0.79</version>
   </parent>
 
   <groupId>com.comcast.csv.zucchini</groupId>
