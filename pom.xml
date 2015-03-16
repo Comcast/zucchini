@@ -13,7 +13,7 @@
   <name>(${project.organization.name}) ${project.artifactId}</name>
 
   <properties>
-    <java.compile.version>1.7</java.compile.version>
+    <!-- Move this to parent -->
     <gmaven.plugin.version>1.5</gmaven.plugin.version>
     
     <!-- Zucchini Specific -->
