@@ -3,7 +3,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
 
 appender("console", ConsoleAppender) {
-    encoder (PatternLayoutEncoder) { pattern = "[%-5p] %c: %m%n" }
+    encoder (PatternLayoutEncoder) { pattern = "[%-5p-%thread] %c: %m%n" }
 }
 
 root(DEBUG, ["console"])

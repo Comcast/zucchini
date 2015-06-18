@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import org.testng.Assert
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test
+
 import gherkin.formatter.Formatter;
 
 
@@ -63,7 +64,7 @@ abstract class AbstractZucchiniTest {
         int failures = 0
         
         contexts.each { TestContext context ->
-            threads.push(Thread.start {
+            threads.push(Thread.start(context.name) {
                 failures += runWith(context) ? 0 : 1
             })
         }
