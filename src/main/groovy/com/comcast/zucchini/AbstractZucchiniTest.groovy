@@ -26,6 +26,9 @@ import org.testng.Assert
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test
 
+import gherkin.formatter.Formatter;
+
+
 /**
  * Constructs a suite of Cucumber tests for every TestContext as returned by the
  * {@link #getTestContexts()} method. This should be used when working with either external
@@ -41,7 +44,8 @@ abstract class AbstractZucchiniTest {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class)
     private List features = []
-    
+    private TestNGZucchiniRunner runner;
+
     @AfterClass
     public void generateReports() {
         /* Determine Output File Location */
@@ -55,7 +59,7 @@ abstract class AbstractZucchiniTest {
         
         /* Generate the Results */
         File html = new File(options ? options.html() : "target/zucchini-reports")
-        def reportBuilder = new ReportBuilder([ json.absolutePath ], html, "", "1", "Zucchini", false, false, true, false, false, "", false);
+        def reportBuilder = new ReportBuilder([ json.absolutePath ], html, "", "1", "Zucchini", true, true, true, false, false, "", false);
         reportBuilder.generateReports();
 
         boolean buildResult = reportBuilder.getBuildStatus();
@@ -75,7 +79,7 @@ abstract class AbstractZucchiniTest {
         int failures = 0
         
         contexts.each { TestContext context ->
-            threads.push(Thread.start {
+            threads.push(Thread.start(context.name) {
                 failures += runWith(context) ? 0 : 1
             })
         }
@@ -108,7 +112,8 @@ abstract class AbstractZucchiniTest {
         def runner = new TestNGZucchiniRunner(getClass())
         
         try {
-			setup(context);
+            setup(context);
+            setupFormatter(context, runner);
             runner.runCukes();
             return true;
         } catch (Throwable t) {
@@ -166,5 +171,24 @@ abstract class AbstractZucchiniTest {
 	 */
     public void setup(TestContext out) {
         logger.debug("Setup method was not implemented for ${out}")
+    }
+    
+    /**
+     * Configures formatter(s) of your choosing or overrides their default behavior
+     * @param out The object under test
+     * @param runner The object used for test execution
+     * To modify formatters, a sample such as the one below should be used:
+     * <pre>
+     * List<Formatter> formatters = runner.getFormatters();
+     * for (Formatter formatter : formatters) {
+     *   if (formatter instanceof YourCustomFormatter) {
+     *     ((YourCustomFormatter)formatter).yourFormatterModifierMethod();
+     *   }
+     * }
+     * 
+     * </pre>
+     */
+    public void setupFormatter(TestContext out, TestNGZucchiniRunner runner) {
+        logger.debug("Setup formatter method was not implemented for ${out}");
     }
 }

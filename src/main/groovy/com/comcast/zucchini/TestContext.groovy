@@ -74,6 +74,15 @@ class TestContext {
     }
     
     /**
+     * Returns set of bean names
+     * 
+     * @return Set of bean names
+     */
+    public Set<String> getAllKeys() {
+        return this.beans.keySet();
+    }
+    
+    /**
      * Create a new TestContext pre-populated with the given beans.
      * 
      * @param beans the named objects in this test context

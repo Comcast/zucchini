@@ -23,10 +23,14 @@
   <developers>
     <developer>
       <name>Clark Malmgren</name>
-      <organization>Comcast</organization>
+      <organization>GrubHub</organization>
     </developer>
     <developer>
       <name>Matt Barbour</name>
+      <organization>Comcast</organization>
+    </developer>
+    <developer>
+      <name>Dmitry Jerusalimsky</name>
       <organization>Comcast</organization>
     </developer>
   </developers>

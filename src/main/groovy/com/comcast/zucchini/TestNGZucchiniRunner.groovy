@@ -25,6 +25,7 @@ import cucumber.runtime.formatter.CucumberJSONFormatter;
 import cucumber.runtime.io.MultiLoader
 import cucumber.runtime.io.ResourceLoader
 import cucumber.runtime.io.ResourceLoaderClassFinder
+import gherkin.formatter.Formatter;
 
 /**
  * Glue code for running Cucumber via TestNG.
@@ -33,6 +34,7 @@ class TestNGZucchiniRunner {
     
     private final cucumber.runtime.Runtime runtime;
     private final StringBuilder output = new StringBuilder()
+	private List<Formatter> formatters;
 
     /**
      * Bootstrap the cucumber runtime
@@ -50,6 +52,7 @@ class TestNGZucchiniRunner {
         /* Add the custom Zucchini Formatter */
         CucumberJSONFormatter formatter = new CucumberJSONFormatter(output);
         runtimeOptions.addFormatter(formatter);
+        this.formatters = runtimeOptions.getFormatters();
         
         ClassFinder classFinder = new ResourceLoaderClassFinder(resourceLoader, classLoader);
         runtime = new cucumber.runtime.Runtime(resourceLoader, classFinder, classLoader, runtimeOptions);
@@ -73,5 +76,13 @@ class TestNGZucchiniRunner {
     
     public String getJSONOutput() {
         return output.toString()
+    }
+
+    /**	
+     * Returns list of formatters used by Cucumber
+     * @return List of {@link Formater}
+     */
+    public List<Formatter> getFormatters() {
+        return this.formatters;
     }
 }
