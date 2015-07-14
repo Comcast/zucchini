@@ -10,7 +10,7 @@ import com.comcast.csv.zucchini.TestContext;
 class TestContextTest {
 
     @Test
-    void 'Verify Thread Unique Values'() { 
+    void 'Verify Thread Unique Values'() {
         List threads = new ArrayList()
 
         threads.push(new TestThread(expected: "apples"));

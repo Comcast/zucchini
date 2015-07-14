@@ -16,10 +16,10 @@ import gherkin.formatter.Formatter;
  * Glue code for running Cucumber via TestNG.
  */
 class TestNGZucchiniRunner {
-    
+
     private final cucumber.runtime.Runtime runtime;
     private final StringBuilder output = new StringBuilder()
-	private List<Formatter> formatters;
+        private List<Formatter> formatters;
 
     /**
      * Bootstrap the cucumber runtime
@@ -38,7 +38,7 @@ class TestNGZucchiniRunner {
         CucumberJSONFormatter formatter = new CucumberJSONFormatter(output);
         runtimeOptions.addFormatter(formatter);
         this.formatters = runtimeOptions.getFormatters();
-        
+
         ClassFinder classFinder = new ResourceLoaderClassFinder(resourceLoader, classLoader);
         runtime = new cucumber.runtime.Runtime(resourceLoader, classFinder, classLoader, runtimeOptions);
     }
@@ -58,12 +58,12 @@ class TestNGZucchiniRunner {
             throw new CucumberException("There are pending or undefined steps.");
         }
     }
-    
+
     public String getJSONOutput() {
         return output.toString()
     }
 
-    /**	
+    /**
      * Returns list of formatters used by Cucumber
      * @return List of {@link Formater}
      */
