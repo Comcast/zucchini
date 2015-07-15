@@ -1,5 +1,7 @@
 package com.comcast.csv.zucchini;
 
+import java.util.Hashtable;
+
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import net.masterthought.cucumber.ReportBuilder;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory
 import org.testng.Assert
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test
 
 import gherkin.formatter.Formatter;
@@ -29,42 +32,48 @@ import gherkin.formatter.Formatter;
 abstract class AbstractZucchiniTest {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class)
-    private static int refCount= 0;
-    private static List features = []
     private TestNGZucchiniRunner runner;
+    public static Hashtable<String, List> featureSet = new Hashtable<String, List>();
+    private static boolean hooked = false;
 
-    @BeforeSuite
-    private void incrementCount() {
-        AbstractZucchiniTest.refCount++;
+    private void genHook() {
+        System.out.println("Hit doMeFirst()");
+        if(!hooked)
+        {
+            hooked = true;
+
+            System.out.println("Established shutdown hook for Zucchini testing.");
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    for(String fileName : AbstractZucchiniTest.featureSet.keys()) {
+                        //write json
+                        File json = new File(fileName);
+                        System.out.println("Generating json for " + fileName);
+                        def features = AbstractZucchiniTest.featureSet.get(fileName);
+                        def writer = new FileWriter(json);
+                        writer << new JsonBuilder(features).toPrettyString();
+                        writer.close();
+
+                        //write html
+                        ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput);
+                        File html = new File(options ? options.html() : "target/zucchini-reports");
+                        def reportBuilder = new ReportBuilder([json.absolutePath], html, "", "1", "Zucchini", true, true, true, false, false, "", false);
+                        reportBuilder.generateReports();
+
+                        boolean buildResult = reportBuilder.getBuildStatus();
+                        if(!buildResult)
+                            throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+                    }
+                }
+            });
+        }
     }
 
     @AfterClass
     public void generateReports() {
-        /* Determine Output File Location */
-        ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput)
-        String fileName = options ? options.json() : "target/zucchini.json";
-        File json = new File(fileName)
-
-        
-        AbstractZucchiniTest.refCount--;
-        if(AbstractZucchiniTest.refCount < 1)
-        {
-            System.out.println("GENERATING JSON FILE FROM " + this.getClass().getSimpleName());
-            /* Write the "pretty" output */
-            def writer = new FileWriter(json)
-            if(AbstractZucchiniTest.features.size() > 0) writer << new JsonBuilder(AbstractZucchiniTest.features).toPrettyString()
-            writer.close()
-        }
-
-        /* Generate the Results */
-        File html = new File(options ? options.html() : "target/zucchini-reports")
-        def reportBuilder = new ReportBuilder([ json.absolutePath ], html, "", "1", "Zucchini", true, true, true, false, false, "", false);
-        reportBuilder.generateReports();
-
-        boolean buildResult = reportBuilder.getBuildStatus();
-        if (!buildResult) {
-            throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
-        }
+        //this does nothing now
     }
 
     @Test
@@ -105,6 +114,8 @@ abstract class AbstractZucchiniTest {
      * @return true if successful, otherwise false
      */
     boolean runWith(TestContext context) {
+        this.genHook();
+        
         TestContext.setCurrent(context)
 
         logger.debug("ZucchiniTest[${context.name}] starting")
@@ -121,7 +132,22 @@ abstract class AbstractZucchiniTest {
         } finally {
             logger.debug("ZucchiniTest[${context.name}] finished")
 
-            synchronized(AbstractZucchiniTest.features) {
+            ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput)
+            def fileName = options ? options.json() : "target/zucchini.json";
+
+            List features = null;
+            
+            if(AbstractZucchiniTest.featureSet.containsKey(fileName))
+            {
+                features = AbstractZucchiniTest.featureSet.get(fileName);
+            }
+            else
+            {
+                features = []
+                AbstractZucchiniTest.featureSet.put(fileName, features);
+            }
+
+            synchronized(features) {
                 def results = new JsonSlurper().parseText(runner.getJSONOutput())
                 features.addAll(results.collect {
                     it.id = "--zucchini--${context.name}-${it.id}"
