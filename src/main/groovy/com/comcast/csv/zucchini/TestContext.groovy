@@ -13,17 +13,17 @@ import org.slf4j.LoggerFactory
 class TestContext {
 
     private static final ThreadLocal local = new ThreadLocal()
-        private static final Logger logger = LoggerFactory.getLogger(TestContext.class)
+    private static final Logger logger = LoggerFactory.getLogger(TestContext.class)
 
-        /**
-         * Set the test context for this thread run. This should be only be called from a
-         * {@link AbstractZucchiniTest} methods unless you really know what you are doing.
-         *
-         * @param out the object under test for this thread (suite run)
-         */
-        public static void setCurrent(TestContext context) {
-            local.set(context)
-        }
+    /**
+     * Set the test context for this thread run. This should be only be called from a
+     * {@link AbstractZucchiniTest} methods unless you really know what you are doing.
+     *
+     * @param out the object under test for this thread (suite run)
+     */
+    public static void setCurrent(TestContext context) {
+        local.set(context)
+    }
 
     /**
      * Return the current test context for this run of cucumber. This will be the object that
@@ -49,14 +49,14 @@ class TestContext {
     }
 
     private String name
-        private Map<String, Object> beans
+    private Map<String, Object> beans
 
-        /**
-         * Constructs a new empty TestContext
-         */
-        public TestContext(String name) {
-            this(name, [:])
-        }
+    /**
+     * Constructs a new empty TestContext
+     */
+    public TestContext(String name) {
+        this(name, [:])
+    }
 
     /**
      * Returns set of bean names
@@ -74,7 +74,7 @@ class TestContext {
      */
     public TestContext(String name, Map<String, Object> beans) {
         this.name = name
-            this.beans = beans
+        this.beans = beans
     }
 
     /**

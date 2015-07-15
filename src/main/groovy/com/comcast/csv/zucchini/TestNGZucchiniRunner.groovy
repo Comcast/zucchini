@@ -19,7 +19,7 @@ class TestNGZucchiniRunner {
 
     private final cucumber.runtime.Runtime runtime;
     private final StringBuilder output = new StringBuilder()
-        private List<Formatter> formatters;
+    private List<Formatter> formatters;
 
     /**
      * Bootstrap the cucumber runtime

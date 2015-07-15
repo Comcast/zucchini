@@ -1,3 +1,4 @@
+@SMOKE-TEST @STD-TEST
 Feature: Zucchini Must Share the Same Vegetables for all Tests
 
 	Scenario: Verify the vegetable is delicious when cleaned and cooked
