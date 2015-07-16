@@ -14,8 +14,9 @@ public class MultipleZucchiniCukesTest extends AbstractZucchiniTest {
     public List<TestContext> getTestContexts() {
         List<TestContext> contexts = [];
 
-        contexts.push(new TestContext('potato'));
-        contexts.push(new TestContext('tomato'));
+        contexts.push(new TestContext('potato'  , [veggie: new Veggie()] ));
+        contexts.push(new TestContext('tomato'  , [veggie: new Veggie()] ));
+        contexts.push(new TestContext('eggplant', [veggie: new Veggie()] ));
 
         return contexts;
     }
