@@ -79,7 +79,7 @@ abstract class AbstractZucchiniTest {
     @Test
     public void run() {
         List<TestContext> contexts = getTestContexts()
-            isParallel() ? runParallel(contexts) : runSerial(contexts)
+        isParallel() ? runParallel(contexts) : runSerial(contexts)
     }
 
     void runParallel(List<TestContext> contexts) {
@@ -89,7 +89,7 @@ abstract class AbstractZucchiniTest {
         contexts.each { TestContext context ->
             threads.push(Thread.start(context.name) {
                 failures += runWith(context) ? 0 : 1
-                })
+            })
         }
 
         threads.each { it.join() }
@@ -154,7 +154,7 @@ abstract class AbstractZucchiniTest {
                     it.uri = "--zucchini--${context.name}-${it.uri}"
                     it.name = "ZucchiniTestContext[${context.name}]:: ${it.name}"
                     return it
-                    })
+                })
             }
 
             cleanup(context)

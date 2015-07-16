@@ -1,9 +1,9 @@
 @SMOKE-TEST @STD-TEST
 Feature: Zucchini Must Share the Same Vegetables for all Tests
 
-	Scenario: Verify the vegetable is delicious when cleaned and cooked
+    Scenario: Verify the vegetable is delicious when cleaned and cooked
         Given The vegetable is clean
-		And The vegetable is cooked
+        And The vegetable is cooked
         Then The vegetable tastes delicious
 
     Scenario: Verify the vegetable is gross when not cleaned and cooked
