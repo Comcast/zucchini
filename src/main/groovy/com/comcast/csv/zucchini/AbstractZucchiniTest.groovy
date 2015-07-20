@@ -36,50 +36,49 @@ abstract class AbstractZucchiniTest {
     public static Hashtable<String, List> featureSet = new Hashtable<String, List>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
-    private static boolean hooked = false;
-    private static Object mutex2 = new Object();
+    private static Boolean hooked = false;
 
 
     private void genHook() {
-        synchronized(mutex2) {
+        synchronized(hooked) {
             /* prevent this from being added multiple times */
             if(hooked) return;
             hooked = true;
+        }
 
-            /* add a shutdown hook, as this will allow all Zucchini tests to complete without
-             * knowledge of each other's existence */
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        for(String fileName : AbstractZucchiniTest.featureSet.keys()) {
-                            /* write the json first, needed for html generation */
-                            File json = new File(fileName);
-                            def features = AbstractZucchiniTest.featureSet.get(fileName);
-                            def writer = new FileWriter(json);
-                            writer << new JsonBuilder(features).toPrettyString();
-                            writer.close();
+        /* add a shutdown hook, as this will allow all Zucchini tests to complete without
+         * knowledge of each other's existence */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    for(String fileName : AbstractZucchiniTest.featureSet.keys()) {
+                        /* write the json first, needed for html generation */
+                        File json = new File(fileName);
+                        def features = AbstractZucchiniTest.featureSet.get(fileName);
+                        def writer = new FileWriter(json);
+                        writer << new JsonBuilder(features).toPrettyString();
+                        writer.close();
 
-                            /* write the html report files */
-                            ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput);
-                            File html = new File(options ? options.html() : "target/zucchini-reports");
-                            def reportBuilder = new ReportBuilder([json.absolutePath], html, "", "1", "Zucchini", true, true, true, false, false, "", false);
-                            reportBuilder.generateReports();
+                        /* write the html report files */
+                        ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput);
+                        File html = new File(options ? options.html() : "target/zucchini-reports");
+                        def reportBuilder = new ReportBuilder([json.absolutePath], html, "", "1", "Zucchini", true, true, true, false, false, "", false);
+                        reportBuilder.generateReports();
 
-                            boolean buildResult = reportBuilder.getBuildStatus();
-                            if(!buildResult)
-                                throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
-                        }
-                    }
-                    catch(Throwable t)
-                    {
-                        System.out.print("FATAL ERROR:  " + t.toString());
-                        /* must use system.halt here, system.exit stalls */
-                        Runtime.getRuntime().halt(-1);
+                        boolean buildResult = reportBuilder.getBuildStatus();
+                        if(!buildResult)
+                            throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
                     }
                 }
-            });
-        }
+                catch(Throwable t)
+                {
+                    System.out.print("FATAL ERROR:  " + t.toString());
+                    /* must use system.halt here, system.exit stalls */
+                    Runtime.getRuntime().halt(-1);
+                }
+            }
+        });
     }
 
     @AfterClass
