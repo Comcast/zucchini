@@ -43,8 +43,13 @@ abstract class AbstractZucchiniTest {
             hooked = true;
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
+                private static boolean hit = false;
+
                 @Override
                 public void run() {
+                    if(hit) return;
+                    hit = true;
+
                     try {
                         for(String fileName : AbstractZucchiniTest.featureSet.keys()) {
                             //write json
