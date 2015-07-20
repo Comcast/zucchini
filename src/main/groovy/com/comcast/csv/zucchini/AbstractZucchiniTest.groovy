@@ -34,32 +34,33 @@ abstract class AbstractZucchiniTest {
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class)
     private TestNGZucchiniRunner runner;
     public static Hashtable<String, List> featureSet = new Hashtable<String, List>();
+
+    /* Synchronization and global variables.  DO NOT TOUCH! */
     private static boolean hooked = false;
-    private Object mutex = new Object();
+    private static Object mutex2 = new Object();
+
 
     private void genHook() {
-        if(!hooked)
-        {
+        synchronized(mutex2) {
+            /* prevent this from being added multiple times */
+            if(hooked) return;
             hooked = true;
 
+            /* add a shutdown hook, as this will allow all Zucchini tests to complete without
+             * knowledge of each other's existence */
             Runtime.getRuntime().addShutdownHook(new Thread() {
-                private static boolean hit = false;
-
                 @Override
                 public void run() {
-                    if(hit) return;
-                    hit = true;
-
                     try {
                         for(String fileName : AbstractZucchiniTest.featureSet.keys()) {
-                            //write json
+                            /* write the json first, needed for html generation */
                             File json = new File(fileName);
                             def features = AbstractZucchiniTest.featureSet.get(fileName);
                             def writer = new FileWriter(json);
                             writer << new JsonBuilder(features).toPrettyString();
                             writer.close();
 
-                            //write html
+                            /* write the html report files */
                             ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput);
                             File html = new File(options ? options.html() : "target/zucchini-reports");
                             def reportBuilder = new ReportBuilder([json.absolutePath], html, "", "1", "Zucchini", true, true, true, false, false, "", false);
@@ -73,6 +74,7 @@ abstract class AbstractZucchiniTest {
                     catch(Throwable t)
                     {
                         System.out.print("FATAL ERROR:  " + t.toString());
+                        /* must use system.halt here, system.exit stalls */
                         Runtime.getRuntime().halt(-1);
                     }
                 }
@@ -82,7 +84,7 @@ abstract class AbstractZucchiniTest {
 
     @AfterClass
     public void generateReports() {
-        //this does nothing now
+        //this does nothing now, left for API consistency
     }
 
     @Test
@@ -146,7 +148,8 @@ abstract class AbstractZucchiniTest {
 
             def results = new JsonSlurper().parseText(runner.getJSONOutput())
 
-            synchronized(mutex) {
+            /* synchronized on global mutex */
+            synchronized(featureSet) {
                 List features = null;
                 if(AbstractZucchiniTest.featureSet.containsKey(fileName)) {
                     features = AbstractZucchiniTest.featureSet.get(fileName);
