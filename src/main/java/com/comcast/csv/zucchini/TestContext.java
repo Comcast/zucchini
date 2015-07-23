@@ -1,7 +1,11 @@
-package com.comcast.csv.zucchini
+package com.comcast.csv.zucchini;
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple class for storing and retrieving objects that are being test based on the currently running
@@ -10,10 +14,10 @@ import org.slf4j.LoggerFactory
  *
  * @author Clark Malmgren
  */
-class TestContext {
+public class TestContext {
 
-    private static final ThreadLocal local = new ThreadLocal()
-    private static final Logger logger = LoggerFactory.getLogger(TestContext.class)
+    private static final ThreadLocal local = new ThreadLocal();
+    private static final Logger logger = LoggerFactory.getLogger(TestContext.class);
 
     /**
      * Set the test context for this thread run. This should be only be called from a
@@ -22,7 +26,7 @@ class TestContext {
      * @param out the object under test for this thread (suite run)
      */
     public static void setCurrent(TestContext context) {
-        local.set(context)
+        local.set(context);
     }
 
     /**
@@ -32,7 +36,7 @@ class TestContext {
      * @return the test context
      */
     public static TestContext getCurrent() {
-        return local.get()
+        return (TestContext)local.get();
     }
 
     /**
@@ -45,17 +49,17 @@ class TestContext {
      * really know what you are doing.
      */
     public static void removeCurrent() {
-        local.remove()
+        local.remove();
     }
 
-    private String name
-    private Map<String, Object> beans
+    String name;
+    private Map<String, Object> beans;
 
     /**
      * Constructs a new empty TestContext
      */
     public TestContext(String name) {
-        this(name, [:])
+        this(name, new HashMap<String, Object>());
     }
 
     /**
@@ -73,8 +77,8 @@ class TestContext {
      * @param beans the named objects in this test context
      */
     public TestContext(String name, Map<String, Object> beans) {
-        this.name = name
-        this.beans = beans
+        this.name = name;
+        this.beans = beans;
     }
 
     /**
@@ -84,7 +88,7 @@ class TestContext {
      * @return the name of this test context
      */
     public String name() {
-        return name
+        return name;
     }
 
     /**
@@ -94,7 +98,7 @@ class TestContext {
      * @return the test object
      */
     public <T> T get(String key) {
-        return beans[key]
+        return (T)beans.get(key);
     }
 
     /**
@@ -104,6 +108,6 @@ class TestContext {
      * @param val the test object
      */
     public <T> void set(String key, T val) {
-        beans.put(key, val)
+        beans.put(key, val);
     }
 }

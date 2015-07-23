@@ -1,19 +1,26 @@
 package com.comcast.csv.zucchini;
 
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.AbstractMap;
 import java.util.Hashtable;
 
-import groovy.json.JsonBuilder
-import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder;
+import groovy.json.JsonSlurper;
 import net.masterthought.cucumber.ReportBuilder;
 
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.testng.Assert
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test
+import org.testng.annotations.Test;
+
+import java.util.function.*;
 
 import gherkin.formatter.Formatter;
 
@@ -29,15 +36,14 @@ import gherkin.formatter.Formatter;
  *
  * @author Clark Malmgren
  */
-abstract class AbstractZucchiniTest {
+public abstract class AbstractZucchiniTest {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class)
+    private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class);
     private TestNGZucchiniRunner runner;
     public static Hashtable<String, List> featureSet = new Hashtable<String, List>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Boolean hooked = false;
-
 
     private void genHook() {
         synchronized(hooked) {
@@ -48,37 +54,7 @@ abstract class AbstractZucchiniTest {
 
         /* add a shutdown hook, as this will allow all Zucchini tests to complete without
          * knowledge of each other's existence */
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                try {
-                    for(String fileName : AbstractZucchiniTest.featureSet.keys()) {
-                        /* write the json first, needed for html generation */
-                        File json = new File(fileName);
-                        def features = AbstractZucchiniTest.featureSet.get(fileName);
-                        def writer = new FileWriter(json);
-                        writer << new JsonBuilder(features).toPrettyString();
-                        writer.close();
-
-                        /* write the html report files */
-                        ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput);
-                        File html = new File(options ? options.html() : "target/zucchini-reports");
-                        def reportBuilder = new ReportBuilder([json.absolutePath], html, "", "1", "Zucchini", true, true, true, false, false, "", false);
-                        reportBuilder.generateReports();
-
-                        boolean buildResult = reportBuilder.getBuildStatus();
-                        if(!buildResult)
-                            throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
-                    }
-                }
-                catch(Throwable t)
-                {
-                    System.out.print("FATAL ERROR:  " + t.toString());
-                    /* must use system.halt here, system.exit stalls */
-                    Runtime.getRuntime().halt(-1);
-                }
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new ZucchiniShutdownHook());
     }
 
     @AfterClass
@@ -88,33 +64,51 @@ abstract class AbstractZucchiniTest {
 
     @Test
     public void run() {
-        List<TestContext> contexts = getTestContexts()
-        isParallel() ? runParallel(contexts) : runSerial(contexts)
+        List<TestContext> contexts = this.getTestContexts();
+        if(this.isParallel())
+            this.runParallel(contexts);
+        else
+            this.runSerial(contexts);
     }
 
-    void runParallel(List<TestContext> contexts) {
-        List<Thread> threads = []
-        int failures = 0
+    public void runParallel(List<TestContext> contexts) {
+        List<Thread> threads = new LinkedList<Thread>();
+        int failures = 0;
 
-        contexts.each { TestContext context ->
-            threads.push(Thread.start(context.name) {
-                failures += runWith(context) ? 0 : 1
-            })
+        MutableInt mi = new MutableInt();
+
+        for(TestContext tc : contexts) {
+            Thread t = new Thread(new TestRunner(this, tc, mi), tc.name);
+            threads.add(t);
+            t.start();
+            //threads.push(Thread.start(new TestRunner(this, tc, mi), tc.name));
         }
 
-        threads.each { it.join() }
+        for(Thread t : threads) {
+            try {
+                t.join();
+            }
+            catch(Throwable e) {
+                logger.error(t.toString());
+            }
+        }
 
-        Assert.assertEquals(failures, 0, "There were ${failures} executions against a TestContext")
+        Assert.assertEquals(mi.intValue() , 0, "There were ${failures} executions against a TestContext");
     }
 
-    void runSerial(List<TestContext> contexts) {
-        int failures = 0
+    public void runTest(TestContext tc, MutableInt mi) {
+        if(!this.runWith(tc))
+            mi.increment();
+    }
 
-        contexts.each {
-            failures += runWith(it) ? 0 : 1
-        }
+    public void runSerial(List<TestContext> contexts) {
+        int failures = 0;
 
-        Assert.assertEquals(failures, 0, "There were ${failures} executions against a TestContext")
+        for(TestContext tc : contexts)
+            if(!this.runWith(tc))
+                failures += 1;
+
+        Assert.assertEquals(failures, 0, "There were ${failures} executions against a TestContext");
     }
 
     /**
@@ -123,13 +117,13 @@ abstract class AbstractZucchiniTest {
      * @param context the test context
      * @return true if successful, otherwise false
      */
-    boolean runWith(TestContext context) {
+    public boolean runWith(TestContext context) {
         this.genHook();
 
-        TestContext.setCurrent(context)
+        TestContext.setCurrent(context);
 
-        logger.debug("ZucchiniTest[${context.name}] starting")
-        def runner = new TestNGZucchiniRunner(getClass())
+        logger.debug("ZucchiniTest[${context.name}] starting");
+        TestNGZucchiniRunner runner = new TestNGZucchiniRunner(getClass());
 
         try {
             setup(context);
@@ -137,15 +131,20 @@ abstract class AbstractZucchiniTest {
             runner.runCukes();
             return true;
         } catch (Throwable t) {
-            t.printStackTrace()
-            return false
+            t.printStackTrace();
+            return false;
         } finally {
-            logger.debug("ZucchiniTest[${context.name}] finished")
+            logger.debug("ZucchiniTest[${context.name}] finished");
 
-            ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput)
-            def fileName = options ? options.json() : "target/zucchini.json";
+            ZucchiniOutput options = this.getClass().getAnnotation(ZucchiniOutput.class);
+            String fileName;
 
-            def results = new JsonSlurper().parseText(runner.getJSONOutput())
+            if(options!= null)
+                fileName = options.json();
+            else
+                fileName = "target/zucchini.json";
+
+            ArrayList<AbstractMap> results = (ArrayList<AbstractMap>)new JsonSlurper().parseText(runner.getJSONOutput());
 
             /* synchronized on global mutex */
             synchronized(featureSet) {
@@ -154,20 +153,33 @@ abstract class AbstractZucchiniTest {
                     features = AbstractZucchiniTest.featureSet.get(fileName);
                 }
                 else {
-                    features = []
+                    features = new LinkedList<AbstractMap>();
                     AbstractZucchiniTest.featureSet.put(fileName, features);
                 }
 
-                features.addAll(results.collect {
-                    it.id = "--zucchini--${context.name}-${it.id}"
-                    it.uri = "--zucchini--${context.name}-${it.uri}"
-                    it.name = "ZucchiniTestContext[${context.name}]:: ${it.name}"
-                    return it
-                })
+                for(AbstractMap am : results) {
+                    String tmp;
+
+                    tmp = am.get("id").toString();
+                    am.put("id", "--zucchini--" + context.name + "-" + tmp);
+                    tmp = am.get("uri").toString();
+                    am.put("uri", "--zucchini--" + context.name + "-" + tmp);
+                    tmp = am.get("name").toString();
+                    am.put("name", "ZucchiniTestContext[" + context.name + "]:: " + tmp);
+
+                    features.add(am);
+                }
+
+                //features.addAll(results.collect {
+                    //it.id = "--zucchini--${context.name}-${it.id}";
+                    //it.uri = "--zucchini--${context.name}-${it.uri}";
+                    //it.name = "ZucchiniTestContext[${context.name}]:: ${it.name}";
+                    //return it;
+                //});
             }
 
-            cleanup(context)
-            TestContext.removeCurrent()
+            cleanup(context);
+            TestContext.removeCurrent();
         }
     }
 
@@ -178,7 +190,7 @@ abstract class AbstractZucchiniTest {
      * <b>The default value is <code>true</code> so the default behavior is parallel execution.</b>
      */
     public boolean isParallel() {
-        return true
+        return true;
     }
 
     /**
@@ -195,7 +207,7 @@ abstract class AbstractZucchiniTest {
      * @param out the object under test to cleanup
      */
     public void cleanup(TestContext out) {
-        logger.debug("Cleanup method was not implemented for ${out}")
+        logger.debug("Cleanup method was not implemented for ${out}");
     }
 
     /**
@@ -204,7 +216,7 @@ abstract class AbstractZucchiniTest {
      * @param out the object under test to setup
      **/
     public void setup(TestContext out) {
-        logger.debug("Setup method was not implemented for ${out}")
+        logger.debug("Setup method was not implemented for ${out}");
     }
 
     /**
