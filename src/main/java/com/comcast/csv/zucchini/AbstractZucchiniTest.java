@@ -93,7 +93,7 @@ public abstract class AbstractZucchiniTest {
             }
         }
 
-        Assert.assertEquals(mi.intValue() , 0, "There were ${failures} executions against a TestContext");
+        Assert.assertEquals(mi.intValue() , 0, String.format("There were %d executions against a TestContext", failures));
     }
 
     public void runTest(TestContext tc, MutableInt mi) {
@@ -108,7 +108,7 @@ public abstract class AbstractZucchiniTest {
             if(!this.runWith(tc))
                 failures += 1;
 
-        Assert.assertEquals(failures, 0, "There were ${failures} executions against a TestContext");
+        Assert.assertEquals(failures, 0, String.format("There were %d executions against a TestContext", failures));
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class AbstractZucchiniTest {
 
         TestContext.setCurrent(context);
 
-        logger.debug("ZucchiniTest[${context.name}] starting");
+        logger.debug(String.format("ZucchiniTest[%s] starting", context.name));
         TestNGZucchiniRunner runner = new TestNGZucchiniRunner(getClass());
 
         try {
@@ -134,7 +134,7 @@ public abstract class AbstractZucchiniTest {
             t.printStackTrace();
             return false;
         } finally {
-            logger.debug("ZucchiniTest[${context.name}] finished");
+            logger.debug(String.format("ZucchiniTest[%s] finished", context.name));
 
             ZucchiniOutput options = this.getClass().getAnnotation(ZucchiniOutput.class);
             String fileName;
@@ -169,13 +169,6 @@ public abstract class AbstractZucchiniTest {
 
                     features.add(am);
                 }
-
-                //features.addAll(results.collect {
-                    //it.id = "--zucchini--${context.name}-${it.id}";
-                    //it.uri = "--zucchini--${context.name}-${it.uri}";
-                    //it.name = "ZucchiniTestContext[${context.name}]:: ${it.name}";
-                    //return it;
-                //});
             }
 
             cleanup(context);
@@ -207,7 +200,7 @@ public abstract class AbstractZucchiniTest {
      * @param out the object under test to cleanup
      */
     public void cleanup(TestContext out) {
-        logger.debug("Cleanup method was not implemented for ${out}");
+        logger.debug("Cleanup method was not implemented for " + this.getClass().getSimpleName());
     }
 
     /**
@@ -216,7 +209,7 @@ public abstract class AbstractZucchiniTest {
      * @param out the object under test to setup
      **/
     public void setup(TestContext out) {
-        logger.debug("Setup method was not implemented for ${out}");
+        logger.debug("Setup method was not implemented for " + this.getClass().getSimpleName());
     }
 
     /**
@@ -235,6 +228,6 @@ public abstract class AbstractZucchiniTest {
      * </pre>
      */
     public void setupFormatter(TestContext out, TestNGZucchiniRunner runner) {
-        logger.debug("Setup formatter method was not implemented for ${out}");
+        logger.debug("Setup formatter method was not implemented for " + this.getClass().getSimpleName());
     }
 }
