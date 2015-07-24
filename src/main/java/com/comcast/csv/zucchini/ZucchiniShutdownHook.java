@@ -8,10 +8,15 @@ import java.io.FileWriter;
 import groovy.json.JsonBuilder;
 import net.masterthought.cucumber.ReportBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.apache.maven.plugin.MojoExecutionException;
 
 class ZucchiniShutdownHook extends Thread
 {
+    private static Logger logger = LoggerFactory.getLogger(ZucchiniShutdownHook.class);
+
     @Override
     public void run() {
         try {
@@ -43,7 +48,8 @@ class ZucchiniShutdownHook extends Thread
         }
         catch(Throwable t)
         {
-            System.out.print("FATAL ERROR:  " + t.toString());
+            //System.out.print("FATAL ERROR:  " + t.toString());
+            logger.error("FATAL ERROR: " + t.getMessage());
             /* must use system.halt here, system.exit stalls */
             Runtime.getRuntime().halt(-1);
         }

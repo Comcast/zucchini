@@ -20,8 +20,6 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.function.*;
-
 import gherkin.formatter.Formatter;
 
 
@@ -40,7 +38,7 @@ public abstract class AbstractZucchiniTest {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class);
     private TestNGZucchiniRunner runner;
-    public static Hashtable<String, List> featureSet = new Hashtable<String, List>();
+    public static Hashtable<String, List<AbstractMap<String,String>>> featureSet = new Hashtable<String, List<AbstractMap<String,String>>>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Boolean hooked = false;
@@ -65,10 +63,25 @@ public abstract class AbstractZucchiniTest {
     @Test
     public void run() {
         List<TestContext> contexts = this.getTestContexts();
-        if(this.isParallel())
-            this.runParallel(contexts);
-        else
+
+        String zucchiniSerialize = System.getenv().get("ZUCCHINI_SERIALIZE");
+
+        if(zucchiniSerialize == null)
+            zucchiniSerialize = "no";
+
+        zucchiniSerialize = zucchiniSerialize.toLowerCase();
+
+        boolean env_serialize = (zucchiniSerialize.equals("yes")) || (zucchiniSerialize.equals("y")) || (zucchiniSerialize.equals("true")) || (zucchiniSerialize.equals("1"));
+
+        if(env_serialize) {
             this.runSerial(contexts);
+        }
+        else {
+            if(this.isParallel())
+                this.runParallel(contexts);
+            else
+                this.runSerial(contexts);
+        }
     }
 
     public void runParallel(List<TestContext> contexts) {
@@ -144,20 +157,20 @@ public abstract class AbstractZucchiniTest {
             else
                 fileName = "target/zucchini.json";
 
-            ArrayList<AbstractMap> results = (ArrayList<AbstractMap>)new JsonSlurper().parseText(runner.getJSONOutput());
+            List<AbstractMap<String,String>> results = (LinkedList<AbstractMap<String,String>>)new JsonSlurper().parseText(runner.getJSONOutput());
 
             /* synchronized on global mutex */
             synchronized(featureSet) {
-                List features = null;
+                List<AbstractMap<String,String>> features = null;
                 if(AbstractZucchiniTest.featureSet.containsKey(fileName)) {
                     features = AbstractZucchiniTest.featureSet.get(fileName);
                 }
                 else {
-                    features = new LinkedList<AbstractMap>();
+                    features = new LinkedList<AbstractMap<String,String>>();
                     AbstractZucchiniTest.featureSet.put(fileName, features);
                 }
 
-                for(AbstractMap am : results) {
+                for(AbstractMap<String,String> am : results) {
                     String tmp;
 
                     tmp = am.get("id").toString();
