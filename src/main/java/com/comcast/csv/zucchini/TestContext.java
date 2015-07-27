@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TestContext {
 
-    private static final ThreadLocal local = new ThreadLocal();
+    private static final ThreadLocal<TestContext> local = new ThreadLocal<TestContext>();
     private static final Logger logger = LoggerFactory.getLogger(TestContext.class);
 
     /**
@@ -36,7 +36,7 @@ public class TestContext {
      * @return the test context
      */
     public static TestContext getCurrent() {
-        return (TestContext)local.get();
+        return local.get();
     }
 
     /**

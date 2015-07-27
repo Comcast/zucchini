@@ -64,6 +64,13 @@ public abstract class AbstractZucchiniTest {
     public void run() {
         List<TestContext> contexts = this.getTestContexts();
 
+        if(this.isParallel())
+            this.runParallel(contexts);
+        else
+            this.runSerial(contexts);
+    }
+
+    private boolean envSerialized() {
         String zucchiniSerialize = System.getenv().get("ZUCCHINI_SERIALIZE");
 
         if(zucchiniSerialize == null)
@@ -71,17 +78,7 @@ public abstract class AbstractZucchiniTest {
 
         zucchiniSerialize = zucchiniSerialize.toLowerCase();
 
-        boolean env_serialize = (zucchiniSerialize.equals("yes")) || (zucchiniSerialize.equals("y")) || (zucchiniSerialize.equals("true")) || (zucchiniSerialize.equals("1"));
-
-        if(env_serialize) {
-            this.runSerial(contexts);
-        }
-        else {
-            if(this.isParallel())
-                this.runParallel(contexts);
-            else
-                this.runSerial(contexts);
-        }
+        return (zucchiniSerialize.equals("yes")) || (zucchiniSerialize.equals("y")) || (zucchiniSerialize.equals("true")) || (zucchiniSerialize.equals("1"));
     }
 
     public void runParallel(List<TestContext> contexts) {
@@ -107,11 +104,6 @@ public abstract class AbstractZucchiniTest {
         }
 
         Assert.assertEquals(mi.intValue() , 0, String.format("There were %d executions against a TestContext", failures));
-    }
-
-    public void runTest(TestContext tc, MutableInt mi) {
-        if(!this.runWith(tc))
-            mi.increment();
     }
 
     public void runSerial(List<TestContext> contexts) {
@@ -212,7 +204,7 @@ public abstract class AbstractZucchiniTest {
      * <b>The default value is <code>true</code> so the default behavior is parallel execution.</b>
      */
     public boolean isParallel() {
-        return true;
+        return !this.envSerialized();
     }
 
     /**

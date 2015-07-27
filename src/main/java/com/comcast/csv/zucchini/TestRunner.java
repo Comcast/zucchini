@@ -18,7 +18,10 @@ public class TestRunner implements Runnable
     @Override
     public void run()
     {
-        if(!this.test.runWith(this.tc))
-            this.mi.increment();
+        if(!this.test.runWith(this.tc)) {
+            synchronized(this.mi) {
+                this.mi.increment();
+            }
+        }
     }
 }
