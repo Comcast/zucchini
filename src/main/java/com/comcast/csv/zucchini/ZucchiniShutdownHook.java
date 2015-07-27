@@ -5,7 +5,9 @@ import java.util.List;
 import java.io.File;
 import java.io.FileWriter;
 
-import groovy.json.JsonBuilder;
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import net.masterthought.cucumber.ReportBuilder;
 
 import org.slf4j.Logger;
@@ -23,9 +25,14 @@ class ZucchiniShutdownHook extends Thread
             for(String fileName : AbstractZucchiniTest.featureSet.keySet()) {
                 /* write the json first, needed for html generation */
                 File json = new File(fileName);
-                List features = AbstractZucchiniTest.featureSet.get(fileName);
+                JSONArray features = AbstractZucchiniTest.featureSet.get(fileName);
                 FileWriter writer = new FileWriter(json);
-                writer.write(new JsonBuilder(features).toPrettyString());
+                try {
+                    writer.write(features.toString(4));
+                }
+                catch (JSONException t) {
+                    logger.error("Failed to format JSON: \n" + t.getMessage());
+                }
                 writer.close();
 
                 /* write the html report files */

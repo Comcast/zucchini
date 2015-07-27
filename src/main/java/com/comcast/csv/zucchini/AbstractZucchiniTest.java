@@ -1,13 +1,13 @@
 package com.comcast.csv.zucchini;
 
-import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.AbstractMap;
 import java.util.Hashtable;
 
-import groovy.json.JsonBuilder;
-import groovy.json.JsonSlurper;
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 import net.masterthought.cucumber.ReportBuilder;
 
 import org.apache.commons.lang.mutable.MutableInt;
@@ -38,7 +38,7 @@ public abstract class AbstractZucchiniTest {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class);
     private TestNGZucchiniRunner runner;
-    public static Hashtable<String, List<AbstractMap<String,String>>> featureSet = new Hashtable<String, List<AbstractMap<String,String>>>();
+    public static Hashtable<String, JSONArray> featureSet = new Hashtable<String, JSONArray>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Boolean hooked = false;
@@ -64,6 +64,13 @@ public abstract class AbstractZucchiniTest {
     public void run() {
         List<TestContext> contexts = this.getTestContexts();
 
+        if(this.isParallel())
+            this.runParallel(contexts);
+        else
+            this.runSerial(contexts);
+    }
+
+    private boolean envSerialized() {
         String zucchiniSerialize = System.getenv().get("ZUCCHINI_SERIALIZE");
 
         if(zucchiniSerialize == null)
@@ -71,21 +78,11 @@ public abstract class AbstractZucchiniTest {
 
         zucchiniSerialize = zucchiniSerialize.toLowerCase();
 
-        boolean env_serialize = (zucchiniSerialize.equals("yes")) || (zucchiniSerialize.equals("y")) || (zucchiniSerialize.equals("true")) || (zucchiniSerialize.equals("1"));
-
-        if(env_serialize) {
-            this.runSerial(contexts);
-        }
-        else {
-            if(this.isParallel())
-                this.runParallel(contexts);
-            else
-                this.runSerial(contexts);
-        }
+        return (zucchiniSerialize.equals("yes")) || (zucchiniSerialize.equals("y")) || (zucchiniSerialize.equals("true")) || (zucchiniSerialize.equals("1"));
     }
 
     public void runParallel(List<TestContext> contexts) {
-        List<Thread> threads = new LinkedList<Thread>();
+        List<Thread> threads = new ArrayList<Thread>(contexts.size());
         int failures = 0;
 
         MutableInt mi = new MutableInt();
@@ -107,11 +104,6 @@ public abstract class AbstractZucchiniTest {
         }
 
         Assert.assertEquals(mi.intValue() , 0, String.format("There were %d executions against a TestContext", failures));
-    }
-
-    public void runTest(TestContext tc, MutableInt mi) {
-        if(!this.runWith(tc))
-            mi.increment();
     }
 
     public void runSerial(List<TestContext> contexts) {
@@ -157,30 +149,46 @@ public abstract class AbstractZucchiniTest {
             else
                 fileName = "target/zucchini.json";
 
-            List<AbstractMap<String,String>> results = (LinkedList<AbstractMap<String,String>>)new JsonSlurper().parseText(runner.getJSONOutput());
+            JSONArray results = new JSONArray(runner.getJSONOutput());
 
-            /* synchronized on global mutex */
             synchronized(featureSet) {
-                List<AbstractMap<String,String>> features = null;
-                if(AbstractZucchiniTest.featureSet.containsKey(fileName)) {
-                    features = AbstractZucchiniTest.featureSet.get(fileName);
-                }
-                else {
-                    features = new LinkedList<AbstractMap<String,String>>();
-                    AbstractZucchiniTest.featureSet.put(fileName, features);
-                }
+                JSONArray features = null;
 
-                for(AbstractMap<String,String> am : results) {
-                    String tmp;
+                if(!AbstractZucchiniTest.featureSet.containsKey(fileName))
+                    AbstractZucchiniTest.featureSet.put(fileName, new JSONArray());
 
-                    tmp = am.get("id").toString();
-                    am.put("id", "--zucchini--" + context.name + "-" + tmp);
-                    tmp = am.get("uri").toString();
-                    am.put("uri", "--zucchini--" + context.name + "-" + tmp);
-                    tmp = am.get("name").toString();
-                    am.put("name", "ZucchiniTestContext[" + context.name + "]:: " + tmp);
+                features = AbstractZucchiniTest.featureSet.get(fileName);
 
-                    features.add(am);
+                JSONObject idxObj;
+                String tmp;
+
+                for(int i = 0; i < results.length(); i++) {
+                    idxObj = results.getJSONObject(i);
+
+                    if(idxObj != null) {
+                        //update id
+                        if(idxObj.has("id"))
+                            tmp = idxObj.getString("id");
+                        else
+                            tmp = "";
+                        idxObj.put("id", "--zucchini--" + context.name + "-" + tmp);
+
+                        //update uri
+                        if(idxObj.has("uri"))
+                            tmp = idxObj.getString("uri");
+                        else
+                            tmp = "";
+                        idxObj.put("uri", "--zucchini--" + context.name + "-" + tmp);
+
+                        //update name
+                        if(idxObj.has("name"))
+                            tmp = idxObj.getString("name");
+                        else
+                            tmp = "";
+                        idxObj.put("name", "ZucchiniTestContext[" + context.name + "]:: " + tmp);
+
+                        features.put(idxObj);
+                    }
                 }
             }
 
@@ -196,7 +204,7 @@ public abstract class AbstractZucchiniTest {
      * <b>The default value is <code>true</code> so the default behavior is parallel execution.</b>
      */
     public boolean isParallel() {
-        return true;
+        return !this.envSerialized();
     }
 
     /**

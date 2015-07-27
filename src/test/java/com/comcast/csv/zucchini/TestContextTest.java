@@ -10,7 +10,12 @@ import org.testng.annotations.Test;
 
 import com.comcast.csv.zucchini.TestContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class TestContextTest {
+
+    private static Logger logger = LoggerFactory.getLogger(TestContextTest.class);
 
     @Test
     void verifyThreadUniqueValues() {
@@ -35,7 +40,7 @@ class TestContextTest {
                 t.join();
             }
             catch(Throwable e) {
-                System.out.println("FATAL ERROR: " + e.toString());
+                logger.error("FATAL ERROR: " + e.getMessage());
             }
         }
 
