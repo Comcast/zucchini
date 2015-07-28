@@ -83,7 +83,6 @@ public abstract class AbstractZucchiniTest {
 
     public void runParallel(List<TestContext> contexts) {
         List<Thread> threads = new ArrayList<Thread>(contexts.size());
-        int failures = 0;
 
         MutableInt mi = new MutableInt();
 
@@ -103,7 +102,7 @@ public abstract class AbstractZucchiniTest {
             }
         }
 
-        Assert.assertEquals(mi.intValue() , 0, String.format("There were %d executions against a TestContext", failures));
+        Assert.assertEquals(mi.intValue() , 0, String.format("There were %d executions against a TestContext", mi.intValue()));
     }
 
     public void runSerial(List<TestContext> contexts) {
