@@ -63,7 +63,7 @@ class TestContextTest {
                     Thread.sleep((int) Math.random() * 50);
                 }
                 catch(Throwable e) {
-                    System.out.println("Thread failed to sleep.");
+                    logger.error("Thread failed to sleep.");
                 }
                 assertEquals(TestContext.getCurrent().name, expected);
             }
@@ -73,7 +73,7 @@ class TestContextTest {
                 Thread.sleep((int) Math.random() * 50);
             }
             catch(Throwable e) {
-                System.out.println("Thread failed to sleep.");
+                logger.error("Thread failed to sleep.");
             }
             assertEquals(TestContext.getCurrent(), null);
 
