@@ -1,40 +1,30 @@
-/**
- * Copyright 2014 Comcast Cable Communications Management, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.comcast.zucchini
+package com.comcast.csv.zucchini;
 
-import cucumber.api.CucumberOptions
-import cucumber.api.testng.TestNgReporter
-import cucumber.runtime.ClassFinder
-import cucumber.runtime.CucumberException
-import cucumber.runtime.RuntimeOptions
-import cucumber.runtime.RuntimeOptionsFactory
+import java.util.List;
+import java.util.LinkedList;
+
+import java.io.IOException;
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.testng.TestNgReporter;
+import cucumber.runtime.ClassFinder;
+import cucumber.runtime.CucumberException;
+import cucumber.runtime.RuntimeOptions;
+import cucumber.runtime.RuntimeOptionsFactory;
 import cucumber.runtime.formatter.CucumberJSONFormatter;
-import cucumber.runtime.io.MultiLoader
-import cucumber.runtime.io.ResourceLoader
-import cucumber.runtime.io.ResourceLoaderClassFinder
+import cucumber.runtime.io.MultiLoader;
+import cucumber.runtime.io.ResourceLoader;
+import cucumber.runtime.io.ResourceLoaderClassFinder;
 import gherkin.formatter.Formatter;
 
 /**
  * Glue code for running Cucumber via TestNG.
  */
-class TestNGZucchiniRunner {
-    
+public class TestNGZucchiniRunner {
+
     private final cucumber.runtime.Runtime runtime;
-    private final StringBuilder output = new StringBuilder()
-	private List<Formatter> formatters;
+    private final StringBuilder output = new StringBuilder();
+    private List<Formatter> formatters;
 
     /**
      * Bootstrap the cucumber runtime
@@ -45,15 +35,17 @@ class TestNGZucchiniRunner {
         ClassLoader classLoader = clazz.getClassLoader();
         ResourceLoader resourceLoader = new MultiLoader(classLoader);
 
-        Class[] annotationClasses = [CucumberOptions.class]
+        Class[] annotationClasses = new Class[] { CucumberOptions.class };
         RuntimeOptionsFactory runtimeOptionsFactory = new RuntimeOptionsFactory(clazz, annotationClasses);
         RuntimeOptions runtimeOptions = runtimeOptionsFactory.create();
 
         /* Add the custom Zucchini Formatter */
         CucumberJSONFormatter formatter = new CucumberJSONFormatter(output);
         runtimeOptions.addFormatter(formatter);
-        this.formatters = runtimeOptions.getFormatters();
         
+        this.formatters = new LinkedList<Formatter>();
+        this.formatters.add(runtimeOptions.formatter(classLoader));
+
         ClassFinder classFinder = new ResourceLoaderClassFinder(resourceLoader, classLoader);
         runtime = new cucumber.runtime.Runtime(resourceLoader, classFinder, classLoader, runtimeOptions);
     }
@@ -73,12 +65,12 @@ class TestNGZucchiniRunner {
             throw new CucumberException("There are pending or undefined steps.");
         }
     }
-    
+
     public String getJSONOutput() {
-        return output.toString()
+        return output.toString();
     }
 
-    /**	
+    /**
      * Returns list of formatters used by Cucumber
      * @return List of {@link Formater}
      */
