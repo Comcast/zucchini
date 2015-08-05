@@ -1,12 +1,17 @@
-package com.comcast.csv.zucchini;
+package com.comcast.zucchini;
 
 import java.util.List;
 import java.util.LinkedList;
 import java.util.HashMap;
+
+import com.comcast.zucchini.AbstractZucchiniTest;
+import com.comcast.zucchini.TestContext;
+import com.comcast.zucchini.ZucchiniOutput;
+
 import cucumber.api.CucumberOptions;
 
 @CucumberOptions(
-    glue     = {"com.comcast.csv.zucchini.glue"},
+    glue     = {"com.comcast.zucchini.glue"},
     features = {"src/test/resources"},
     tags = {"@STD-TEST"}
     )

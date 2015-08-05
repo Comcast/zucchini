@@ -1,17 +1,13 @@
-package com.comcast.csv.zucchini;
-
-import java.util.List;
-import java.util.LinkedList;
+package com.comcast.zucchini;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
-import org.testng.annotations.Test;
-
-import com.comcast.csv.zucchini.TestContext;
+import java.util.LinkedList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.Test;
 
 class TestContextTest {
 

@@ -1,12 +1,10 @@
-package com.comcast.csv.zucchini;
-
-import java.util.List;
-import java.util.LinkedList;
+package com.comcast.zucchini;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import cucumber.api.CucumberOptions;
-import cucumber.api.testng.TestNgReporter;
 import cucumber.runtime.ClassFinder;
 import cucumber.runtime.CucumberException;
 import cucumber.runtime.RuntimeOptions;
@@ -72,7 +70,7 @@ public class TestNGZucchiniRunner {
 
     /**
      * Returns list of formatters used by Cucumber
-     * @return List of {@link Formater}
+     * @return List of {@link Formatter}
      */
     public List<Formatter> getFormatters() {
         return this.formatters;

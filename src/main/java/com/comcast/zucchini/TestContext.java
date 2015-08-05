@@ -1,4 +1,4 @@
-package com.comcast.csv.zucchini;
+package com.comcast.zucchini;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class TestContext {
      * Set the test context for this thread run. This should be only be called from a
      * {@link AbstractZucchiniTest} methods unless you really know what you are doing.
      *
-     * @param out the object under test for this thread (suite run)
+     * @param context the object under test for this thread (suite run)
      */
     public static void setCurrent(TestContext context) {
         local.set(context);
@@ -31,7 +31,7 @@ public class TestContext {
 
     /**
      * Return the current test context for this run of cucumber. This will be the object that
-     * was registered using {@link TestContext#set(D)}
+     * was registered using {@link TestContext#set(String, Object)}
      *
      * @return the test context
      */
@@ -42,7 +42,7 @@ public class TestContext {
     /**
      * Release the test context for this run of cucumber from local storage. This DOES NOT
      * actually release any physical hardware reservations which must be done independently. This
-     * simply removes the internal variable so all future calls to {@link TestContext#get()} will
+     * simply removes the internal variable so all future calls to {@link TestContext#get(String)} will
      * return <code>null</code>.
      *
      * This should be only be called from the {@link AbstractZucchiniTest} methods unless you
@@ -57,6 +57,8 @@ public class TestContext {
 
     /**
      * Constructs a new empty TestContext
+     * 
+     * @param name Name to be assigned to the context
      */
     public TestContext(String name) {
         this(name, new HashMap<String, Object>());
@@ -74,6 +76,7 @@ public class TestContext {
     /**
      * Create a new TestContext pre-populated with the given beans.
      *
+     * @param name Name to be assigned to the context
      * @param beans the named objects in this test context
      */
     public TestContext(String name, Map<String, Object> beans) {
@@ -94,6 +97,7 @@ public class TestContext {
     /**
      * Get an object in this test context by name
      *
+     * @param <T> Type of the object
      * @param key the name of the object in this test context
      * @return the test object
      */
@@ -104,6 +108,7 @@ public class TestContext {
     /**
      * Put a named object into this test context
      *
+     * @param <T> Type of the object
      * @param key the name of the object
      * @param val the test object
      */

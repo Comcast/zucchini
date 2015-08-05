@@ -1,4 +1,4 @@
-package com.comcast.csv.zucchini;
+package com.comcast.zucchini;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.comcast.csv.zucchini;
+package com.comcast.zucchini;
 
 import org.apache.commons.lang.mutable.MutableInt;
 

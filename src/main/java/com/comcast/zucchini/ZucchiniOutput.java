@@ -1,4 +1,4 @@
-package com.comcast.csv.zucchini;
+package com.comcast.zucchini;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

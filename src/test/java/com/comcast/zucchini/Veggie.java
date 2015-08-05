@@ -1,4 +1,4 @@
-package com.comcast.csv.zucchini;
+package com.comcast.zucchini;
 
 public class Veggie {
     public boolean clean;

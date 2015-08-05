@@ -1,9 +1,4 @@
-package com.comcast.csv.zucchini.glue;
-
-import org.testng.Assert;
-
-import com.comcast.csv.zucchini.TestContext;
-import com.comcast.csv.zucchini.Veggie;
+package com.comcast.zucchini.glue;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;

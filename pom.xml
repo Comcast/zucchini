@@ -131,6 +131,7 @@
     <dependency>
       <groupId>net.masterthought</groupId>
       <artifactId>cucumber-reporting</artifactId>
+      <version>${cucumber.reporting.version}</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -163,7 +164,6 @@
     <dependency>
       <groupId>org.codehaus.gmaven.runtime</groupId>
       <artifactId>gmaven-runtime-2.0</artifactId>
-      <scope>test</scope>
       <version>${gmaven.plugin.version}</version>
       <scope>test</scope>
     </dependency>

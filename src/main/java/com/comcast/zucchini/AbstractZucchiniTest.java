@@ -1,36 +1,27 @@
-package com.comcast.csv.zucchini;
+package com.comcast.zucchini;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.AbstractMap;
 import java.util.Hashtable;
-
-import org.json.JSONObject;
-import org.json.JSONArray;
-
-import net.masterthought.cucumber.ReportBuilder;
+import java.util.List;
 
 import org.apache.commons.lang.mutable.MutableInt;
-import org.apache.maven.plugin.MojoExecutionException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import gherkin.formatter.Formatter;
 
 
 /**
  * Constructs a suite of Cucumber tests for every TestContext as returned by the
- * {@link #getTestContexts()} method. This should be used when working with either external
+ * {@link AbstractZucchiniTest#getTestContexts()} method. This should be used when working with either external
  * hardware or a virtual device (like a browser) to run the same cucumber tests but against
  * a different test target.
  *
  * To do this correctly, each step ("given", "when" or "then") should get access to the object
- * under test by calling {@link TestContext.getCurrent()}.
+ * under test by calling {@link TestContext#getCurrent()}.
  *
  * @author Clark Malmgren
  */
@@ -201,6 +192,7 @@ public abstract class AbstractZucchiniTest {
      * they will run one after the other (in order). Override this method to change the output.
      *
      * <b>The default value is <code>true</code> so the default behavior is parallel execution.</b>
+     * @return True if Zucchini is going to run TestContexts in parallel or False if serially
      */
     public boolean isParallel() {
         return !this.envSerialized();
@@ -238,13 +230,14 @@ public abstract class AbstractZucchiniTest {
      * @param runner The object used for test execution
      * To modify formatters, a sample such as the one below should be used:
      * <pre>
+     * {@code
      * List<Formatter> formatters = runner.getFormatters();
      * for (Formatter formatter : formatters) {
      *   if (formatter instanceof YourCustomFormatter) {
      *     ((YourCustomFormatter)formatter).yourFormatterModifierMethod();
      *   }
      * }
-     *
+     * }
      * </pre>
      */
     public void setupFormatter(TestContext out, TestNGZucchiniRunner runner) {
