@@ -54,7 +54,19 @@
     <gmaven.plugin.version>1.5</gmaven.plugin.version>
     <maven.source.plugin.version>2.3</maven.source.plugin.version>
     <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
+
+    <!-- Github Info -->
+        <git.url>https://github.com</git.url>
+        <git.repo>zucchini</git.repo>
+        <git.org>Comcast</git.org>
   </properties>
+
+  <scm>
+    <connection>scm:git:${git.url}/${git.org}/${git.repo}</connection>
+    <developerConnection>scm:git:${git.url}/${git.org}/${git.repo}</developerConnection>
+    <url>${git.url}/${git.org}/${git.repo}</url>
+  </scm>
+
 
   <build>
     <plugins>
