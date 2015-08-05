@@ -55,6 +55,7 @@
     <maven.source.plugin.version>2.3</maven.source.plugin.version>
     <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
 
+    <!-- Github Info -->
     <git.url>github.com</git.url>
     <git.repo>zucchini</git.repo>
     <git.org>Comcast</git.org>
