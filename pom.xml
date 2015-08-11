@@ -1,196 +1,195 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.comcast.zucchini</groupId>
-  <artifactId>zucchini</artifactId>
-  <version>2.0.2-SNAPSHOT</version>
-  <name>(${project.organization.name}) ${project.artifactId}</name>
+    <groupId>com.comcast.zucchini</groupId>
+    <artifactId>zucchini</artifactId>
+    <version>2.0.2-SNAPSHOT</version>
+    <name>(${project.organization.name}) ${project.artifactId}</name>
 
-  <licenses>
-    <license>
-      <name>Apache License</name>
-      <distribution>repo</distribution>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>Apache License</name>
+            <distribution>repo</distribution>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
-  <organization>
-    <name>Comcast</name>
-  </organization>
+    <organization>
+        <name>Comcast</name>
+    </organization>
 
-  <developers>
-    <developer>
-      <name>Clark Malmgren</name>
-      <organization>GrubHub</organization>
-    </developer>
-    <developer>
-      <name>Matt Barbour</name>
-      <organization>Comcast</organization>
-    </developer>
-    <developer>
-      <name>Dmitry Jerusalimsky</name>
-      <organization>Comcast</organization>
-    </developer>
-    <developer>
-      <name>Andrew Benton</name>
-      <organization>Comcast</organization>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <name>Clark Malmgren</name>
+            <organization>GrubHub</organization>
+        </developer>
+        <developer>
+            <name>Matt Barbour</name>
+            <organization>Comcast</organization>
+        </developer>
+        <developer>
+            <name>Dmitry Jerusalimsky</name>
+            <organization>Comcast</organization>
+        </developer>
+        <developer>
+            <name>Andrew Benton</name>
+            <organization>Comcast</organization>
+        </developer>
+    </developers>
 
-  <properties>
-    <!-- Compilation Info -->
-    <java.compile.version>1.7</java.compile.version>
-    
-    <!-- Dependency Versions -->
-    <slf4j.version>1.6.4</slf4j.version>
-    <logback.version>1.0.1</logback.version>
-    <cucumber.version>1.1.8</cucumber.version>
-    <cucumber.reporting.version>0.0.23</cucumber.reporting.version>
-    <testng.version>6.8.8</testng.version>
-    
-    <!-- Plugin Versions -->
-    <gmaven.plugin.version>1.5</gmaven.plugin.version>
-    <maven.source.plugin.version>2.3</maven.source.plugin.version>
-    <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
+    <properties>
+        <!-- Compilation Info -->
+        <java.compile.version>1.7</java.compile.version>
 
-    <!-- Github Info -->
-    <git.url>github.com</git.url>
-    <git.repo>zucchini</git.repo>
-    <git.org>Comcast</git.org>
- 
-  </properties>
+        <!-- Dependency Versions -->
+        <slf4j.version>1.6.4</slf4j.version>
+        <logback.version>1.1.2</logback.version>
+        <cucumber.version>1.1.8</cucumber.version>
+        <cucumber.reporting.version>0.0.23</cucumber.reporting.version>
+        <testng.version>6.8.8</testng.version>
 
-  <scm>
-    <connection>scm:git:git@${git.url}:${git.org}/${git.repo}.git</connection>
-    <developerConnection>scm:git:git@${git.url}:${git.org}/${git.repo}.git</developerConnection>
-    <url>https://${git.url}/${git.org}/${git.repo}</url>
-    <tag>HEAD</tag>
-  </scm>
+        <!-- Plugin Versions -->
+        <gmaven.plugin.version>1.5</gmaven.plugin.version>
+        <maven.source.plugin.version>2.3</maven.source.plugin.version>
+        <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>${java.compile.version}</source>
-          <target>${java.compile.version}</target>
-        </configuration>
-      </plugin>
+        <!-- Github Info -->
+        <git.url>github.com</git.url>
+        <git.repo>zucchini</git.repo>
+        <git.org>Comcast</git.org>
+    </properties>
 
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>gmaven-plugin</artifactId>
-        <version>${gmaven.plugin.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generateStubs</goal>
-              <goal>compile</goal>
+    <scm>
+        <connection>scm:git:git@${git.url}:${git.org}/${git.repo}.git</connection>
+        <developerConnection>scm:git:git@${git.url}:${git.org}/${git.repo}.git</developerConnection>
+        <url>https://${git.url}/${git.org}/${git.repo}</url>
+        <tag>HEAD</tag>
+    </scm>
 
-              <goal>generateTestStubs</goal>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <providerSelection>1.7</providerSelection>
-        </configuration>
-      </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>${maven.source.plugin.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${java.compile.version}</source>
+                    <target>${java.compile.version}</target>
+                </configuration>
+            </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven.javadoc.plugin.version}</version>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>${gmaven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateStubs</goal>
+                            <goal>compile</goal>
 
-  <dependencies>
-    <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-java</artifactId>
-      <version>${cucumber.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-testng</artifactId>
-      <version>${cucumber.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.masterthought</groupId>
-      <artifactId>cucumber-reporting</artifactId>
-      <version>${cucumber.reporting.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>${testng.version}</version>
-      <scope>compile</scope>
-    </dependency>
+                            <goal>generateTestStubs</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <providerSelection>1.7</providerSelection>
+                </configuration>
+            </plugin>
 
-    <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>20141113</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <version>${logback.version}</version>
-    </dependency>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-    <dependency>
-      <groupId>org.codehaus.gmaven.runtime</groupId>
-      <artifactId>gmaven-runtime-2.0</artifactId>
-      <version>${gmaven.plugin.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.gmaven.runtime</groupId>
-      <artifactId>gmaven-runtime-2.0</artifactId>
-      <scope>test</scope>
-      <version>1.5</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>gossip</artifactId>
-          <groupId>org.sonatype.gossip</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-  </dependencies>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.masterthought</groupId>
+            <artifactId>cucumber-reporting</artifactId>
+            <version>${cucumber.reporting.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.gmaven.runtime</groupId>
+            <artifactId>gmaven-runtime-2.0</artifactId>
+            <version>${gmaven.plugin.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.gmaven.runtime</groupId>
+            <artifactId>gmaven-runtime-2.0</artifactId>
+            <scope>test</scope>
+            <version>1.5</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>gossip</artifactId>
+                    <groupId>org.sonatype.gossip</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 </project>
