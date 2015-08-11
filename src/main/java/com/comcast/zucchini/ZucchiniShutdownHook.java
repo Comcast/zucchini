@@ -5,8 +5,7 @@ import java.util.List;
 import java.io.File;
 import java.io.FileWriter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.google.gson.JsonArray;
 
 import net.masterthought.cucumber.ReportBuilder;
 
@@ -25,14 +24,9 @@ class ZucchiniShutdownHook extends Thread
             for(String fileName : AbstractZucchiniTest.featureSet.keySet()) {
                 /* write the json first, needed for html generation */
                 File json = new File(fileName);
-                JSONArray features = AbstractZucchiniTest.featureSet.get(fileName);
+                JsonArray features = AbstractZucchiniTest.featureSet.get(fileName);
                 FileWriter writer = new FileWriter(json);
-                try {
-                    writer.write(features.toString(4));
-                }
-                catch (JSONException t) {
-                    logger.error("Failed to format JSON: \n" + t.getMessage());
-                }
+                writer.write(features.toString());
                 writer.close();
 
                 /* write the html report files */
