@@ -3,6 +3,7 @@ package com.comcast.zucchini;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Iterator;
 
 import org.apache.commons.lang.mutable.MutableInt;
 import org.slf4j.Logger;
@@ -162,8 +163,10 @@ public abstract class AbstractZucchiniTest {
                     JsonObject jobj = null;
                     String tmp = null;
 
-                    for(int i = 0; i < jarr.size(); i++) {
-                        jel = jarr.get(i);
+                    Iterator<JsonElement> jels = jarr.iterator();
+
+                    while(jels.hasNext()) {
+                        jel = jels.next();
 
                         if(jel.isJsonObject()) {
                             jobj = (JsonObject)jel;
