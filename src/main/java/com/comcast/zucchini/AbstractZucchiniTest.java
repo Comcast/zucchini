@@ -199,21 +199,18 @@ public abstract class AbstractZucchiniTest {
             tmp = "--zucchini--" + ctxName + "-" + jobj.get("id").getAsString();
         else
             tmp = "--zucchini--" + ctxName + "-";
-        System.out.println("tmp: " + tmp);
         jobj.addProperty("id", tmp);
 
         if(jobj.has("uri"))
             tmp = "--zucchini--" + ctxName + "-" + jobj.get("uri").getAsString();
         else
             tmp = "--zucchini--" + ctxName + "-";
-        System.out.println("tmp: " + tmp);
         jobj.addProperty("uri", tmp);
 
         if(jobj.has("name"))
             tmp = "ZucchiniTestContext[" + ctxName + "]::" + jobj.get("name").getAsString();
         else
             tmp = "ZucchiniTestContext[" + ctxName + "]::";
-        System.out.println("tmp: " + tmp);
         jobj.addProperty("name", tmp);
     }
 
