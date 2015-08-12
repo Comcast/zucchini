@@ -1,18 +1,22 @@
 package com.comcast.zucchini;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Iterator;
 
 import org.apache.commons.lang.mutable.MutableInt;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 /**
  * Constructs a suite of Cucumber tests for every TestContext as returned by the
@@ -29,12 +33,13 @@ public abstract class AbstractZucchiniTest {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class);
     private TestNGZucchiniRunner runner;
-    public static Hashtable<String, JSONArray> featureSet = new Hashtable<String, JSONArray>();
+    static HashMap<String, JsonArray> featureSet = new HashMap<String, JsonArray>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Boolean hooked = false;
 
     private void genHook() {
+        if(hooked) return;
         synchronized(hooked) {
             /* prevent this from being added multiple times */
             if(hooked) return;
@@ -139,52 +144,74 @@ public abstract class AbstractZucchiniTest {
             else
                 fileName = "target/zucchini.json";
 
-            JSONArray results = new JSONArray(runner.getJSONOutput());
+            //JSONArray results = new JSONArray(runner.getJSONOutput());
+            JsonParser parser = new JsonParser();
+            JsonElement result = parser.parse(runner.getJSONOutput());
 
             synchronized(featureSet) {
-                JSONArray features = null;
+                //JSONArray features = null;
+                JsonArray features = null;
 
                 if(!AbstractZucchiniTest.featureSet.containsKey(fileName))
-                    AbstractZucchiniTest.featureSet.put(fileName, new JSONArray());
+                    AbstractZucchiniTest.featureSet.put(fileName, new JsonArray());
 
                 features = AbstractZucchiniTest.featureSet.get(fileName);
 
-                JSONObject idxObj;
-                String tmp;
+                if(result.isJsonArray()) {
+                    JsonArray jarr = (JsonArray)result;
+                    JsonElement jel = null;
+                    JsonObject jobj = null;
+                    String tmp = null;
 
-                for(int i = 0; i < results.length(); i++) {
-                    idxObj = results.getJSONObject(i);
+                    Iterator<JsonElement> jels = jarr.iterator();
 
-                    if(idxObj != null) {
-                        //update id
-                        if(idxObj.has("id"))
-                            tmp = idxObj.getString("id");
-                        else
-                            tmp = "";
-                        idxObj.put("id", "--zucchini--" + context.name + "-" + tmp);
+                    while(jels.hasNext()) {
+                        jel = jels.next();
 
-                        //update uri
-                        if(idxObj.has("uri"))
-                            tmp = idxObj.getString("uri");
-                        else
-                            tmp = "";
-                        idxObj.put("uri", "--zucchini--" + context.name + "-" + tmp);
-
-                        //update name
-                        if(idxObj.has("name"))
-                            tmp = idxObj.getString("name");
-                        else
-                            tmp = "";
-                        idxObj.put("name", "ZucchiniTestContext[" + context.name + "]:: " + tmp);
-
-                        features.put(idxObj);
+                        if(jel.isJsonObject()) {
+                            jobj = (JsonObject)jel;
+                            upgradeObject(jobj, context.name);
+                            features.add(jobj);
+                        }
+                        else {
+                            features.add(jel);
+                        }
                     }
+                }
+                else if(result.isJsonObject()) {
+                    JsonObject jobj = (JsonObject)result;
+                    upgradeObject(jobj, context.name);
+                    features.add(jobj);
+                }
+                else {
+                    features.add(result);
                 }
             }
 
             cleanup(context);
             TestContext.removeCurrent();
         }
+    }
+
+    private void upgradeObject(JsonObject jobj, String ctxName) {
+        String tmp;
+        if(jobj.has("id"))
+            tmp = jobj.get("id").toString();
+        else
+            tmp = "";
+        jobj.addProperty("id", "--zucchini--" + ctxName + "-" + tmp);
+
+        if(jobj.has("uri"))
+            tmp = jobj.get("uri").toString();
+        else
+            tmp = "";
+        jobj.addProperty("uri", "--zucchini--" + ctxName + "-" + tmp);
+
+        if(jobj.has("name"))
+            tmp = jobj.get("name").toString();
+        else
+            tmp = "";
+        jobj.addProperty("name", "ZucchiniTestContext[" + ctxName + "]::" + tmp);
     }
 
     /**
