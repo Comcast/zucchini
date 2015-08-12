@@ -196,22 +196,25 @@ public abstract class AbstractZucchiniTest {
     private void upgradeObject(JsonObject jobj, String ctxName) {
         String tmp;
         if(jobj.has("id"))
-            tmp = jobj.get("id").toString();
+            tmp = "--zucchini--" + ctxName + "-" + jobj.get("id").getAsString();
         else
-            tmp = "";
-        jobj.addProperty("id", "--zucchini--" + ctxName + "-" + tmp);
+            tmp = "--zucchini--" + ctxName + "-";
+        System.out.println("tmp: " + tmp);
+        jobj.addProperty("id", tmp);
 
         if(jobj.has("uri"))
-            tmp = jobj.get("uri").toString();
+            tmp = "--zucchini--" + ctxName + "-" + jobj.get("uri").getAsString();
         else
-            tmp = "";
-        jobj.addProperty("uri", "--zucchini--" + ctxName + "-" + tmp);
+            tmp = "--zucchini--" + ctxName + "-";
+        System.out.println("tmp: " + tmp);
+        jobj.addProperty("uri", tmp);
 
         if(jobj.has("name"))
-            tmp = jobj.get("name").toString();
+            tmp = "ZucchiniTestContext[" + ctxName + "]::" + jobj.get("name").getAsString();
         else
-            tmp = "";
-        jobj.addProperty("name", "ZucchiniTestContext[" + ctxName + "]::" + tmp);
+            tmp = "ZucchiniTestContext[" + ctxName + "]::";
+        System.out.println("tmp: " + tmp);
+        jobj.addProperty("name", tmp);
     }
 
     /**
