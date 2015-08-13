@@ -2,6 +2,7 @@ package com.comcast.zucchini;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Iterator;
 
@@ -38,6 +39,22 @@ public abstract class AbstractZucchiniTest {
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Boolean hooked = false;
 
+    /* store the list of contexts here */
+    List<TestContext> contexts;
+    /* List the contexts that have failed here */
+    HashSet<TestContext> failedContexts;
+
+    /* pre-scenario cdl's */
+    //CyclicBarrier phaseLock0;
+    //CyclicBarrier phaseLock1;
+    //CountDownLatch phaseLock0;
+    //CountDownLatch phaseLock1;
+    StaticBarrier phase0;
+    StaticBarrier phase1;
+
+    /* flexible barrier for test-wise locking */
+    FlexibleBarrier flexBarrier;
+
     private void genHook() {
         if(hooked) return;
         synchronized(hooked) {
@@ -58,7 +75,19 @@ public abstract class AbstractZucchiniTest {
 
     @Test
     public void run() {
-        List<TestContext> contexts = this.getTestContexts();
+        this.contexts = this.getTestContexts();
+        this.failedContexts = new HashSet<TestContext>();
+        //this.phaseLock0 = new CyclicBarrier(this.contexts.size());
+        //this.phaseLock1 = new CyclicBarrier(this.contexts.size());
+        //this.phaseLock0 = new CountDownLatch(this.contexts.size());
+        //this.phaseLock1 = new CountDownLatch(this.contexts.size());
+        this.phase0 = new StaticBarrier(this.contexts.size());
+        this.phase1 = new StaticBarrier(this.contexts.size());
+        this.flexBarrier = new FlexibleBarrier(this);
+
+        for(TestContext tc : this.contexts) {
+            tc.parentTest = this;
+        }
 
         if(this.isParallel())
             this.runParallel(contexts);
@@ -86,7 +115,6 @@ public abstract class AbstractZucchiniTest {
             Thread t = new Thread(new TestRunner(this, tc, mi), tc.name);
             threads.add(t);
             t.start();
-            //threads.push(Thread.start(new TestRunner(this, tc, mi), tc.name));
         }
 
         for(Thread t : threads) {
@@ -144,12 +172,10 @@ public abstract class AbstractZucchiniTest {
             else
                 fileName = "target/zucchini.json";
 
-            //JSONArray results = new JSONArray(runner.getJSONOutput());
             JsonParser parser = new JsonParser();
             JsonElement result = parser.parse(runner.getJSONOutput());
 
             synchronized(featureSet) {
-                //JSONArray features = null;
                 JsonArray features = null;
 
                 if(!AbstractZucchiniTest.featureSet.containsKey(fileName))

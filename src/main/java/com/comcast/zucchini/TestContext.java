@@ -19,6 +19,11 @@ public class TestContext {
     private static final ThreadLocal<TestContext> local = new ThreadLocal<TestContext>();
     private static final Logger logger = LoggerFactory.getLogger(TestContext.class);
 
+    String name;
+    private Map<String, Object> beans;
+    private Thread owningThread;
+    AbstractZucchiniTest parentTest;
+
     /**
      * Set the test context for this thread run. This should be only be called from a
      * {@link AbstractZucchiniTest} methods unless you really know what you are doing.
@@ -27,6 +32,7 @@ public class TestContext {
      */
     public static void setCurrent(TestContext context) {
         local.set(context);
+        context.owningThread = Thread.currentThread();
     }
 
     /**
@@ -51,9 +57,6 @@ public class TestContext {
     public static void removeCurrent() {
         local.remove();
     }
-
-    String name;
-    private Map<String, Object> beans;
 
     /**
      * Constructs a new empty TestContext
@@ -82,6 +85,14 @@ public class TestContext {
     public TestContext(String name, Map<String, Object> beans) {
         this.name = name;
         this.beans = beans;
+    }
+
+    Thread getThread() {
+        return this.owningThread;
+    }
+
+    AbstractZucchiniTest getParentTest() {
+        return this.parentTest;
     }
 
     /**
