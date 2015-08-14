@@ -135,6 +135,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
                 //reset the lock and scenario state
                 if(order == 0) {
                     azt.phase0.reset();
+                    logger.debug("Beginning scenario: {}", statement.getVisualName());
                     //clear configuration here for per-scenario state
                     azt.failedContexts.clear();
                     azt.flexBarrier.reset();

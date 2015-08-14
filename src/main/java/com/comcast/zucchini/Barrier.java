@@ -7,7 +7,7 @@ public class Barrier {
     private static Logger logger = LoggerFactory.getLogger(Barrier.class);
 
     public static int sync() {
-        return Barrier.sync(0);
+        return Barrier.sync(-1);
     }
 
     public static int sync(int milliseconds) {

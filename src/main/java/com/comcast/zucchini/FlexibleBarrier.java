@@ -50,11 +50,13 @@ class FlexibleBarrier {
     }
 
     int await() {
-        return this.await(0);
+        return this.await(-1);
     }
 
     int await(int milliseconds) {
         int ret = -1;
+
+        if(milliseconds == 0) return -1; //we aren't waiting, return no positionnal data
 
         synchronized(this) {
             ret = this.arrivedThreads.size();
@@ -64,8 +66,10 @@ class FlexibleBarrier {
             this.cdl.countDown();
         }
 
+        //logger.debug("locked {}", ret);
+
         try {
-            if(milliseconds < 1)
+            if(milliseconds < 0)
                 this.cdl.await();
             else
                 this.cdl.await(milliseconds, TimeUnit.MILLISECONDS);
@@ -73,6 +77,8 @@ class FlexibleBarrier {
         catch(InterruptedException ex) {
             //ignore for now
         }
+
+        //logger.debug("unlocked {}", ret);
 
         if(ret == 0)
             synchronized(this) {
@@ -83,15 +89,21 @@ class FlexibleBarrier {
     }
 
     void dec() {
-        this.cdl.countDown();
+        synchronized(this) {
+            this.cdl.countDown();
+        }
     }
 
     void reset() {
         synchronized(this) {
+            //logger.debug("reset");
+
             if(this.azt.isParallel())
                 this.cdl = new CountDownLatch(this.azt.contexts.size() - this.azt.failedContexts.size());
             else
                 this.cdl = new CountDownLatch(1);
+
+            //logger.debug("Initialized with count of {}", this.cdl.getCount());
 
             this.arrivedThreads.clear();
         }
