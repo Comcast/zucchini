@@ -1,10 +1,10 @@
 package com.comcast.zucchini;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
-import cucumber.api.CucumberOptions;
 import cucumber.runtime.ClassFinder;
 import cucumber.runtime.CucumberException;
 import cucumber.runtime.RuntimeOptions;
@@ -40,8 +40,8 @@ public class TestNGZucchiniRunner {
         CucumberJSONFormatter formatter = new CucumberJSONFormatter(output);
         runtimeOptions.addPlugin(formatter);
 
-        this.formatters = new LinkedList<Formatter>();
-        this.formatters.add(runtimeOptions.formatter(classLoader));
+        this.formatters = getAllPlugins(runtimeOptions);
+//        this.formatters.add(runtimeOptions.formatter(classLoader));
 
         ClassFinder classFinder = new ResourceLoaderClassFinder(resourceLoader, classLoader);
         runtime = new cucumber.runtime.Runtime(resourceLoader, classFinder, classLoader, runtimeOptions);
@@ -65,6 +65,26 @@ public class TestNGZucchiniRunner {
 
     public String getJSONOutput() {
         return output.toString();
+    }
+    
+    private List<Formatter> getAllPlugins(RuntimeOptions runtimeOptions) {
+        List<Formatter> rv = new ArrayList<Formatter>();
+        try {
+            Method plugins = RuntimeOptions.class.getDeclaredMethod("getPlugins", new Class[0]);
+            plugins.setAccessible(true);
+            List<Object> ps = (List<Object>) plugins.invoke(runtimeOptions, null);
+            for (Object p : ps) {
+                if (Formatter.class.isInstance(p)) {
+                    rv.add((Formatter) p);
+                }
+            }
+        }
+        catch (Throwable e) {
+            System.out.println("######## exception!!!\n" + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        return rv;
     }
 
     /**
