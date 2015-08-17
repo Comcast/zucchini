@@ -5,6 +5,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cucumber.runtime.ClassFinder;
 import cucumber.runtime.CucumberException;
 import cucumber.runtime.RuntimeOptions;
@@ -20,6 +23,8 @@ import gherkin.formatter.Formatter;
  */
 public class TestNGZucchiniRunner {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestNGZucchiniRunner.class);
+    
     private final cucumber.runtime.Runtime runtime;
     private final StringBuilder output = new StringBuilder();
     private List<Formatter> formatters;
@@ -29,7 +34,7 @@ public class TestNGZucchiniRunner {
      *
      * @param clazz Which has the cucumber.api.CucumberOptions and org.testng.annotations.Test annotations
      */
-    public TestNGZucchiniRunner(Class clazz) {
+    public TestNGZucchiniRunner(Class<?> clazz) {
         ClassLoader classLoader = clazz.getClassLoader();
         ResourceLoader resourceLoader = new MultiLoader(classLoader);
 
@@ -41,7 +46,6 @@ public class TestNGZucchiniRunner {
         runtimeOptions.addPlugin(formatter);
 
         this.formatters = getAllPlugins(runtimeOptions);
-//        this.formatters.add(runtimeOptions.formatter(classLoader));
 
         ClassFinder classFinder = new ResourceLoaderClassFinder(resourceLoader, classLoader);
         runtime = new cucumber.runtime.Runtime(resourceLoader, classFinder, classLoader, runtimeOptions);
@@ -67,21 +71,31 @@ public class TestNGZucchiniRunner {
         return output.toString();
     }
     
+    /**
+     * Gets all plugins by calling {@link RuntimeOptions#getPlugins()} method using reflection. 
+     * This is needed in order to add custom configuration to already instantiated formatters / reporters.
+     * This method is called after all Formatter / Reporter classes have been instantiated
+     * 
+     * @param runtimeOptions Reference to the Cucumber's RuntimeOptions
+     * @return List of Formatter objects
+     */
     private List<Formatter> getAllPlugins(RuntimeOptions runtimeOptions) {
         List<Formatter> rv = new ArrayList<Formatter>();
         try {
+            // find a method in RuntimeOptions class called 'getPlugins' that takes no arguments
             Method plugins = RuntimeOptions.class.getDeclaredMethod("getPlugins", new Class[0]);
             plugins.setAccessible(true);
+            
             List<Object> ps = (List<Object>) plugins.invoke(runtimeOptions, null);
             for (Object p : ps) {
+                // filter out only instances of type Formatter
                 if (Formatter.class.isInstance(p)) {
                     rv.add((Formatter) p);
                 }
             }
         }
         catch (Throwable e) {
-            System.out.println("######## exception!!!\n" + e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("There was an exception while trying to call 'getPlugins' method", e);
         }
         
         return rv;
