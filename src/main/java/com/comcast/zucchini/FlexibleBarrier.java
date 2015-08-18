@@ -13,6 +13,13 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is the heavy lifter behind the Barrier class.
+ *
+ * This integrates with the AbstractTestContext, the ZucchiniRuntime, and the TestContext to track when and what threads have failed, as well as kill the threads that should timeout.  The barrier will dynamically rezsize itself in accordance with the number of threads that can successfully finish.
+ *
+ * @author Andrew Benton
+ */
 class FlexibleBarrier {
     private static Logger logger = LoggerFactory.getLogger(FlexibleBarrier.class);
 
@@ -24,21 +31,31 @@ class FlexibleBarrier {
     private boolean timedout;
     private int secondaryOrder;
 
+    /**
+     * Create a FlexibleBarrier and size it based on the number on contexts in `azt`.
+     */
     FlexibleBarrier(AbstractZucchiniTest azt) {
         this(azt, azt.contexts.size());
     }
 
+    /**
+     * Create a FlexibleBarrier and size it based on `size` regardless of what is in `azt`.
+     *
+     * Future resizing is based on the contents of `azt`
+     */
     FlexibleBarrier(AbstractZucchiniTest azt, int size) {
         this.azt = azt;
         this.primary = new Phaser(size);
         this.secondary = new Phaser(size);
-        //this.arrivedThreads = new HashSet<TestContext>();
         this.arrivedThreads = Collections.newSetFromMap(new ConcurrentHashMap<TestContext, Boolean>());
         this.timedout = false;
         this.primaryOrder = 0;
         this.secondaryOrder = 0;
     }
 
+    /**
+     * Kill all threads that have not reached this point and release all waiting threads.
+     */
     void unlock() {
         synchronized(this) {
             //force all late tests to fail
@@ -60,18 +77,30 @@ class FlexibleBarrier {
         }
     }
 
+    /**
+     * Drive the arrival index of the primary barrier.
+     */
     private synchronized int arrivePrimary() {
         return this.primaryOrder++;
     }
 
+    /**
+     * Drive the arrival index of the secondary barrier.
+     */
     private synchronized int arriveSecondary() {
         return this.secondaryOrder++;
     }
 
+    /**
+     * Await until all {@see TestContexts} have reached this point or failed.
+     */
     int await() {
         return this.await(-1);
     }
 
+    /**
+     * Await until all {@see TestContext}'s have reached this point, failed, or timedout.
+     */
     int await(int milliseconds) {
         if(milliseconds == 0) return -1; //we aren't waiting, return no positionnal data
 
@@ -175,6 +204,9 @@ class FlexibleBarrier {
         this.secondary.bulkRegister(this.azt.contexts.size() - this.secondary.getRegisteredParties());
     }
 
+    /**
+     * A shortcut to get the {@see TestContext} name or provide "<NULL>" it its place.
+     */
     private static String name() {
         TestContext ctx = TestContext.getCurrent();
 
@@ -184,6 +216,9 @@ class FlexibleBarrier {
             return ctx.name();
     }
 
+    /**
+     * Get the monotonic time in milliseconds.
+     */
     private static long getMonoMilliseconds() {
         return System.nanoTime() / (1_000_000);
     }

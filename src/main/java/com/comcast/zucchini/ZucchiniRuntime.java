@@ -36,6 +36,11 @@ import gherkin.formatter.model.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Extends a wraps cucumber.runtime.Runtime object for Zucchini's extended functionality.
+ *
+ * @author Andrew Benton
+ */
 public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
     private static Logger logger = LoggerFactory.getLogger(ZucchiniRuntime.class);
@@ -44,6 +49,9 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     protected ClassLoader cl;
     protected ZucchiniRuntimeOptions ros;
 
+    /**
+     * {@inheritDoc}
+     */
     public ZucchiniRuntime(ResourceLoader resourceLoader, ClassFinder classFinder, ClassLoader classLoader, RuntimeOptions runtimeOptions) {
         super(resourceLoader, classFinder, classLoader, runtimeOptions);
         if(runtimeOptions instanceof ZucchiniRuntimeOptions)
@@ -54,6 +62,9 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         this.rl = resourceLoader;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ZucchiniRuntime(ResourceLoader resourceLoader, ClassLoader classLoader, Collection<? extends Backend> backends, RuntimeOptions runtimeOptions) {
         super(resourceLoader, classLoader, backends, runtimeOptions);
         if(runtimeOptions instanceof ZucchiniRuntimeOptions)
@@ -64,6 +75,9 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         this.rl = resourceLoader;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ZucchiniRuntime(ResourceLoader resourceLoader, ClassLoader classLoader, Collection<? extends Backend> backends, RuntimeOptions runtimeOptions, RuntimeGlue optionalGlue) {
         super(resourceLoader, classLoader, backends,  runtimeOptions, optionalGlue);
         if(runtimeOptions instanceof ZucchiniRuntimeOptions)
@@ -74,6 +88,9 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         this.rl = resourceLoader;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ZucchiniRuntime(ResourceLoader resourceLoader, ClassLoader classLoader, Collection<? extends Backend> backends, RuntimeOptions runtimeOptions, StopWatch stopWatch, RuntimeGlue optionalGlue) {
         super(resourceLoader, classLoader, backends, runtimeOptions, stopWatch, optionalGlue);
         if(runtimeOptions instanceof ZucchiniRuntimeOptions)
@@ -84,6 +101,9 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         this.rl = resourceLoader;
     }
 
+    /**
+     * Similar to the inherited version, but adds a check for ThreadDeath from the Barrier.sync().
+     */
     public void addError(Throwable error) {
         super.addError(error);
 
@@ -96,6 +116,9 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         }
     }
 
+    /**
+     * This is a shortcut to extract the name from the TestContext.
+     */
     private static String name() {
         TestContext tc = TestContext.getCurrent();
         if(tc != null)
@@ -104,6 +127,9 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
             return "<NULL>";
     }
 
+    /**
+     * This replaces the function of the cucumber.runtime.model.CucumberFeature so that it can handle barrier syncs between scenarios and preven odd behavior based on the actions of previous scenarios.
+     */
     @Override
     public void run() throws IOException {
         List<CucumberFeature> features = this.ros.cucumberFeatures(this.rl);
@@ -148,46 +174,79 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         this.printSummary();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void printSummary() {
         super.printSummary();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void buildBackendWorlds(Reporter reporter, Set<Tag> tags, Scenario gherkinScenario) {
         super.buildBackendWorlds(reporter, tags, gherkinScenario);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void disposeBackendWorlds(String scenarioDesignation) {
         super.disposeBackendWorlds(scenarioDesignation);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<Throwable> getErrors() {
         return super.getErrors();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public byte exitStatus() {
         return super.exitStatus();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<String> getSnippets() {
         return super.getSnippets();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Glue getGlue() {
         return super.getGlue();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void runBeforeHooks(Reporter reporter, Set<Tag> tags) {
         super.runBeforeHooks(reporter, tags);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void runAfterHooks(Reporter reporter, Set<Tag> tags) {
         super.runAfterHooks(reporter, tags);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void runUnreportedStep(String featurePath,  I18n i18n, String stopKeyword, String stepName, int line, List<DataTableRow> dataTableRows, DocString docString) throws Throwable {
         super.runUnreportedStep(featurePath,  i18n, stopKeyword, stepName, line, dataTableRows, docString);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void runStep(String featurePath, Step step, Reporter reporter, I18n i18n) {
         super.runStep(featurePath, step, reporter, i18n);
     }

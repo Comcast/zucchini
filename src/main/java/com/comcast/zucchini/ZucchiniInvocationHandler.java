@@ -14,6 +14,13 @@ import java.lang.reflect.Proxy;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.Reporter;
 
+/**
+ * This class is non-essential for now, however it will be useful for future extension of Zucchini functionality.
+ *
+ * Currently, the only feature that it adds is a lock around all invocations, which doesn't visibly hurt performance and provides more readable output.
+ *
+ * @author Andrew Benton
+ */
 class ZucchiniInvocationHandler implements InvocationHandler {
 
     private static Object lock = new Object();
