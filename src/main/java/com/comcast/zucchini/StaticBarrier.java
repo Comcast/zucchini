@@ -1,6 +1,6 @@
 package com.comcast.zucchini;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Phaser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,37 +8,26 @@ import org.slf4j.LoggerFactory;
 class StaticBarrier {
     private static Logger logger = LoggerFactory.getLogger(StaticBarrier.class);
 
-    CountDownLatch cdl;
-    int parties;
+    private Phaser phase;
+    private int parties;
+    private long order;
 
     StaticBarrier(int parties) {
         this.parties = parties;
-        this.cdl = new CountDownLatch(this.parties);
+        this.phase = new Phaser(this.parties);
+        logger.debug("Creating StaticBarrier with {} parties", this.phase.getRegisteredParties());
+        this.order = 0;
+    }
+
+    private synchronized int arrive() {
+        return (int)this.order++ % this.parties;
     }
 
     int await() {
-        int ret = -1;
+        Thread.interrupted(); //clear any interrupt.  We don't want it hanging around, as this may not be interrupted.
 
-        Thread.currentThread().interrupted(); //clear any interrupt.  We don't want it hanging around, as this may not be interrupted.
+        this.phase.arriveAndAwaitAdvance();
 
-        synchronized(this) {
-            this.cdl.countDown();
-            ret = (int)this.cdl.getCount();
-        }
-
-        try {
-            this.cdl.await();
-        }
-        catch(InterruptedException ex) {
-            logger.error("ERROR: {}", ex);
-        }
-
-        return ret;
-    }
-
-    void reset() {
-        synchronized(this) {
-            this.cdl = new CountDownLatch(this.parties);
-        }
+        return this.arrive();
     }
 }

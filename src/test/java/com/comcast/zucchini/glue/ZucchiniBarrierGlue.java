@@ -48,32 +48,14 @@ public class ZucchiniBarrierGlue {
         logger.debug("Entering barrier on " + name());
         if(name().equals("ThreadIdx[0]")) {
             try {
-                synchronized(logger) {
-                    logger.debug("Sleeping on thread " + name());
-                }
                 Thread.sleep(50);
-                synchronized(logger) {
-                    logger.debug("Waking on  thread " + name());
-                }
             }
             catch(Throwable t) {
-                synchronized(logger) {
-                    logger.debug("The sleep was broken.");
-                }
-                throw t;
+                logger.debug("The sleep was broken.");
             }
         }
-        else {
-            try {
-                Barrier.sync(100);
-            }
-            catch(Throwable t) {
-                synchronized(logger) {
-                    logger.error("Barrier was too slow.");
-                }
-                throw t;
-            }
-        }
+
+        Barrier.sync(150);
     }
 
     @Then("Our sync times out and proceeds")

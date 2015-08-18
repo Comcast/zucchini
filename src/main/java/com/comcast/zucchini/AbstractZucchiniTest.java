@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Iterator;
 
+import java.util.concurrent.Phaser;
+
 import org.apache.commons.lang.mutable.MutableInt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +47,6 @@ public abstract class AbstractZucchiniTest {
     HashSet<TestContext> failedContexts;
 
     /* pre-scenario cdl's */
-    //CyclicBarrier phaseLock0;
-    //CyclicBarrier phaseLock1;
-    //CountDownLatch phaseLock0;
-    //CountDownLatch phaseLock1;
     StaticBarrier phase0;
     StaticBarrier phase1;
 
@@ -77,12 +75,12 @@ public abstract class AbstractZucchiniTest {
     public void run() {
         this.contexts = this.getTestContexts();
         this.failedContexts = new HashSet<TestContext>();
-        //this.phaseLock0 = new CyclicBarrier(this.contexts.size());
-        //this.phaseLock1 = new CyclicBarrier(this.contexts.size());
-        //this.phaseLock0 = new CountDownLatch(this.contexts.size());
-        //this.phaseLock1 = new CountDownLatch(this.contexts.size());
+
+        logger.debug("Creating AbstractZucchiniTest with contexts: {}", this.contexts);
+
         this.phase0 = new StaticBarrier(this.contexts.size());
         this.phase1 = new StaticBarrier(this.contexts.size());
+
         this.flexBarrier = new FlexibleBarrier(this);
 
         for(TestContext tc : this.contexts) {

@@ -5,9 +5,6 @@ import java.util.Set;
 import java.util.Collection;
 import java.util.Collections;
 
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.CountDownLatch;
-
 import java.io.IOException;
 
 import cucumber.runtime.Glue;
@@ -128,27 +125,17 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
             for(CucumberTagStatement statement : cf.getFeatureElements()) {
 
-                //wait for all to be ready
-                try { order = azt.phase0.await(); }
-                catch(Throwable t) { logger.error("ERROR: {}", t); }
+                order = azt.phase0.await();
 
                 //reset the lock and scenario state
                 if(order == 0) {
-                    azt.phase0.reset();
                     logger.debug("Beginning scenario: {}", statement.getVisualName());
                     //clear configuration here for per-scenario state
                     azt.failedContexts.clear();
-                    azt.flexBarrier.reset();
+                    azt.flexBarrier.refresh();
                 }
 
-                //wait on the lock
-                try { order = azt.phase1.await(); }
-                catch(Throwable t) { logger.error("ERROR: {}", t); }
-
-                //reset the lock
-                if(order == 0) {
-                    azt.phase1.reset();
-                }
+                order = azt.phase1.await();
 
                 statement.run(formatter, reporter, this);
             }
