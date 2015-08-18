@@ -146,7 +146,10 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
             for(CucumberTagStatement statement : cf.getFeatureElements()) {
 
-                order = azt.phase0.await();
+                if(azt.isParallel())
+                    order = azt.phase0.await();
+                else
+                    order = 0;
 
                 //reset the lock and scenario state
                 if(order == 0) {
@@ -155,7 +158,8 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
                     azt.flexBarrier.refresh();
                 }
 
-                order = azt.phase1.await();
+                if(azt.isParallel())
+                    order = azt.phase1.await();
 
                 statement.run(formatter, reporter, this);
             }

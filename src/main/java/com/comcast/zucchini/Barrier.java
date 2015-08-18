@@ -25,6 +25,9 @@ public class Barrier {
 
         AbstractZucchiniTest azt = tc.getParentTest();
 
-        return azt.flexBarrier.await(milliseconds);
+        if(azt.isParallel())
+            return azt.flexBarrier.await(milliseconds);
+        else
+            return 0;
     }
 }
