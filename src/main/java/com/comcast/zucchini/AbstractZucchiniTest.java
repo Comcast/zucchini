@@ -1,5 +1,4 @@
-package com.comcast.zucchini;
-
+package com.comcast.zucchini; 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +33,7 @@ import com.google.gson.JsonParser;
  */
 public abstract class AbstractZucchiniTest {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractZucchiniTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractZucchiniTest.class);
     private TestNGZucchiniRunner runner;
     static HashMap<String, JsonArray> featureSet = new HashMap<String, JsonArray>();
 
@@ -76,7 +75,7 @@ public abstract class AbstractZucchiniTest {
         this.contexts = this.getTestContexts();
         this.failedContexts = new HashSet<TestContext>();
 
-        logger.debug("Creating AbstractZucchiniTest with contexts: {}", this.contexts);
+        LOGGER.debug("Creating AbstractZucchiniTest with contexts: {}", this.contexts);
 
         this.phase0 = new StaticBarrier(this.contexts.size());
         this.phase1 = new StaticBarrier(this.contexts.size());
@@ -120,7 +119,7 @@ public abstract class AbstractZucchiniTest {
                 t.join();
             }
             catch(Throwable e) {
-                logger.error(t.toString());
+                LOGGER.error(t.toString());
             }
         }
 
@@ -148,7 +147,7 @@ public abstract class AbstractZucchiniTest {
 
         TestContext.setCurrent(context);
 
-        logger.debug(String.format("ZucchiniTest[%s] starting", context.name));
+        LOGGER.debug(String.format("ZucchiniTest[%s] starting", context.name));
         TestNGZucchiniRunner runner = new TestNGZucchiniRunner(getClass());
 
         try {
@@ -160,7 +159,7 @@ public abstract class AbstractZucchiniTest {
             t.printStackTrace();
             return false;
         } finally {
-            logger.debug(String.format("ZucchiniTest[%s] finished", context.name));
+            LOGGER.debug(String.format("ZucchiniTest[%s] finished", context.name));
 
             ZucchiniOutput options = this.getClass().getAnnotation(ZucchiniOutput.class);
             String fileName;
@@ -263,7 +262,7 @@ public abstract class AbstractZucchiniTest {
      * @param out the object under test to cleanup
      */
     public void cleanup(TestContext out) {
-        logger.debug("Cleanup method was not implemented for " + this.getClass().getSimpleName());
+        LOGGER.debug("Cleanup method was not implemented for " + this.getClass().getSimpleName());
     }
 
     /**
@@ -272,7 +271,7 @@ public abstract class AbstractZucchiniTest {
      * @param out the object under test to setup
      **/
     public void setup(TestContext out) {
-        logger.debug("Setup method was not implemented for " + this.getClass().getSimpleName());
+        LOGGER.debug("Setup method was not implemented for " + this.getClass().getSimpleName());
     }
 
     /**
@@ -292,6 +291,6 @@ public abstract class AbstractZucchiniTest {
      * </pre>
      */
     public void setupFormatter(TestContext out, TestNGZucchiniRunner runner) {
-        logger.debug("Setup formatter method was not implemented for " + this.getClass().getSimpleName());
+        LOGGER.debug("Setup formatter method was not implemented for " + this.getClass().getSimpleName());
     }
 }

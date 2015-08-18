@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Simple class for storing and retrieving objects that are being test based on the currently running
  * thread. This is useful because the "given", "when" and "then" implementations in cucumber do not
@@ -17,7 +14,6 @@ import org.slf4j.LoggerFactory;
 public class TestContext {
 
     private static final ThreadLocal<TestContext> local = new ThreadLocal<TestContext>();
-    private static final Logger logger = LoggerFactory.getLogger(TestContext.class);
 
     String name;
     private Map<String, Object> beans;

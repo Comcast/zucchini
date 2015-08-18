@@ -16,7 +16,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 class ZucchiniShutdownHook extends Thread
 {
-    private static Logger logger = LoggerFactory.getLogger(ZucchiniShutdownHook.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZucchiniShutdownHook.class);
 
     @Override
     public void run() {
@@ -49,9 +49,7 @@ class ZucchiniShutdownHook extends Thread
         }
         catch(Throwable t)
         {
-            //System.out.print("FATAL ERROR:  " + t.toString());
-            logger.error("FATAL ERROR: " + t.getMessage());
-            /* must use system.halt here, system.exit stalls */
+            LOGGER.error("FATAL ERROR: " + t.getMessage());
             Runtime.getRuntime().halt(-1);
         }
     }

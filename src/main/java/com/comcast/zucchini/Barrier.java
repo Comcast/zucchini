@@ -1,8 +1,5 @@
 package com.comcast.zucchini;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * This creates a barrier sync when using the Zucchini framework.
  *
@@ -11,8 +8,6 @@ import org.slf4j.LoggerFactory;
  * @author Andrew Benton
  */
 public class Barrier {
-    private static Logger logger = LoggerFactory.getLogger(Barrier.class);
-
     /**
      * Creates a barrier sync that will wait until all {@see TestContext}'s join or fail.
      */

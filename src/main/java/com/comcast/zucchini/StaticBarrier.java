@@ -2,9 +2,6 @@ package com.comcast.zucchini;
 
 import java.util.concurrent.Phaser;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A class for internal use only that creates a staticly sized barrier sync.  
  *
@@ -13,8 +10,6 @@ import org.slf4j.LoggerFactory;
  * @author Andrew Benton
  */
 class StaticBarrier {
-    private static Logger logger = LoggerFactory.getLogger(StaticBarrier.class);
-
     private Phaser phase;
     private int parties;
     private long order;
@@ -25,7 +20,6 @@ class StaticBarrier {
     StaticBarrier(int parties) {
         this.parties = parties;
         this.phase = new Phaser(this.parties);
-        logger.debug("Creating StaticBarrier with {} parties", this.phase.getRegisteredParties());
         this.order = 0;
     }
 

@@ -19,7 +19,7 @@ public class ZucchiniBarrierGlue {
 
     private static int barrierCount = 0;
 
-    private static Logger logger = LoggerFactory.getLogger(ZucchiniBarrierGlue.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZucchiniBarrierGlue.class);
 
     public static String name() {
         return TestContext.getCurrent().name();
@@ -30,13 +30,9 @@ public class ZucchiniBarrierGlue {
 
     @And("We sync fast here")
     public void fast() throws Throwable {
-        synchronized(logger) {
-            logger.debug("Entering barrier on " + name());
-        }
+        LOGGER.debug("Entering barrier on " + name());
         Barrier.sync();
-        synchronized(logger) {
-            logger.debug("Leaving barrier on "  + name());
-        }
+        LOGGER.debug("Leaving barrier on "  + name());
         Barrier.sync();
     }
 
@@ -45,13 +41,13 @@ public class ZucchiniBarrierGlue {
 
     @And("We sync slow here")
     public void slow() throws Throwable {
-        logger.debug("Entering barrier on " + name());
+        LOGGER.debug("Entering barrier on " + name());
         if(name().equals("ThreadIdx[0]")) {
             try {
                 Thread.sleep(50);
             }
             catch(Throwable t) {
-                logger.debug("The sleep was broken.");
+                LOGGER.debug("The sleep was broken.");
             }
         }
 
@@ -68,9 +64,7 @@ public class ZucchiniBarrierGlue {
                 Barrier.sync(50); //wait half a second
             }
             catch(Throwable t) {
-                synchronized(logger) {
-                    logger.error("Sync still passed.", t);
-                }
+                LOGGER.error("Sync still passed.", t);
                 throw t;
             }
         }
@@ -83,9 +77,7 @@ public class ZucchiniBarrierGlue {
                 return;
             }
             catch(Throwable t) {
-                synchronized(logger) {
-                    logger.error("Thread failed to stop.", t);
-                }
+                LOGGER.error("Thread failed to stop.", t);
                 throw t;
             }
         }
@@ -127,7 +119,7 @@ public class ZucchiniBarrierGlue {
 
     @And("We have another barrier")
     public void second_barrier() throws Throwable {
-        logger.debug(String.format("BarrierCount for [%s] is %d, and numContexts is %d after sync.\n", name(),  barrierCount, BarrierTest.numContexts));
+        LOGGER.debug(String.format("BarrierCount for [%s] is %d, and numContexts is %d after sync.\n", name(),  barrierCount, BarrierTest.numContexts));
         if(barrierCount != BarrierTest.numContexts) {
             Assert.fail(String.format("The internal barrierCount[%d] does not match the number of contexts[%d]", barrierCount, BarrierTest.numContexts));
         }

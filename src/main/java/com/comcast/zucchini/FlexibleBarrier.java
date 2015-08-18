@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @author Andrew Benton
  */
 class FlexibleBarrier {
-    private static Logger logger = LoggerFactory.getLogger(FlexibleBarrier.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlexibleBarrier.class);
 
     private AbstractZucchiniTest azt;
     private Phaser primary;
@@ -64,7 +64,7 @@ class FlexibleBarrier {
                 if(!(this.arrivedThreads.contains(tc) || this.azt.failedContexts.contains(tc))) {
                     azt.failedContexts.add(tc);
                     tc.getThread().stop();
-                    logger.debug("Calling ThreadDeath from {} on {}", name(), tc.name());
+                    LOGGER.debug("Calling ThreadDeath from {} on {}", name(), tc.name());
                 }
             }
 
@@ -105,14 +105,14 @@ class FlexibleBarrier {
         if(milliseconds == 0) return -1; //we aren't waiting, return no positionnal data
 
         synchronized(this) {
-            logger.debug("registered {}", name());
+            LOGGER.debug("registered {}", name());
             this.arrivedThreads.add(TestContext.getCurrent());
         }
 
         //clear thread interrupt
         Thread.interrupted();
 
-        logger.debug("lock {}", name());
+        LOGGER.debug("lock {}", name());
 
         int phase = this.primary.arrive();
 
@@ -164,7 +164,7 @@ class FlexibleBarrier {
             this.primaryOrder = 0;
             this.timedout = false;
 
-        logger.debug("free {} as order {}", name(), ret);
+        LOGGER.debug("free {} as order {}", name(), ret);
 
         return ret;
     }

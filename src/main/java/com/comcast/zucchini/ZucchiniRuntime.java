@@ -33,17 +33,12 @@ import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Extends a wraps cucumber.runtime.Runtime object for Zucchini's extended functionality.
  *
  * @author Andrew Benton
  */
 public class ZucchiniRuntime extends cucumber.runtime.Runtime {
-
-    private static Logger logger = LoggerFactory.getLogger(ZucchiniRuntime.class);
 
     protected ResourceLoader rl;
     protected ClassLoader cl;
@@ -155,7 +150,6 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
                 //reset the lock and scenario state
                 if(order == 0) {
-                    logger.debug("Beginning scenario: {}", statement.getVisualName());
                     //clear configuration here for per-scenario state
                     azt.failedContexts.clear();
                     azt.flexBarrier.refresh();
