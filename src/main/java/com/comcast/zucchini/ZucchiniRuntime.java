@@ -106,8 +106,14 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         if(!(error instanceof ThreadDeath)) {
             TestContext tc = TestContext.getCurrent();
             AbstractZucchiniTest azt = tc.getParentTest();
-            azt.failedContexts.add(tc);
-            azt.flexBarrier.dec();
+            if(!azt.failedContexts.contains(tc)) {
+                synchronized(azt.failedContexts) {
+                    if(!azt.failedContexts.contains(tc)) {
+                        azt.failedContexts.add(tc);
+                        azt.flexBarrier.dec();
+                    }
+                }
+            }
         }
     }
 

@@ -57,22 +57,21 @@ class FlexibleBarrier {
      * Kill all threads that have not reached this point and release all waiting threads.
      */
     void unlock() {
-        synchronized(this) {
-            //force all late tests to fail
-            for(TestContext tc : this.azt.contexts) {
-                //if the thread has not arrived or already been registered as failed, register it as failed, and stop it
-                if(!(this.arrivedThreads.contains(tc) || this.azt.failedContexts.contains(tc))) {
-                    azt.failedContexts.add(tc);
-                    tc.getThread().stop();
-                    LOGGER.debug("Calling ThreadDeath from {} on {}", name(), tc.name());
-                }
-            }
+        //force all late tests to fail
+        for(TestContext tc : this.azt.contexts) {
+            //if the thread has not arrived or already been registered as failed, register it as failed, and stop it
 
-            //release all of the threads that are currently waiting
-            long missingCount = this.primary.getUnarrivedParties();
-            for(long i = 0; i < missingCount; i++) {
-                this.primary.arrive();
-                this.secondary.arrive();
+            if(!this.arrivedThreads.contains(tc)) { //if it didn't successfully meet the barrier
+                if(!this.azt.failedContexts.contains(tc)) { //and it wasn't already registered as failed
+                    synchronized(azt.failedContexts) { //lock the contexts
+                        if(!this.azt.failedContexts.contains(tc)) { //test again for race condition prevention
+                            this.azt.failedContexts.add(tc);
+                            this.dec();
+                            tc.getThread().stop();
+                            LOGGER.debug("Calling ZucchiniThreadTimeout from {} on {}", name(), tc.name());
+                        }
+                    }
+                }
             }
         }
     }
@@ -151,18 +150,19 @@ class FlexibleBarrier {
 
         int ret = this.arrivePrimary();
 
-        //first one to release does the reset
-        if(0 == ret) {
+        //last one to release does the reset
+        if(1 == (this.arrivedThreads.size() - ret)) {
             this.secondaryOrder = 0;
             this.unlock();
+            this.timedout = false;
         }
 
         //secondary barrier to prevent overrun
         this.secondary.arriveAndAwaitAdvance();
 
-        if(0 == this.arriveSecondary())
+        if(0 == this.arriveSecondary()) {
             this.primaryOrder = 0;
-        this.timedout = false;
+        }
 
         LOGGER.debug("free {} as order {}", name(), ret);
 
