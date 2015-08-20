@@ -162,7 +162,7 @@ class FlexibleBarrier {
 
         if(0 == this.arriveSecondary())
             this.primaryOrder = 0;
-            this.timedout = false;
+        this.timedout = false;
 
         LOGGER.debug("free {} as order {}", name(), ret);
 

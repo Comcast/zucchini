@@ -3,7 +3,7 @@ package com.comcast.zucchini;
 import java.util.concurrent.Phaser;
 
 /**
- * A class for internal use only that creates a staticly sized barrier sync.  
+ * A class for internal use only that creates a staticly sized barrier sync.
  *
  * This is here because certain versions of java had problems with the BarrierSync and did not perform as expected.
  *

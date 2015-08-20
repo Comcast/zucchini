@@ -56,7 +56,7 @@ public class TestContext {
 
     /**
      * Constructs a new empty TestContext
-     * 
+     *
      * @param name Name to be assigned to the context
      */
     public TestContext(String name) {

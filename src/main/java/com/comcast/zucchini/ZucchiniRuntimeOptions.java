@@ -113,8 +113,8 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     }
 
     /**
-     * This changes the pluginProxy so that the proxy that it returns serializes calls.  
-     * 
+     * This changes the pluginProxy so that the proxy that it returns serializes calls.
+     *
      * A future goal for this is to serialize calls to the underlying object types for environments with excessive numbers of contexts.
      *
      * {@inheritDoc}
