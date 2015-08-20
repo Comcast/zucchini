@@ -51,7 +51,6 @@
         <testng.version>6.8.8</testng.version>
 
         <!-- Plugin Versions -->
-        <gmaven.plugin.version>1.5</gmaven.plugin.version>
         <maven.source.plugin.version>2.3</maven.source.plugin.version>
         <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
 
@@ -77,26 +76,6 @@
                 <configuration>
                     <source>${java.compile.version}</source>
                     <target>${java.compile.version}</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <version>${gmaven.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateStubs</goal>
-                            <goal>compile</goal>
-
-                            <goal>generateTestStubs</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <providerSelection>1.7</providerSelection>
                 </configuration>
             </plugin>
 
@@ -170,25 +149,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.gmaven.runtime</groupId>
-            <artifactId>gmaven-runtime-2.0</artifactId>
-            <version>${gmaven.plugin.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.gmaven.runtime</groupId>
-            <artifactId>gmaven-runtime-2.0</artifactId>
-            <scope>test</scope>
-            <version>1.5</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>gossip</artifactId>
-                    <groupId>org.sonatype.gossip</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 </project>
