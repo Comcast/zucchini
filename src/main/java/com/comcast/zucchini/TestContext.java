@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class TestContext {
 
-    private static final ThreadLocal<TestContext> local = new ThreadLocal<TestContext>();
+    private static final ThreadLocal<TestContext> LOCAL = new ThreadLocal<TestContext>();
 
     String name;
     private Map<String, Object> beans;
@@ -28,7 +28,7 @@ public class TestContext {
      * @param context the object under test for this thread (suite run)
      */
     public static void setCurrent(TestContext context) {
-        local.set(context);
+        LOCAL.set(context);
         context.owningThread = Thread.currentThread();
     }
 
@@ -39,7 +39,7 @@ public class TestContext {
      * @return the test context
      */
     public static TestContext getCurrent() {
-        return local.get();
+        return LOCAL.get();
     }
 
     /**
@@ -52,7 +52,7 @@ public class TestContext {
      * really know what you are doing.
      */
     public static void removeCurrent() {
-        local.remove();
+        LOCAL.remove();
     }
 
     /**

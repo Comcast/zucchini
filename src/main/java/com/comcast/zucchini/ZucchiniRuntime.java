@@ -92,7 +92,10 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
     /**
      * Similar to the inherited version, but adds a check for ThreadDeath from the Barrier.sync().
+     *
+     * @param error The error that was thrown by the test and must be registered.  If it wasn't a {@see ThreadDeath}, then this will be checked against a list of already failed contexts.
      */
+    @Override
     public void addError(Throwable error) {
         super.addError(error);
 
@@ -176,6 +179,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void printSummary() {
         super.printSummary();
     }
@@ -183,6 +187,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void buildBackendWorlds(Reporter reporter, Set<Tag> tags, Scenario gherkinScenario) {
         super.buildBackendWorlds(reporter, tags, gherkinScenario);
     }
@@ -190,6 +195,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void disposeBackendWorlds(String scenarioDesignation) {
         super.disposeBackendWorlds(scenarioDesignation);
     }
@@ -197,6 +203,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Throwable> getErrors() {
         return super.getErrors();
     }
@@ -204,6 +211,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public byte exitStatus() {
         return super.exitStatus();
     }
@@ -211,6 +219,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getSnippets() {
         return super.getSnippets();
     }
@@ -218,6 +227,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Glue getGlue() {
         return super.getGlue();
     }
@@ -225,6 +235,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void runBeforeHooks(Reporter reporter, Set<Tag> tags) {
         super.runBeforeHooks(reporter, tags);
     }
@@ -232,6 +243,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void runAfterHooks(Reporter reporter, Set<Tag> tags) {
         super.runAfterHooks(reporter, tags);
     }
@@ -239,13 +251,15 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void runUnreportedStep(String featurePath,  I18n i18n, String stopKeyword, String stepName, int line, List<DataTableRow> dataTableRows, DocString docString) throws Throwable {
         super.runUnreportedStep(featurePath,  i18n, stopKeyword, stepName, line, dataTableRows, docString);
     }
 
     /**
-     * {@inheritDoc}
+     * This encapsulates the {@link Runtime#runStep} method with a level of safety, and provides information back to the barrier about whether it is safe to kill the running thread.
      */
+    @Override
     public void runStep(String featurePath, Step step, Reporter reporter, I18n i18n) {
         TestContext tc = TestContext.getCurrent();
 
@@ -254,8 +268,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
             super.runStep(featurePath, step, reporter, i18n);
             tc.canKill = false;
         }
-        catch(Throwable t)
-        {
+        catch(Throwable t) {
             tc.canKill = false;
             this.addError(t);
         }

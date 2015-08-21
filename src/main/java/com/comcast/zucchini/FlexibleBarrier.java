@@ -103,9 +103,12 @@ class FlexibleBarrier {
      * Await until all {@see TestContext}'s have reached this point, failed, or timedout.
      */
     int await(int milliseconds) {
-        if(milliseconds == 0) return -1; //we aren't waiting, return no positionnal data
+        if(milliseconds == 0) //we aren't waiting, return no positionnal data
+            return -1;
 
-        if(this.azt.failedContexts.contains(this)) {
+        TestContext tc = TestContext.getCurrent();
+
+        if(this.azt.failedContexts.contains(tc)) {
             Thread.currentThread().stop(new IllegalStateException("Failed context has somehow continued."));
         }
 

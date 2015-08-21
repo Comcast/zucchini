@@ -1,6 +1,7 @@
 package com.comcast.zucchini;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.List;
@@ -21,6 +22,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import cucumber.runtime.CucumberException;
+
 /**
  * Constructs a suite of Cucumber tests for every TestContext as returned by the
  * {@link AbstractZucchiniTest#getTestContexts()} method. This should be used when working with either external
@@ -35,7 +38,7 @@ import com.google.gson.JsonParser;
 public abstract class AbstractZucchiniTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractZucchiniTest.class);
-    static HashMap<String, JsonArray> featureSet = new HashMap<String, JsonArray>();
+    static Map<String, JsonArray> featureSet = new HashMap<String, JsonArray>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Object lock = new Object();
@@ -54,10 +57,14 @@ public abstract class AbstractZucchiniTest {
     FlexibleBarrier flexBarrier;
 
     private void genHook() {
-        if(hooked) return;
+        if(hooked)
+            return;
+
         synchronized(lock) {
             /* prevent this from being added multiple times */
-            if(hooked) return;
+            if(hooked)
+                return;
+
             hooked = true;
         }
 
@@ -66,11 +73,21 @@ public abstract class AbstractZucchiniTest {
         Runtime.getRuntime().addShutdownHook(new ZucchiniShutdownHook());
     }
 
+    /**
+     * This is a hook used to generate reports, if needed.
+     *
+     * By default, this is unused, as it was replaced by the {@link ZucchiniShutdownHook}.
+     */
     @AfterClass
     public void generateReports() {
         //this does nothing now, left for API consistency
     }
 
+    /**
+     * The TestNG hook that is used to startup the Zucchini/Cucumber tests.
+     *
+     * This configures the various state variables needed for a successful run, and then makes a call about serialized or parallelized runs before beginning.
+     */
     @Test
     public void run() {
         this.contexts = this.getTestContexts();
@@ -101,9 +118,19 @@ public abstract class AbstractZucchiniTest {
 
         zucchiniSerialize = zucchiniSerialize.toLowerCase();
 
-        return (zucchiniSerialize.equals("yes")) || (zucchiniSerialize.equals("y")) || (zucchiniSerialize.equals("true")) || (zucchiniSerialize.equals("1"));
+        return ("yes" ).equals(zucchiniSerialize) ||
+               ("y"   ).equals(zucchiniSerialize) ||
+               ("true").equals(zucchiniSerialize) ||
+               ("1"   ).equals(zucchiniSerialize);
     }
 
+    /**
+     * Run the parallel implementation of the test.
+     *
+     * This is normally run by the run() method.  Call this at your own risk.
+     *
+     * @param contexts The list of contexts that will be run.
+     */
     public void runParallel(List<TestContext> contexts) {
         List<Thread> threads = new ArrayList<Thread>(contexts.size());
 
@@ -119,14 +146,19 @@ public abstract class AbstractZucchiniTest {
             try {
                 t.join();
             }
-            catch(Throwable e) {
-                LOGGER.error(t.toString());
+            catch(InterruptedException e) {
+                LOGGER.error("ERROR on Thread.join(): {}", e);
             }
         }
 
         Assert.assertEquals(mi.intValue() , 0, String.format("There were %d executions against a TestContext", mi.intValue()));
     }
 
+    /**
+     * Similar to the runParallel method, this runs the test contexts in a serialized fashion.
+     *
+     * @param contexts The list of contexts that will be run.
+     */
     public void runSerial(List<TestContext> contexts) {
         int failures = 0;
 
@@ -156,8 +188,8 @@ public abstract class AbstractZucchiniTest {
             setupFormatter(context, runner);
             runner.runCukes();
             return true;
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (RuntimeException t) {
+            LOGGER.error("ERROR running test: {}", t);
             return false;
         } finally {
             LOGGER.debug(String.format("ZucchiniTest[%s] finished", context.name));

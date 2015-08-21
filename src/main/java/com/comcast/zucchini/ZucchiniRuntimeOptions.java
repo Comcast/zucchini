@@ -76,6 +76,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<CucumberFeature> cucumberFeatures(ResourceLoader resourceLoader) {
         return this.ros.cucumberFeatures(resourceLoader);
     }
@@ -83,6 +84,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Formatter formatter(ClassLoader classLoader) {
         return pluginProxy(classLoader, Formatter.class);
     }
@@ -90,6 +92,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Reporter reporter(ClassLoader classLoader) {
         return pluginProxy(classLoader, Reporter.class);
     }
@@ -97,6 +100,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public StepDefinitionReporter stepDefinitionReporter(ClassLoader classLoader) {
         return pluginProxy(classLoader, StepDefinitionReporter.class);
     }
@@ -104,6 +108,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public SummaryPrinter summaryPrinter(ClassLoader classLoader) {
         return pluginProxy(classLoader, SummaryPrinter.class);
     }
@@ -127,6 +132,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getGlue() {
         return this.ros.getGlue();
     }
@@ -134,6 +140,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isStrict() {
         return this.ros.isStrict();
     }
@@ -141,6 +148,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDryRun() {
         return this.ros.isDryRun();
     }
@@ -148,6 +156,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getFeaturePaths() {
         return this.ros.getFeaturePaths();
     }
@@ -155,6 +164,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addPlugin(Object plugin) {
         this.ros.addPlugin(plugin);
     }
@@ -162,6 +172,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Object> getFilters() {
         return this.ros.getFilters();
     }
@@ -169,6 +180,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isMonochrome() {
         return this.ros.isMonochrome();
     }
@@ -176,6 +188,7 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     /**
      * {@inheritDoc}
      */
+    @Override
     public SnippetType getSnippetType() {
         return this.ros.getSnippetType();
     }

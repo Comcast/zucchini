@@ -18,11 +18,20 @@ class ZucchiniInvocationHandler implements InvocationHandler {
     private Object baseProxy;
     private Class type;
 
+    /**
+     * Create the ZucchiniInvocationHandler so that it calls against `baseProxy` and has the internal class `type`.
+     *
+     * @param baseProxy The object that will be called when calls are made to this InvocationHandler
+     * @param type The type of class that the `baseProxy` internally represents
+     */
     public ZucchiniInvocationHandler(Object baseProxy, Class type) {
         this.baseProxy = baseProxy;
         this.type = type;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object invoke(Object target, Method method, Object[] args) throws Throwable {
         synchronized(ZucchiniInvocationHandler.lock) {
