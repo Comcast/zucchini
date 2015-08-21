@@ -1,11 +1,15 @@
 package com.comcast.zucchini;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Collections;
 
 import java.util.concurrent.Phaser;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.mutable.MutableInt;
 import org.slf4j.Logger;
@@ -34,7 +38,6 @@ import com.google.gson.JsonParser;
 public abstract class AbstractZucchiniTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractZucchiniTest.class);
-    private TestNGZucchiniRunner runner;
     static HashMap<String, JsonArray> featureSet = new HashMap<String, JsonArray>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
@@ -43,7 +46,7 @@ public abstract class AbstractZucchiniTest {
     /* store the list of contexts here */
     List<TestContext> contexts;
     /* List the contexts that have failed here */
-    HashSet<TestContext> failedContexts;
+    Set<TestContext> failedContexts;
 
     /* pre-scenario cdl's */
     StaticBarrier phase0;
@@ -73,7 +76,7 @@ public abstract class AbstractZucchiniTest {
     @Test
     public void run() {
         this.contexts = this.getTestContexts();
-        this.failedContexts = new HashSet<TestContext>();
+        this.failedContexts = Collections.newSetFromMap(new ConcurrentHashMap<TestContext, Boolean>());
 
         LOGGER.debug("Creating AbstractZucchiniTest with contexts: {}", this.contexts);
 
@@ -184,7 +187,6 @@ public abstract class AbstractZucchiniTest {
                     JsonArray jarr = (JsonArray)result;
                     JsonElement jel = null;
                     JsonObject jobj = null;
-                    String tmp = null;
 
                     Iterator<JsonElement> jels = jarr.iterator();
 

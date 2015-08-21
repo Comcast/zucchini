@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import java.lang.IllegalStateException;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.ConcurrentHashMap;
@@ -104,6 +106,10 @@ class FlexibleBarrier {
      */
     int await(int milliseconds) {
         if(milliseconds == 0) return -1; //we aren't waiting, return no positionnal data
+
+        if(this.azt.failedContexts.contains(this)) {
+            Thread.currentThread().stop(new IllegalStateException("Failed context has somehow continued."));
+        }
 
         synchronized(this) {
             LOGGER.debug("registered {}", name());
