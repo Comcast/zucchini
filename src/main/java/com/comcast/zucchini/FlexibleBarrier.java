@@ -69,7 +69,7 @@ class FlexibleBarrier {
                             this.dec();
                             if(tc.canKill) {
                                 tc.getThread().stop();
-                                LOGGER.debug("Calling ZucchiniThreadTimeout from {} on {}", name(), tc.name());
+                                LOGGER.trace("Calling ZucchiniThreadTimeout from {} on {}", name(), tc.name());
                             }
                         }
                     }
@@ -110,14 +110,14 @@ class FlexibleBarrier {
         }
 
         synchronized(this) {
-            LOGGER.debug("registered {}", name());
+            LOGGER.trace("registered {}", name());
             this.arrivedThreads.add(TestContext.getCurrent());
         }
 
         //clear thread interrupt
         Thread.interrupted();
 
-        LOGGER.debug("lock {}", name());
+        LOGGER.trace("lock {}", name());
 
         int phase = this.primary.arrive();
 
@@ -170,7 +170,7 @@ class FlexibleBarrier {
             this.primaryOrder = 0;
         }
 
-        LOGGER.debug("free {} as order {}", name(), ret);
+        LOGGER.trace("free {} as order {}", name(), ret);
 
         return ret;
     }

@@ -75,7 +75,7 @@ public abstract class AbstractZucchiniTest {
         this.contexts = this.getTestContexts();
         this.failedContexts = Collections.newSetFromMap(new ConcurrentHashMap<TestContext, Boolean>());
 
-        LOGGER.debug("Creating AbstractZucchiniTest with contexts: {}", this.contexts);
+        LOGGER.trace("Creating AbstractZucchiniTest with contexts: {}", this.contexts);
 
         this.phase0 = new StaticBarrier(this.contexts.size());
         this.phase1 = new StaticBarrier(this.contexts.size());

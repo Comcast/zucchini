@@ -119,7 +119,7 @@ public class ZucchiniBarrierGlue {
 
     @And("We have another barrier")
     public void second_barrier() throws Throwable {
-        LOGGER.debug(String.format("BarrierCount for [%s] is %d, and numContexts is %d after sync.\n", name(),  barrierCount, BarrierTest.numContexts));
+        LOGGER.debug(String.format("BarrierCount for [%s] is %d, and numContexts is %d after sync", name(),  barrierCount, BarrierTest.numContexts));
         if(barrierCount != BarrierTest.numContexts) {
             Assert.fail(String.format("The internal barrierCount[%d] does not match the number of contexts[%d]", barrierCount, BarrierTest.numContexts));
         }
