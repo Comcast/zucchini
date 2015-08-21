@@ -18,6 +18,7 @@ public class TestContext {
     String name;
     private Map<String, Object> beans;
     private Thread owningThread;
+    boolean canKill = false;
     AbstractZucchiniTest parentTest;
 
     /**
@@ -55,21 +56,21 @@ public class TestContext {
     }
 
     /**
-     * Constructs a new empty TestContext
-     *
-     * @param name Name to be assigned to the context
-     */
-    public TestContext(String name) {
-        this(name, new HashMap<String, Object>());
-    }
-
-    /**
      * Returns set of bean names
      *
      * @return Set of bean names
      */
     public Set<String> getAllKeys() {
         return this.beans.keySet();
+    }
+
+    /**
+     * Constructs a new empty TestContext
+     *
+     * @param name Name to be assigned to the context
+     */
+    public TestContext(String name) {
+        this(name, new HashMap<String, Object>());
     }
 
     /**
@@ -81,6 +82,7 @@ public class TestContext {
     public TestContext(String name, Map<String, Object> beans) {
         this.name = name;
         this.beans = beans;
+        this.canKill = false;
     }
 
     Thread getThread() {

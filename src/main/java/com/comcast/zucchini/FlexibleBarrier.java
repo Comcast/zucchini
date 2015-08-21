@@ -67,8 +67,10 @@ class FlexibleBarrier {
                         if(!this.azt.failedContexts.contains(tc)) { //test again for race condition prevention
                             this.azt.failedContexts.add(tc);
                             this.dec();
-                            tc.getThread().stop();
-                            LOGGER.debug("Calling ZucchiniThreadTimeout from {} on {}", name(), tc.name());
+                            if(tc.canKill) {
+                                tc.getThread().stop();
+                                LOGGER.debug("Calling ZucchiniThreadTimeout from {} on {}", name(), tc.name());
+                            }
                         }
                     }
                 }

@@ -51,7 +51,7 @@ public class ZucchiniBarrierGlue {
             }
         }
 
-        Barrier.sync(150);
+        Barrier.sync(2150);
     }
 
     @Then("Our sync times out and proceeds")
@@ -61,7 +61,7 @@ public class ZucchiniBarrierGlue {
     public void fail_and_catch_here() throws Throwable {
         if(name().equals("ThreadIdx[0]")) {
             try {
-                Barrier.sync(50); //wait half a second
+                Barrier.sync(50); //wait 50ms
             }
             catch(Throwable t) {
                 LOGGER.error("Sync still passed.", t);
@@ -70,7 +70,7 @@ public class ZucchiniBarrierGlue {
         }
         else {
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
             catch(ThreadDeath ex) {
                 //ignore, this is proper behavior
@@ -101,12 +101,12 @@ public class ZucchiniBarrierGlue {
             Thread.sleep(100);
         }
 
-        Barrier.sync(200);
+        Barrier.sync(2000);
     }
 
     @Then("Our barrier still runs")
     public void barrier_still_works() throws Throwable {
-        Barrier.sync(100);
+        Barrier.sync(1000);
     }
 
     @Given("We have one barrier")

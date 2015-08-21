@@ -102,9 +102,10 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     public void addError(Throwable error) {
         super.addError(error);
 
+        TestContext tc = TestContext.getCurrent();
+
         //if the error was not caused by a barrier timeout
         if(!(error instanceof ThreadDeath)) {
-            TestContext tc = TestContext.getCurrent();
             AbstractZucchiniTest azt = tc.getParentTest();
             if(!azt.failedContexts.contains(tc)) {
                 synchronized(azt.failedContexts) {
@@ -252,6 +253,17 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
      * {@inheritDoc}
      */
     public void runStep(String featurePath, Step step, Reporter reporter, I18n i18n) {
-        super.runStep(featurePath, step, reporter, i18n);
+        TestContext tc = TestContext.getCurrent();
+
+        try {
+            tc.canKill = true;
+            super.runStep(featurePath, step, reporter, i18n);
+            tc.canKill = false;
+        }
+        catch(Throwable t)
+        {
+            tc.canKill = false;
+            this.addError(t);
+        }
     }
 }
