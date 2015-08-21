@@ -18,7 +18,7 @@ public class TestContext {
     String name;
     private Map<String, Object> beans;
     private Thread owningThread;
-    boolean canKill = false;
+    volatile boolean canKill = false;
     AbstractZucchiniTest parentTest;
 
     /**

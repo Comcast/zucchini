@@ -38,6 +38,7 @@ public abstract class AbstractZucchiniTest {
     static HashMap<String, JsonArray> featureSet = new HashMap<String, JsonArray>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
+    private static Object lock = new Object();
     private static Boolean hooked = false;
 
     /* store the list of contexts here */
@@ -54,7 +55,7 @@ public abstract class AbstractZucchiniTest {
 
     private void genHook() {
         if(hooked) return;
-        synchronized(hooked) {
+        synchronized(lock) {
             /* prevent this from being added multiple times */
             if(hooked) return;
             hooked = true;
