@@ -2,13 +2,11 @@ package com.comcast.zucchini;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Collections;
 
-import java.util.concurrent.Phaser;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.mutable.MutableInt;
@@ -18,7 +16,6 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

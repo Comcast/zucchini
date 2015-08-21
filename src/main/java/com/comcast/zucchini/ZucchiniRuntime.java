@@ -3,18 +3,15 @@ package com.comcast.zucchini;
 import java.util.List;
 import java.util.Set;
 import java.util.Collection;
-import java.util.Collections;
 
 import java.io.IOException;
 
 import cucumber.runtime.Glue;
 import cucumber.runtime.Backend;
-import cucumber.runtime.Runtime;
 import cucumber.runtime.RuntimeOptions;
 import cucumber.runtime.RuntimeGlue;
 import cucumber.runtime.ClassFinder;
 import cucumber.runtime.StopWatch;
-import cucumber.runtime.ScenarioImpl;
 
 import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.model.CucumberFeature;
@@ -24,9 +21,6 @@ import cucumber.api.StepDefinitionReporter;
 import gherkin.I18n;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.Reporter;
-import gherkin.formatter.model.Match;
-import gherkin.formatter.model.Result;
-import gherkin.formatter.model.Comment;
 import gherkin.formatter.model.DataTableRow;
 import gherkin.formatter.model.DocString;
 import gherkin.formatter.model.Scenario;

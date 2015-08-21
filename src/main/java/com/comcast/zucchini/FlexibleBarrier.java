@@ -2,8 +2,6 @@ package com.comcast.zucchini;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.HashMap;
-import java.util.HashSet;
 
 import java.lang.IllegalStateException;
 

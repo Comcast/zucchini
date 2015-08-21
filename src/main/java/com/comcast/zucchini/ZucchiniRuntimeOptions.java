@@ -1,10 +1,7 @@
 package com.comcast.zucchini;
 
 import java.util.List;
-import java.util.HashMap;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import cucumber.api.SnippetType;
@@ -13,7 +10,6 @@ import cucumber.api.SummaryPrinter;
 
 import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.RuntimeOptions;
-import cucumber.runtime.Utils;
 import cucumber.runtime.Env;
 import cucumber.runtime.formatter.PluginFactory;
 import cucumber.runtime.model.CucumberFeature;

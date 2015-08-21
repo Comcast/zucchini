@@ -1,18 +1,9 @@
 package com.comcast.zucchini;
 
-import java.util.HashMap;
-
-import cucumber.api.SummaryPrinter;
-import cucumber.api.StepDefinitionReporter;
-
 import cucumber.runtime.Utils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
-import gherkin.formatter.Formatter;
-import gherkin.formatter.Reporter;
 
 /**
  * This class is non-essential for now, however it will be useful for future extension of Zucchini functionality.
