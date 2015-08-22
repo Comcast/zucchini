@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import cucumber.api.CucumberOptions;
 import cucumber.runtime.ClassFinder;
 import cucumber.runtime.CucumberException;
 import cucumber.runtime.RuntimeOptions;
@@ -44,7 +43,7 @@ public class TestNGZucchiniRunner {
         this.formatters.add(runtimeOptions.formatter(classLoader));
 
         ClassFinder classFinder = new ResourceLoaderClassFinder(resourceLoader, classLoader);
-        runtime = new cucumber.runtime.Runtime(resourceLoader, classFinder, classLoader, runtimeOptions);
+        runtime = new ZucchiniRuntime(resourceLoader, classFinder, classLoader, runtimeOptions);
     }
 
     /**
