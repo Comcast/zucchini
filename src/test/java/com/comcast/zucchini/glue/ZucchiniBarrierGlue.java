@@ -96,7 +96,7 @@ public class ZucchiniBarrierGlue {
     public void one_thread_fail() throws Throwable {
         if(
                 name().equals("ThreadIdx[0]") &&
-                (!System.getenv().getOrDefault("ZUCCHINI_SKIP_FF_TEST", "0").equals("1"))
+                System.getenv().getOrDefault("ZUCCHINI_TEST_FF_PATTERNS", "0").equals("1")
             ) {
             Assert.fail("THIS IS SUPPOSED TO FAIL.");
         }

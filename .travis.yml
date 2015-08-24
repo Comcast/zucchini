@@ -1,0 +1,4 @@
+language: java
+sudo: false
+env:
+    - ZUCCHINI_TEST_FF_PATTERNS=0
