@@ -94,9 +94,13 @@ public class ZucchiniBarrierGlue {
 
     @And("We have one thread fail")
     public void one_thread_fail() throws Throwable {
+        String ztffp = System.getenv("ZUCCHINI_TEST_FF_PATTERNS");
+        if(ztffp == null)
+            ztffp = "0";
+
         if(
                 name().equals("ThreadIdx[0]") &&
-                System.getenv().getOrDefault("ZUCCHINI_TEST_FF_PATTERNS", "0").equals("1")
+                ("1").equals(ztffp)
             ) {
             Assert.fail("THIS IS SUPPOSED TO FAIL.");
         }
