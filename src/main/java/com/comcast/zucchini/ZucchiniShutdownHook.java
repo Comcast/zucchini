@@ -1,7 +1,6 @@
 package com.comcast.zucchini;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.io.File;
 import java.io.FileWriter;
 
@@ -11,8 +10,6 @@ import net.masterthought.cucumber.ReportBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.apache.maven.plugin.MojoExecutionException;
 
 class ZucchiniShutdownHook extends Thread
 {
@@ -44,7 +41,7 @@ class ZucchiniShutdownHook extends Thread
 
                 boolean buildResult = reportBuilder.getBuildStatus();
                 if(!buildResult)
-                    throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+                    throw new Exception("BUILD FAILED - Check Report For Details");
             }
         }
         catch(Throwable t)
