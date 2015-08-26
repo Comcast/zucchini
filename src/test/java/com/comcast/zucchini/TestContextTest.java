@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 class TestContextTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestContextTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestContextTest.class);
 
     @Test
     void verifyThreadUniqueValues() {
@@ -36,7 +36,7 @@ class TestContextTest {
                 t.join();
             }
             catch(Throwable e) {
-                logger.error("FATAL ERROR: " + e.getMessage());
+                LOGGER.error("FATAL ERROR: " + e.getMessage());
             }
         }
 
@@ -59,7 +59,7 @@ class TestContextTest {
                     Thread.sleep((int) Math.random() * 50);
                 }
                 catch(Throwable e) {
-                    logger.error("Thread failed to sleep.");
+                    LOGGER.error("Thread failed to sleep.");
                 }
                 assertEquals(TestContext.getCurrent().name, expected);
             }
@@ -69,7 +69,7 @@ class TestContextTest {
                 Thread.sleep((int) Math.random() * 50);
             }
             catch(Throwable e) {
-                logger.error("Thread failed to sleep.");
+                LOGGER.error("Thread failed to sleep.");
             }
             assertEquals(TestContext.getCurrent(), null);
 

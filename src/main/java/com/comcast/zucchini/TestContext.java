@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Simple class for storing and retrieving objects that are being test based on the currently running
  * thread. This is useful because the "given", "when" and "then" implementations in cucumber do not
@@ -16,8 +13,13 @@ import org.slf4j.LoggerFactory;
  */
 public class TestContext {
 
-    private static final ThreadLocal<TestContext> local = new ThreadLocal<TestContext>();
-    private static final Logger logger = LoggerFactory.getLogger(TestContext.class);
+    private static final ThreadLocal<TestContext> LOCAL = new ThreadLocal<TestContext>();
+
+    String name;
+    private Map<String, Object> beans;
+    private Thread owningThread;
+    volatile boolean canKill = false;
+    AbstractZucchiniTest parentTest;
 
     /**
      * Set the test context for this thread run. This should be only be called from a
@@ -26,7 +28,8 @@ public class TestContext {
      * @param context the object under test for this thread (suite run)
      */
     public static void setCurrent(TestContext context) {
-        local.set(context);
+        LOCAL.set(context);
+        context.owningThread = Thread.currentThread();
     }
 
     /**
@@ -36,7 +39,7 @@ public class TestContext {
      * @return the test context
      */
     public static TestContext getCurrent() {
-        return local.get();
+        return LOCAL.get();
     }
 
     /**
@@ -49,19 +52,7 @@ public class TestContext {
      * really know what you are doing.
      */
     public static void removeCurrent() {
-        local.remove();
-    }
-
-    String name;
-    private Map<String, Object> beans;
-
-    /**
-     * Constructs a new empty TestContext
-     * 
-     * @param name Name to be assigned to the context
-     */
-    public TestContext(String name) {
-        this(name, new HashMap<String, Object>());
+        LOCAL.remove();
     }
 
     /**
@@ -74,6 +65,15 @@ public class TestContext {
     }
 
     /**
+     * Constructs a new empty TestContext
+     *
+     * @param name Name to be assigned to the context
+     */
+    public TestContext(String name) {
+        this(name, new HashMap<String, Object>());
+    }
+
+    /**
      * Create a new TestContext pre-populated with the given beans.
      *
      * @param name Name to be assigned to the context
@@ -82,6 +82,15 @@ public class TestContext {
     public TestContext(String name, Map<String, Object> beans) {
         this.name = name;
         this.beans = beans;
+        this.canKill = false;
+    }
+
+    Thread getThread() {
+        return this.owningThread;
+    }
+
+    AbstractZucchiniTest getParentTest() {
+        return this.parentTest;
     }
 
     /**
