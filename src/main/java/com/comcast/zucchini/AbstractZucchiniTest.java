@@ -11,8 +11,7 @@ import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.mutable.MutableInt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
@@ -22,7 +21,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import cucumber.runtime.CucumberException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Constructs a suite of Cucumber tests for every TestContext as returned by the
@@ -142,16 +142,20 @@ public abstract class AbstractZucchiniTest {
             t.start();
         }
 
+        int joinCount = 0;
+
         for(Thread t : threads) {
             try {
                 t.join();
+                joinCount++;
             }
             catch(InterruptedException e) {
                 LOGGER.error("ERROR on Thread.join(): {}", e);
             }
         }
 
-        Assert.assertEquals(mi.intValue() , 0, String.format("There were %d executions against a TestContext", mi.intValue()));
+        Assert.assertEquals(joinCount, contexts.size(), String.format("There were %d contexts launched, but only %d rejoined.", contexts.size(), joinCount));
+        Assert.assertEquals(mi.intValue() , 0, String.format("There were %d failed executions against a TestContext", mi.intValue()));
     }
 
     /**
@@ -183,14 +187,16 @@ public abstract class AbstractZucchiniTest {
         LOGGER.debug(String.format("ZucchiniTest[%s] starting", context.name));
         TestNGZucchiniRunner runner = new TestNGZucchiniRunner(getClass());
 
+        boolean ret = false;
+
         try {
             setup(context);
             setupFormatter(context, runner);
             runner.runCukes();
-            return true;
+            ret = true;
         } catch (RuntimeException t) {
             LOGGER.error("ERROR running test: {}", t);
-            return false;
+            ret = false;
         } finally {
             LOGGER.debug(String.format("ZucchiniTest[%s] finished", context.name));
 
@@ -246,6 +252,8 @@ public abstract class AbstractZucchiniTest {
             cleanup(context);
             TestContext.removeCurrent();
         }
+
+        return ret;
     }
 
     private void upgradeObject(JsonObject jobj, String ctxName) {
