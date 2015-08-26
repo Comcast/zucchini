@@ -14,8 +14,6 @@ import net.masterthought.cucumber.ReportBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.maven.plugin.MojoExecutionException;
-
 class ZucchiniShutdownHook extends Thread {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZucchiniShutdownHook.class);
@@ -48,7 +46,7 @@ class ZucchiniShutdownHook extends Thread {
 
                 boolean buildResult = reportBuilder.getBuildStatus();
                 if(!buildResult)
-                    throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+                    throw new Exception("BUILD FAILED - Check Report For Details");
             }
         }
         catch(Exception t) {
