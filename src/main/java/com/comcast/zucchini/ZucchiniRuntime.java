@@ -116,18 +116,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     }
 
     /**
-     * This is a shortcut to extract the name from the TestContext.
-     */
-    private static String name() {
-        TestContext tc = TestContext.getCurrent();
-        if(tc != null)
-            return tc.name();
-        else
-            return "<NULL>";
-    }
-
-    /**
-     * This replaces the function of the cucumber.runtime.model.CucumberFeature so that it can handle barrier syncs between scenarios and preven odd behavior based on the actions of previous scenarios.
+     * This replaces the function of the cucumber.runtime.model.CucumberFeature so that it can handle barrier syncs between scenarios and prevent odd behavior based on the actions of previous scenarios.
      */
     @Override
     public void run() throws IOException {
@@ -174,86 +163,6 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         formatter.done();
         formatter.close();
         this.printSummary();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void printSummary() {
-        super.printSummary();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void buildBackendWorlds(Reporter reporter, Set<Tag> tags, Scenario gherkinScenario) {
-        super.buildBackendWorlds(reporter, tags, gherkinScenario);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void disposeBackendWorlds(String scenarioDesignation) {
-        super.disposeBackendWorlds(scenarioDesignation);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Throwable> getErrors() {
-        return super.getErrors();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public byte exitStatus() {
-        return super.exitStatus();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getSnippets() {
-        return super.getSnippets();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Glue getGlue() {
-        return super.getGlue();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void runBeforeHooks(Reporter reporter, Set<Tag> tags) {
-        super.runBeforeHooks(reporter, tags);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void runAfterHooks(Reporter reporter, Set<Tag> tags) {
-        super.runAfterHooks(reporter, tags);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void runUnreportedStep(String featurePath,  I18n i18n, String stopKeyword, String stepName, int line, List<DataTableRow> dataTableRows, DocString docString) throws Throwable {
-        super.runUnreportedStep(featurePath,  i18n, stopKeyword, stepName, line, dataTableRows, docString);
     }
 
     /**

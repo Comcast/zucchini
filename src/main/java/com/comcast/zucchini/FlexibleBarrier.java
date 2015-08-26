@@ -10,13 +10,15 @@ import java.util.concurrent.Phaser;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
+import static com.comcast.zucchini.ZucchiniUtils.tcname;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This is the heavy lifter behind the Barrier class.
  *
- * This integrates with the AbstractTestContext, the ZucchiniRuntime, and the TestContext to track when and what threads have failed, as well as kill the threads that should timeout.  The barrier will dynamically rezsize itself in accordance with the number of threads that can successfully finish.
+ * This integrates with the AbstractTestContext, the ZucchiniRuntime, and the TestContext to track when and what threads have failed, as well as kill the threads that should timeout.  The barrier will dynamically resize itself in accordance with the number of threads that can successfully finish.
  *
  * @author Andrew Benton
  */
@@ -69,7 +71,7 @@ class FlexibleBarrier {
                             this.dec();
                             if(tc.canKill) {
                                 tc.getThread().stop();
-                                LOGGER.trace("Calling ZucchiniThreadTimeout from {} on {}", name(), tc.name());
+                                LOGGER.trace("Calling ZucchiniThreadTimeout from {} on {}", tcname(), tc.name());
                             }
                         }
                     }
@@ -113,14 +115,14 @@ class FlexibleBarrier {
         }
 
         synchronized(this) {
-            LOGGER.trace("registered {}", name());
+            LOGGER.trace("registered {}", tcname());
             this.arrivedThreads.add(TestContext.getCurrent());
         }
 
         //clear thread interrupt
         Thread.interrupted();
 
-        LOGGER.trace("lock {}", name());
+        LOGGER.trace("lock {}", tcname());
 
         int phase = this.primary.arrive();
 
@@ -173,7 +175,7 @@ class FlexibleBarrier {
             this.primaryOrder = 0;
         }
 
-        LOGGER.trace("free {} as order {}", name(), ret);
+        LOGGER.trace("free {} as order {}", tcname(), ret);
 
         return ret;
     }
@@ -182,8 +184,6 @@ class FlexibleBarrier {
      * Decrements the number of parties that the current barrier is waiting for, and decreases the future number of parties to wait for.
      *
      * This is indicative of a party (Context) having crashed on the scenario and being irrecoverable.
-     *
-     * @author Andrew Benton
      */
     void dec() {
         this.primary.arriveAndDeregister();
@@ -192,8 +192,6 @@ class FlexibleBarrier {
 
     /**
      * Reset the FlexibleBarrier for the next intercept in the scenario.
-     *
-     * @author Andrew Benton
      */
     synchronized void reset() {
         this.arrivedThreads.clear();
@@ -204,25 +202,11 @@ class FlexibleBarrier {
 
     /**
      * Reset the number of parties for the barrier back to full and removes arrived threads.
-     *
-     * @author Andrew Benton
      */
     synchronized void refresh() {
         this.reset();
         this.primary.bulkRegister(this.azt.contexts.size() - this.primary.getRegisteredParties());
         this.secondary.bulkRegister(this.azt.contexts.size() - this.secondary.getRegisteredParties());
-    }
-
-    /**
-     * A shortcut to get the {@see TestContext} name or provide "<NULL>" it its place.
-     */
-    private static String name() {
-        TestContext ctx = TestContext.getCurrent();
-
-        if(ctx == null)
-            return "<NULL>";
-        else
-            return ctx.name();
     }
 
     /**

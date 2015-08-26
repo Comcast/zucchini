@@ -56,7 +56,7 @@ class ZucchiniShutdownHook extends Thread {
         finally {
             if(writer != null) {
                 try {
-                writer.close();
+                    writer.close();
                 }
                 catch(IOException ex) {
                     LOGGER.error("ERROR writing report: {}", ex);
