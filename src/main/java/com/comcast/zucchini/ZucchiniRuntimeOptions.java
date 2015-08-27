@@ -18,7 +18,7 @@ import gherkin.formatter.Formatter;
 import gherkin.formatter.Reporter;
 
 /**
- * This is a thin wrapper around RuntimeOptions that allows injection of the {@see ZucchiniInvocationHandler} for future extension of the {@see ZucchiniRuntime}
+ * This is a thin wrapper around RuntimeOptions that allows injection of the {@link ZucchiniInvocationHandler} for future extension of the {@link ZucchiniRuntime}
  *
  * @author Andrew Benton
  */
@@ -26,7 +26,9 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     private RuntimeOptions ros;
 
     /**
-     * {@inheritDoc}
+     * Creates a ZucchiniRuntimeOptions from a string of arguments.
+     *
+     * @param argv The string of arguments
      */
     public ZucchiniRuntimeOptions(String argv) {
         super(argv);
@@ -34,7 +36,9 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates ZucchiniRuntimeOptions from a list of arguments.
+     *
+     * @param argv The list of arguments, already tokenized
      */
     public ZucchiniRuntimeOptions(List<String> argv) {
         super(argv);
@@ -42,7 +46,10 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a ZucchiniRuntimeOptions from an {@link Env} and a list of arguments.
+     *
+     * @param env The environment to use
+     * @param argv Tokenized list of arguments to use
      */
     public ZucchiniRuntimeOptions(Env env, List<String> argv) {
         super(env, argv);
@@ -50,7 +57,10 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a ZucchiniRuntimeOptions from a {@link PluginFactory} and a list of arguments.
+     *
+     * @param pluginFactory The pre-created factory that is used to instantiate plugins internally
+     * @param argv The pre-tokenized list of arguments to use
      */
     public ZucchiniRuntimeOptions(PluginFactory pluginFactory, List<String> argv) {
         super(pluginFactory, argv);
@@ -58,7 +68,11 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a ZucchiniRuntimeOptions from a {@link Env}, a {@link PluginFactory}, and a list of arguments
+     *
+     * @param env Environment to create the runtime options in
+     * @param pluginFactory The pre-created factory that is used to instantiate plugins internally
+     * @param argv The tokenized list of arguments
      */
     public ZucchiniRuntimeOptions(Env env, PluginFactory pluginFactory, List<String> argv) {
         super(env, pluginFactory, argv);
@@ -66,7 +80,11 @@ public class ZucchiniRuntimeOptions extends RuntimeOptions {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a ZucchiniRuntimeOptions from a {@link RuntimeOptions}.
+     *
+     * For this operation, all inherited methods punch through to the passed runtime options, and overridden access to the pluginProxy does internal access here before reaching the underlying RuntimeOptions
+     *
+     * @param ros The RuntimeOptions that is used for most calls.
      */
     public ZucchiniRuntimeOptions(RuntimeOptions ros) {
         super(""); //wasted option
