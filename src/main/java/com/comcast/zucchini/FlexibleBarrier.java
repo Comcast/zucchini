@@ -34,16 +34,16 @@ class FlexibleBarrier {
     private int secondaryOrder;
 
     /**
-     * Create a FlexibleBarrier and size it based on the number on contexts in `azt`.
+     * Create a FlexibleBarrier and size it based on the number on contexts in <code>azt</code>.
      */
     FlexibleBarrier(AbstractZucchiniTest azt) {
         this(azt, azt.contexts.size());
     }
 
     /**
-     * Create a FlexibleBarrier and size it based on `size` regardless of what is in `azt`.
+     * Create a FlexibleBarrier and size it based on <code>size</code> regardless of what is in <code>azt</code>.
      *
-     * Future resizing is based on the contents of `azt`
+     * Future resizing is based on the contents of <code>azt</code>
      */
     FlexibleBarrier(AbstractZucchiniTest azt, int size) {
         this.azt = azt;
@@ -95,14 +95,14 @@ class FlexibleBarrier {
     }
 
     /**
-     * Await until all {@see TestContexts} have reached this point or failed.
+     * Await until all {@link TestContexts} have reached this point or failed.
      */
     int await() {
         return this.await(-1);
     }
 
     /**
-     * Await until all {@see TestContext}'s have reached this point, failed, or timedout.
+     * Await until all {@link TestContext}'s have reached this point, failed, or timedout.
      */
     int await(int milliseconds) {
         if(milliseconds == 0) //we aren't waiting, return no positionnal data

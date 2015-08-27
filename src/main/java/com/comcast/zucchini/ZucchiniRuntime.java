@@ -28,7 +28,7 @@ import gherkin.formatter.model.Step;
 import gherkin.formatter.model.Tag;
 
 /**
- * Extends a wraps cucumber.runtime.Runtime object for Zucchini's extended functionality.
+ * Extends a wraps {@link cucumber.runtime.Runtime} object for Zucchini's extended functionality.
  *
  * @author Andrew Benton
  */
@@ -39,7 +39,12 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     protected ZucchiniRuntimeOptions ros;
 
     /**
-     * {@inheritDoc}
+     * Creates a sub-zucchini runtime replacing the {@link RuntimeOptions} with {@link ZucchiniRuntimeOptions}, and then links it for all inherited calls.
+     *
+     * @param resourceLoader
+     * @param classFinder
+     * @param classLoader
+     * @param runtimeOptions RuntimeOptions that will be converted to {@link ZucchiniRuntimeOptions} if need be, and then used
      */
     public ZucchiniRuntime(ResourceLoader resourceLoader, ClassFinder classFinder, ClassLoader classLoader, RuntimeOptions runtimeOptions) {
         super(resourceLoader, classFinder, classLoader, runtimeOptions);
@@ -52,7 +57,12 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a sub-zucchini runtime replacing the {@link RuntimeOptions} with {@link ZucchiniRuntimeOptions}, and then links it for all inherited calls.
+     *
+     * @param resourceLoader
+     * @param classLoader
+     * @param backends
+     * @param runtimeOptions RuntimeOptions that will be converted to {@link ZucchiniRuntimeOptions} if need be, and then used
      */
     public ZucchiniRuntime(ResourceLoader resourceLoader, ClassLoader classLoader, Collection<? extends Backend> backends, RuntimeOptions runtimeOptions) {
         super(resourceLoader, classLoader, backends, runtimeOptions);
@@ -65,7 +75,13 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a sub-zucchini runtime replacing the {@link RuntimeOptions} with {@link ZucchiniRuntimeOptions}, and then links it for all inherited calls.
+     *
+     * @param resourceLoader
+     * @param classLoader
+     * @param backends
+     * @param runtimeOptions RuntimeOptions that will be converted to {@link ZucchiniRuntimeOptions} if need be, and then used
+     * @param optionalGlue
      */
     public ZucchiniRuntime(ResourceLoader resourceLoader, ClassLoader classLoader, Collection<? extends Backend> backends, RuntimeOptions runtimeOptions, RuntimeGlue optionalGlue) {
         super(resourceLoader, classLoader, backends,  runtimeOptions, optionalGlue);
@@ -78,7 +94,14 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a sub-zucchini runtime replacing the {@link RuntimeOptions} with {@link ZucchiniRuntimeOptions}, and then links it for all inherited calls.
+     *
+     * @param resourceLoader
+     * @param classLoader
+     * @param backends
+     * @param runtimeOptions RuntimeOptions that will be converted to {@link ZucchiniRuntimeOptions} if need be, and then used
+     * @param stopWatch
+     * @param optionalGlue
      */
     public ZucchiniRuntime(ResourceLoader resourceLoader, ClassLoader classLoader, Collection<? extends Backend> backends, RuntimeOptions runtimeOptions, StopWatch stopWatch, RuntimeGlue optionalGlue) {
         super(resourceLoader, classLoader, backends, runtimeOptions, stopWatch, optionalGlue);
@@ -93,7 +116,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     /**
      * Similar to the inherited version, but adds a check for ThreadDeath from the Barrier.sync().
      *
-     * @param error The error that was thrown by the test and must be registered.  If it wasn't a {@see ThreadDeath}, then this will be checked against a list of already failed contexts.
+     * @param error The error that was thrown by the test and must be registered.  If it wasn't a {@link ThreadDeath}, then this will be checked against a list of already failed contexts.
      */
     @Override
     public void addError(Throwable error) {
@@ -166,7 +189,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     }
 
     /**
-     * This encapsulates the {@link Runtime#runStep} method with a level of safety, and provides information back to the barrier about whether it is safe to kill the running thread.
+     * This encapsulates the {@link cucumber.runtime.Runtime#runStep} method with a level of safety, and provides information back to the barrier about whether it is safe to kill the running thread.
      */
     @Override
     public void runStep(String featurePath, Step step, Reporter reporter, I18n i18n) {
