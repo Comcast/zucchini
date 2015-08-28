@@ -117,6 +117,7 @@ public abstract class AbstractZucchiniTest {
      * @return true if successful, otherwise false
      */
     public boolean runWith(TestContext context) {
+        boolean ret = false;
         this.genHook();
 
         TestContext.setCurrent(context);
@@ -128,10 +129,10 @@ public abstract class AbstractZucchiniTest {
             setup(context);
             setupFormatter(context, runner);
             runner.runCukes();
-            return true;
+            ret = true;
         } catch (Throwable t) {
             t.printStackTrace();
-            return false;
+            ret = false;
         } finally {
             logger.debug(String.format("ZucchiniTest[%s] finished", context.name));
 
@@ -188,6 +189,8 @@ public abstract class AbstractZucchiniTest {
             cleanup(context);
             TestContext.removeCurrent();
         }
+        
+        return ret;
     }
 
     private void upgradeObject(JsonObject jobj, String ctxName) {
