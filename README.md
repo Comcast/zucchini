@@ -1,13 +1,13 @@
 Zucchini
 ========
-[![Build Status](https://travis-ci.org/Comcast/zucchini.svg)](https://travis-ci.org/Comcast/zucchini)
-
-![ZOMBIE ZUKES](http://www.fruitycuties.com/images/humour/138-cartoon-zucchini-joke.gif)
-Image courtesy of [http://www.fruitycuties.com/](http://www.fruitycuties.com/)
 
 ##Summary
 
 Zucchini is a layer that sits on top of cucumber-jvm and provides higher testing throughput with additional utilities.  Zucchini takes advantage of situations where a set if tests needs to be run with multiple configurations.  In such cases, each configuration is run in parallel with a separate backing cucumber runtime.  Upon completion, all of these tests are compiled into a single report made available in an html format.
+
+![ZOMBIE ZUKES](http://www.fruitycuties.com/images/humour/138-cartoon-zucchini-joke.gif)
+
+Image courtesy of [http://www.fruitycuties.com/](http://www.fruitycuties.com/)
 
 ##Additional Features
 
@@ -16,3 +16,5 @@ Zucchini is a layer that sits on top of cucumber-jvm and provides higher testing
 
 ##More Information
 For more information on what Zucchini is and how to use it please see :  [http://comcast.github.io/zucchini/](http://comcast.github.io/zucchini/)
+
+[![Build Status](https://travis-ci.org/Comcast/zucchini.svg)](https://travis-ci.org/Comcast/zucchini)
