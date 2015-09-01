@@ -56,6 +56,9 @@ public abstract class AbstractZucchiniTest {
     /* flexible barrier for test-wise locking */
     FlexibleBarrier flexBarrier;
 
+    private boolean canBarrier = false;       //can be set anytime and only takes effect for the next run
+    private boolean canBarrierInTest = false; //cached before the test begins to prevent undefined behavior
+
     private void genHook() {
         if(hooked)
             return;
@@ -81,6 +84,18 @@ public abstract class AbstractZucchiniTest {
     @AfterClass
     public void generateReports() {
         //this does nothing now, left for API consistency
+    }
+
+    public boolean getCanBarrier() {
+        return this.canBarrier;
+    }
+
+    public boolean getCanBarrierInTest() {
+        return this.canBarrierInTest;
+    }
+
+    public void setCanBarrier(boolean canBarrier) {
+        this.canBarrier = canBarrier;
     }
 
     /**
@@ -132,6 +147,8 @@ public abstract class AbstractZucchiniTest {
      * @param contexts The list of contexts that will be run.
      */
     public void runParallel(List<TestContext> contexts) {
+        this.canBarrierInTest = this.canBarrier;
+
         List<Thread> threads = new ArrayList<Thread>(contexts.size());
 
         MutableInt mi = new MutableInt();
@@ -164,6 +181,8 @@ public abstract class AbstractZucchiniTest {
      * @param contexts The list of contexts that will be run.
      */
     public void runSerial(List<TestContext> contexts) {
+        this.canBarrierInTest = this.canBarrier;
+
         int failures = 0;
 
         for(TestContext tc : contexts)

@@ -162,20 +162,22 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
             for(CucumberTagStatement statement : cf.getFeatureElements()) {
 
-                if(azt.isParallel())
-                    order = azt.phase0.await();
-                else
-                    order = 0;
+                if(azt.getCanBarrierInTest()) {
+                    if(azt.isParallel())
+                        order = azt.phase0.await();
+                    else
+                        order = 0;
 
-                //reset the lock and scenario state
-                if(order == 0) {
-                    //clear configuration here for per-scenario state
-                    azt.failedContexts.clear();
-                    azt.flexBarrier.refresh();
+                    //reset the lock and scenario state
+                    if(order == 0) {
+                        //clear configuration here for per-scenario state
+                        azt.failedContexts.clear();
+                        azt.flexBarrier.refresh();
+                    }
+
+                    if(azt.isParallel())
+                        order = azt.phase1.await();
                 }
-
-                if(azt.isParallel())
-                    order = azt.phase1.await();
 
                 statement.run(formatter, reporter, this);
             }
