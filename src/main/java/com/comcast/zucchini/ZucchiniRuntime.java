@@ -127,11 +127,13 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         //if the error was not caused by a barrier timeout
         if(!(error instanceof ThreadDeath)) {
             AbstractZucchiniTest azt = tc.getParentTest();
-            if(!azt.failedContexts.contains(tc)) {
-                synchronized(azt.failedContexts) {
-                    if(!azt.failedContexts.contains(tc)) {
-                        azt.failedContexts.add(tc);
-                        azt.flexBarrier.dec();
+            if(azt.canBarrier()) {
+                if(!azt.failedContexts.contains(tc)) {
+                    synchronized(azt.failedContexts) {
+                        if(!azt.failedContexts.contains(tc)) {
+                            azt.failedContexts.add(tc);
+                            azt.flexBarrier.dec();
+                        }
                     }
                 }
             }
@@ -162,20 +164,22 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
             for(CucumberTagStatement statement : cf.getFeatureElements()) {
 
-                if(azt.isParallel())
-                    order = azt.phase0.await();
-                else
-                    order = 0;
+                if(azt.canBarrier()) {
+                    if(azt.isParallel())
+                        order = azt.phase0.await();
+                    else
+                        order = 0;
 
-                //reset the lock and scenario state
-                if(order == 0) {
-                    //clear configuration here for per-scenario state
-                    azt.failedContexts.clear();
-                    azt.flexBarrier.refresh();
+                    //reset the lock and scenario state
+                    if(order == 0) {
+                        //clear configuration here for per-scenario state
+                        azt.failedContexts.clear();
+                        azt.flexBarrier.refresh();
+                    }
+
+                    if(azt.isParallel())
+                        order = azt.phase1.await();
                 }
-
-                if(azt.isParallel())
-                    order = azt.phase1.await();
 
                 statement.run(formatter, reporter, this);
             }

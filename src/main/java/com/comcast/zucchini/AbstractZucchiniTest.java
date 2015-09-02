@@ -333,4 +333,15 @@ public abstract class AbstractZucchiniTest {
     public void setupFormatter(TestContext out, TestNGZucchiniRunner runner) {
         LOGGER.debug("Setup formatter method was not implemented for " + this.getClass().getSimpleName());
     }
+
+    /**
+     * Tell the test whether it can use a barrier or not.
+     *
+     * The value that this function returns should not change after a test has been started, or it will result in undefined behavior.  It may change while no tests are running.
+     *
+     * @return Whether this test allows barrier synchronization
+     */
+    public boolean canBarrier() {
+        return false;
+    }
 }

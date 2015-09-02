@@ -26,4 +26,9 @@ public class BarrierTest extends AbstractZucchiniTest {
 
         return contexts;
     }
+
+    @Override
+    public boolean canBarrier() {
+        return true;
+    }
 }
