@@ -127,7 +127,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         //if the error was not caused by a barrier timeout
         if(!(error instanceof ThreadDeath)) {
             AbstractZucchiniTest azt = tc.getParentTest();
-            if(azt.getCanBarrierInTest()) {
+            if(azt.canBarrier()) {
                 if(!azt.failedContexts.contains(tc)) {
                     synchronized(azt.failedContexts) {
                         if(!azt.failedContexts.contains(tc)) {
@@ -164,7 +164,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
             for(CucumberTagStatement statement : cf.getFeatureElements()) {
 
-                if(azt.getCanBarrierInTest()) {
+                if(azt.canBarrier()) {
                     if(azt.isParallel())
                         order = azt.phase0.await();
                     else

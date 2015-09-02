@@ -18,8 +18,6 @@ public class BarrierTest extends AbstractZucchiniTest {
 
     @Override
     public List<TestContext> getTestContexts() {
-        this.setCanBarrier(true);
-
         List<TestContext> contexts = new ArrayList<TestContext>();
 
         for(int i = 0; i < numContexts; i++) {
@@ -27,5 +25,10 @@ public class BarrierTest extends AbstractZucchiniTest {
         }
 
         return contexts;
+    }
+
+    @Override
+    public boolean canBarrier() {
+        return true;
     }
 }

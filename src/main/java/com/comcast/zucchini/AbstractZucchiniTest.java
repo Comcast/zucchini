@@ -56,9 +56,6 @@ public abstract class AbstractZucchiniTest {
     /* flexible barrier for test-wise locking */
     FlexibleBarrier flexBarrier;
 
-    private boolean canBarrier = false;       //can be set anytime and only takes effect for the next run
-    private boolean canBarrierInTest = false; //cached before the test begins to prevent undefined behavior
-
     private void genHook() {
         if(hooked)
             return;
@@ -84,18 +81,6 @@ public abstract class AbstractZucchiniTest {
     @AfterClass
     public void generateReports() {
         //this does nothing now, left for API consistency
-    }
-
-    public boolean getCanBarrier() {
-        return this.canBarrier;
-    }
-
-    public boolean getCanBarrierInTest() {
-        return this.canBarrierInTest;
-    }
-
-    public void setCanBarrier(boolean canBarrier) {
-        this.canBarrier = canBarrier;
     }
 
     /**
@@ -147,8 +132,6 @@ public abstract class AbstractZucchiniTest {
      * @param contexts The list of contexts that will be run.
      */
     public void runParallel(List<TestContext> contexts) {
-        this.canBarrierInTest = this.canBarrier;
-
         List<Thread> threads = new ArrayList<Thread>(contexts.size());
 
         MutableInt mi = new MutableInt();
@@ -181,8 +164,6 @@ public abstract class AbstractZucchiniTest {
      * @param contexts The list of contexts that will be run.
      */
     public void runSerial(List<TestContext> contexts) {
-        this.canBarrierInTest = this.canBarrier;
-
         int failures = 0;
 
         for(TestContext tc : contexts)
@@ -351,5 +332,16 @@ public abstract class AbstractZucchiniTest {
      */
     public void setupFormatter(TestContext out, TestNGZucchiniRunner runner) {
         LOGGER.debug("Setup formatter method was not implemented for " + this.getClass().getSimpleName());
+    }
+
+    /**
+     * Tell the test whether it can use a barrier or not.
+     *
+     * The value that this function returns should not change after a test has been started, or it will result in undefined behavior.  It may change while no tests are running.
+     *
+     * @return Whether this test allows barrier synchronization
+     */
+    public boolean canBarrier() {
+        return false;
     }
 }

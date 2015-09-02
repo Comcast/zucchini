@@ -35,7 +35,7 @@ public class Barrier {
 
         AbstractZucchiniTest azt = tc.getParentTest();
 
-        if(!azt.getCanBarrierInTest())
+        if(!azt.canBarrier())
             throw new ZucchiniRuntimeException("This test is not configured to allow barriers.");
 
         if(azt.isParallel())
