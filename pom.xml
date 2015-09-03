@@ -52,6 +52,7 @@
         <!-- Plugin Versions -->
         <maven.source.plugin.version>2.3</maven.source.plugin.version>
         <maven.javadoc.plugin.version>2.10.1</maven.javadoc.plugin.version>
+        <maven.plugin.license.version>2.11</maven.plugin.license.version>
 
         <!-- Github Info -->
         <git.url>github.com</git.url>
@@ -86,7 +87,6 @@
                     <target>${java.compile.version}</target>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -99,7 +99,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -112,6 +111,34 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${maven.plugin.license.version}</version>
+                <configuration>
+                    <header>LICENSE_TEMPLATE.txt</header>
+                    <properties>
+                        <owner>Comcast Cable Communications Management, LLC</owner>
+                        <inceptionYear>2014</inceptionYear>
+                    </properties>
+                    <excludes>
+                        <exclude>README.md</exclude>
+                        <exclude>NOTICE.txt</exclude>
+                        <exclude>LICENSE.txt</exclude>
+                        <exclude>CONTRIBUTING.txt</exclude>
+                        <exclude>.travis.yml</exclude>
+                        <exclude>pom.xml</exclude>
+                        <exclude>src/test/resources/**</exclude>
+                    </excludes>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </configuration>
             </plugin>
         </plugins>
     </build>
