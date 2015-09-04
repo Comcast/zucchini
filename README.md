@@ -12,7 +12,7 @@ Image courtesy of [http://www.fruitycuties.com/](http://www.fruitycuties.com/)
 ##Additional Features
 
  - Multiple report concatenation - When running multiple test files, regardless of tags, all tests will have their output preserved. The generated report is available by default at `target/zucchini-reports/feature-overview.html`.  Available as of version 2.0
- - Barrier sync - When the test contexts need to phased, Zucchini is able to enforce this with barrier synchronization.  The provided barrier synchronization is robust, and is able to accommodate tests that fail prior to reaching the barrier, as well as tests that get stuck or timeout.  Enabling a barrier sync is as easy as calling `Barrier.sync()`.  Available as of version 2.2.
+ - Barrier sync - When the test contexts need to phased, Zucchini is able to enforce this with barrier synchronization.  The provided barrier synchronization is robust, and is able to accommodate tests that fail prior to reaching the barrier, as well as tests that get stuck or timeout.  Enabling a barrier sync is as easy as calling `Barrier.sync()`.  To enable barrier synchronization for a test, the `canBarrier` method of the `AbstractZucchiniTest` must be overridden.  Available as of version 2.2.
 
 ##More Information
 For more information on what Zucchini is and how to use it please see :  [http://comcast.github.io/zucchini/](http://comcast.github.io/zucchini/)
