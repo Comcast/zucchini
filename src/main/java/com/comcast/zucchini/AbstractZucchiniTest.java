@@ -3,6 +3,7 @@ package com.comcast.zucchini;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Iterator;
 
 import org.apache.commons.lang.mutable.MutableInt;
 import org.slf4j.Logger;
@@ -161,10 +162,11 @@ public abstract class AbstractZucchiniTest {
                     JsonArray jarr = (JsonArray)result;
                     JsonElement jel = null;
                     JsonObject jobj = null;
-                    String tmp = null;
 
-                    for(int i = 0; i < jarr.size(); i++) {
-                        jel = jarr.get(i);
+                    Iterator<JsonElement> jels = jarr.iterator();
+
+                    while(jels.hasNext()) {
+                        jel = jels.next();
 
                         if(jel.isJsonObject()) {
                             jobj = (JsonObject)jel;
@@ -196,22 +198,22 @@ public abstract class AbstractZucchiniTest {
     private void upgradeObject(JsonObject jobj, String ctxName) {
         String tmp;
         if(jobj.has("id"))
-            tmp = jobj.get("id").toString();
+            tmp = "--zucchini--" + ctxName + "-" + jobj.get("id").getAsString();
         else
-            tmp = "";
-        jobj.addProperty("id", "--zucchini--" + ctxName + "-" + tmp);
+            tmp = "--zucchini--" + ctxName + "-";
+        jobj.addProperty("id", tmp);
 
         if(jobj.has("uri"))
-            tmp = jobj.get("uri").toString();
+            tmp = "--zucchini--" + ctxName + "-" + jobj.get("uri").getAsString();
         else
-            tmp = "";
-        jobj.addProperty("uri", "--zucchini--" + ctxName + "-" + tmp);
+            tmp = "--zucchini--" + ctxName + "-";
+        jobj.addProperty("uri", tmp);
 
         if(jobj.has("name"))
-            tmp = jobj.get("name").toString();
+            tmp = "ZucchiniTestContext[" + ctxName + "]::" + jobj.get("name").getAsString();
         else
-            tmp = "";
-        jobj.addProperty("name", "ZucchiniTestContext[" + ctxName + "]::" + tmp);
+            tmp = "ZucchiniTestContext[" + ctxName + "]::";
+        jobj.addProperty("name", tmp);
     }
 
     /**
