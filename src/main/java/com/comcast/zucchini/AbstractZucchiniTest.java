@@ -264,7 +264,13 @@ public abstract class AbstractZucchiniTest {
                 }
             }
 
-            cleanup(context);
+            try {
+                cleanup(context);
+            }
+            catch(Throwable t) {
+                LOGGER.error("ERROR: {}", t);
+            }
+
             TestContext.removeCurrent();
         }
 

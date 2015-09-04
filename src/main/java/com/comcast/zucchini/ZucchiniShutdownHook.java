@@ -17,10 +17,12 @@ package com.comcast.zucchini;
 
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Properties;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.google.gson.JsonArray;
 
@@ -56,7 +58,31 @@ class ZucchiniShutdownHook extends Thread {
 
                 List<String> pathList = new LinkedList<String>();
                 pathList.add(json.getAbsolutePath());
-                ReportBuilder reportBuilder = new ReportBuilder(pathList, html, "", "1", "Zucchini", true, true, true, false, false, "", false);
+
+                String version = this.getClass().getPackage().getImplementationVersion();
+
+                if(version == null) {
+                    try {
+                        InputStream ips = this.getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
+
+                        if(ips != null) {
+                            Properties props = new Properties();
+                            props.load(ips);
+
+                            version = props.getProperty("Implementation-version");
+                        }
+                    }
+                    catch(IOException ioe) {
+                        LOGGER.warn("{}", ioe);
+                    }
+                }
+
+                if(version == null)
+                    version = "";
+                else
+                    version = " - Zucchini (" + version + ")";
+
+                ReportBuilder reportBuilder = new ReportBuilder(pathList, html, "", "1" + version, "Zucchini" + version, true, true, true, false, false, "", false);
                 reportBuilder.generateReports();
 
                 boolean buildResult = reportBuilder.getBuildStatus();
