@@ -35,6 +35,28 @@ class ZucchiniShutdownHook extends Thread {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZucchiniShutdownHook.class);
 
+    private static ZucchiniShutdownHook instance = null;
+
+    public static ZucchiniShutdownHook getDefault() {
+        //double checked locking on the class instance to create singleton
+        if(ZucchiniShutdownHook.instance == null) {
+            synchronized(ZucchiniShutdownHook.class) {
+                if(ZucchiniShutdownHook.instance == null) {
+                    ZucchiniShutdownHook.instance = new ZucchiniShutdownHook();
+                }
+            }
+        }
+
+        //return singleton instance
+        return ZucchiniShutdownHook.instance;
+    }
+
+    private List<String> zucchiniFailureCauses;
+
+    private ZucchiniShutdownHook() {
+        zucchiniFailureCauses = new LinkedList<String>();
+    }
+
     @Override
     public void run() {
         FileWriter writer = null;
@@ -103,6 +125,26 @@ class ZucchiniShutdownHook extends Thread {
                     LOGGER.error("ERROR writing report: {}", ex);
                 }
             }
+        }
+
+        if(this.zucchiniFailureCauses.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+
+            int idx = 0;
+            for(String cause : this.zucchiniFailureCauses) {
+                sb.append(String.format("Cause[%3d] :: %s\n", idx++, cause));
+            }
+
+            System.out.println("Zucchini failed with the following errors:");
+            System.out.print(sb.toString());
+
+            Runtime.getRuntime().halt(-1);
+        }
+    }
+
+    public void addFailureCause(String cause) {
+        synchronized(this.zucchiniFailureCauses) {
+            this.zucchiniFailureCauses.add(cause);
         }
     }
 }
