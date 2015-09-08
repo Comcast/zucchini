@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 class ZucchiniShutdownHook extends Thread {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZucchiniShutdownHook.class);
+    private static final String NAME_ENV_VAR = "ZUCCHINI_REPORT_NAME";
 
     private static ZucchiniShutdownHook instance = null;
 
@@ -85,13 +86,13 @@ class ZucchiniShutdownHook extends Thread {
 
                 if(version == null) {
                     try {
-                        InputStream ips = this.getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
+                        InputStream ips = this.getClass().getClassLoader().getResourceAsStream("version.properties");
 
                         if(ips != null) {
                             Properties props = new Properties();
                             props.load(ips);
 
-                            version = props.getProperty("Implementation-version");
+                            version = props.getProperty("version");
                         }
                     }
                     catch(IOException ioe) {
@@ -104,7 +105,13 @@ class ZucchiniShutdownHook extends Thread {
                 else
                     version = " - Zucchini (" + version + ")";
 
-                ReportBuilder reportBuilder = new ReportBuilder(pathList, html, "", "1" + version, "Zucchini" + version, true, true, true, false, false, "", false);
+                String rptName = "${" + NAME_ENV_VAR + "}";
+
+                if(System.getenv(NAME_ENV_VAR) != null)
+                    rptName = System.getenv(NAME_ENV_VAR);
+
+
+                ReportBuilder reportBuilder = new ReportBuilder(pathList, html, "", rptName + version, "Zucchini" + version, true, true, true, false, false, "", false);
                 reportBuilder.generateReports();
 
                 boolean buildResult = reportBuilder.getBuildStatus();
