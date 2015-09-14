@@ -85,7 +85,7 @@ public abstract class AbstractZucchiniTest {
 
         /* add a shutdown hook, as this will allow all Zucchini tests to complete without
          * knowledge of each other's existence */
-        Runtime.getRuntime().addShutdownHook(new ZucchiniShutdownHook());
+        Runtime.getRuntime().addShutdownHook(ZucchiniShutdownHook.getDefault());
     }
 
     /**
@@ -207,6 +207,14 @@ public abstract class AbstractZucchiniTest {
         try {
             setup(context);
             setupFormatter(context, runner);
+        } catch (RuntimeException rex) {
+            String errString = String.format("ERROR configuring test: {}", rex);
+            LOGGER.error(errString);
+            ZucchiniShutdownHook.getDefault().addFailureCause(errString);
+            return false;
+        }
+
+        try {
             runner.runCukes();
             ret = true;
         } catch (RuntimeException t) {
@@ -264,7 +272,15 @@ public abstract class AbstractZucchiniTest {
                 }
             }
 
-            cleanup(context);
+            try {
+                cleanup(context);
+            }
+            catch(RuntimeException rex) {
+                String errString = String.format("ERROR cleaning up test: {}", rex);
+                LOGGER.error(errString);
+                ZucchiniShutdownHook.getDefault().addFailureCause(errString);
+            }
+
             TestContext.removeCurrent();
         }
 

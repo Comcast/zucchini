@@ -17,10 +17,12 @@ package com.comcast.zucchini;
 
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Properties;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.google.gson.JsonArray;
 
@@ -32,6 +34,29 @@ import org.slf4j.LoggerFactory;
 class ZucchiniShutdownHook extends Thread {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZucchiniShutdownHook.class);
+    private static final String NAME_ENV_VAR = "ZUCCHINI_REPORT_NAME";
+
+    private static ZucchiniShutdownHook instance = null;
+
+    public static ZucchiniShutdownHook getDefault() {
+        //double checked locking on the class instance to create singleton
+        if(ZucchiniShutdownHook.instance == null) {
+            synchronized(ZucchiniShutdownHook.class) {
+                if(ZucchiniShutdownHook.instance == null) {
+                    ZucchiniShutdownHook.instance = new ZucchiniShutdownHook();
+                }
+            }
+        }
+
+        //return singleton instance
+        return ZucchiniShutdownHook.instance;
+    }
+
+    private List<String> zucchiniFailureCauses;
+
+    private ZucchiniShutdownHook() {
+        zucchiniFailureCauses = new LinkedList<String>();
+    }
 
     @Override
     public void run() {
@@ -56,7 +81,37 @@ class ZucchiniShutdownHook extends Thread {
 
                 List<String> pathList = new LinkedList<String>();
                 pathList.add(json.getAbsolutePath());
-                ReportBuilder reportBuilder = new ReportBuilder(pathList, html, "", "1", "Zucchini", true, true, true, false, false, "", false);
+
+                String version = this.getClass().getPackage().getImplementationVersion();
+
+                if(version == null) {
+                    try {
+                        InputStream ips = this.getClass().getClassLoader().getResourceAsStream("version.properties");
+
+                        if(ips != null) {
+                            Properties props = new Properties();
+                            props.load(ips);
+
+                            version = props.getProperty("version");
+                        }
+                    }
+                    catch(IOException ioe) {
+                        LOGGER.warn("{}", ioe);
+                    }
+                }
+
+                if(version == null)
+                    version = "";
+                else
+                    version = " - Zucchini (" + version + ")";
+
+                String rptName = "${" + NAME_ENV_VAR + "}";
+
+                if(System.getenv(NAME_ENV_VAR) != null)
+                    rptName = System.getenv(NAME_ENV_VAR);
+
+
+                ReportBuilder reportBuilder = new ReportBuilder(pathList, html, "", rptName + version, "Zucchini" + version, true, true, true, false, false, "", false);
                 reportBuilder.generateReports();
 
                 boolean buildResult = reportBuilder.getBuildStatus();
@@ -77,6 +132,27 @@ class ZucchiniShutdownHook extends Thread {
                     LOGGER.error("ERROR writing report: {}", ex);
                 }
             }
+        }
+
+        if(this.zucchiniFailureCauses.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+
+            int idx = 0;
+
+            sb.append("Zucchini failed with the following errors:\n");
+            for(String cause : this.zucchiniFailureCauses) {
+                sb.append(String.format("Cause[%3d] :: %s\n", idx++, cause));
+            }
+
+            LOGGER.error(sb.toString());
+
+            Runtime.getRuntime().halt(-1);
+        }
+    }
+
+    public void addFailureCause(String cause) {
+        synchronized(this.zucchiniFailureCauses) {
+            this.zucchiniFailureCauses.add(cause);
         }
     }
 }
