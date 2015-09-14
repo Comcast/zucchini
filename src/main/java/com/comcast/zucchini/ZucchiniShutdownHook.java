@@ -138,12 +138,13 @@ class ZucchiniShutdownHook extends Thread {
             StringBuilder sb = new StringBuilder();
 
             int idx = 0;
+
+            sb.append("Zucchini failed with the following errors:\n");
             for(String cause : this.zucchiniFailureCauses) {
                 sb.append(String.format("Cause[%3d] :: %s\n", idx++, cause));
             }
 
-            System.out.println("Zucchini failed with the following errors:");
-            System.out.print(sb.toString());
+            LOGGER.error(sb.toString());
 
             Runtime.getRuntime().halt(-1);
         }
