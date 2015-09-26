@@ -7,6 +7,8 @@
     <version>2.2.3-SNAPSHOT</version>
     <name>(${project.organization.name}) ${project.artifactId}</name>
     <inceptionYear>2014</inceptionYear>
+    <description>Add parallelization to Cucumber</description>
+    <url>${project.scm.url}</url>
 
     <licenses>
         <license>
