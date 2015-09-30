@@ -16,12 +16,10 @@
 package com.comcast.zucchini.glue;
 
 import org.testng.Assert;
-import static org.testng.Assert.assertEquals;
 
 import com.comcast.zucchini.BarrierTest;
 import com.comcast.zucchini.Barrier;
 import com.comcast.zucchini.TestContext;
-import com.comcast.zucchini.Veggie;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -133,7 +131,7 @@ public class ZucchiniBarrierGlue {
 
     @Given("We have one barrier")
     public void first_barrier() throws Throwable {
-        synchronized(this) {
+        synchronized(this.getClass()) {
             barrierCount++;
         }
         Barrier.sync();
@@ -146,7 +144,7 @@ public class ZucchiniBarrierGlue {
             Assert.fail(String.format("The internal barrierCount[%d] does not match the number of contexts[%d]", barrierCount, BarrierTest.numContexts));
         }
         Barrier.sync();
-        synchronized(this) {
+        synchronized(this.getClass()) {
             barrierCount--;
         }
     }
