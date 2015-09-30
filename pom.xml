@@ -58,6 +58,9 @@
         <maven.plugin.license.version>2.11</maven.plugin.license.version>
         <maven.gpg.version>1.6</maven.gpg.version>
 
+        <!-- Release Control -->
+        <autoReleaseAfterClose>false</autoReleaseAfterClose>
+
         <!-- Github Info -->
         <git.url>github.com</git.url>
         <git.repo>${project.artifactId}</git.repo>
@@ -222,7 +225,7 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <autoReleaseAfterClose>${autoReleaseAfterClose}</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                 </plugins>
