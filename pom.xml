@@ -8,7 +8,7 @@
     <name>(${project.organization.name}) ${project.artifactId}</name>
     <inceptionYear>2014</inceptionYear>
     <description>Add parallelization to Cucumber</description>
-    <url>${project.scm.url}</url>
+    <url>http://comcast.github.io/${project.artifactId}/</url>
 
     <licenses>
         <license>
@@ -60,7 +60,7 @@
 
         <!-- Github Info -->
         <git.url>github.com</git.url>
-        <git.repo>zucchini</git.repo>
+        <git.repo>${project.artifactId}</git.repo>
         <git.org>Comcast</git.org>
     </properties>
 
