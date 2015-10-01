@@ -126,7 +126,8 @@ class FlexibleBarrier {
         TestContext tc = TestContext.getCurrent();
 
         if(this.azt.failedContexts.contains(tc)) {
-            Thread.currentThread().stop(new IllegalStateException("Failed context has somehow continued."));
+            LOGGER.debug("Failed context, {}, that has continued has been terminated.", tc);
+            Thread.currentThread().stop();
         }
 
         synchronized(this) {
