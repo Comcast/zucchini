@@ -1,13 +1,13 @@
 Zucchini
 ========
+[http://comcast.github.io/zucchini/](http://comcast.github.io/zucchini/)
 
 ##Summary
 
-Zucchini is a layer that sits on top of cucumber-jvm and provides higher testing throughput with additional utilities.  Zucchini takes advantage of situations where a set if tests needs to be run with multiple configurations.  In such cases, each configuration is run in parallel with a separate backing cucumber runtime.  Upon completion, all of these tests are compiled into a single report made available in an html format.
+Zucchini sits on top of cucumber-jvm and maven to provide higher testing throughput by enabling concurrent test execution. A test author need only specify a description of each of the devices (or browsers) under test as well as the cucumber feature files to execute and zucchini runs the tests in parallel with a separate backing cucumber runtime for each device under test. Upon completion, all of these tests are compiled into a single report made available in an html format. For more details on how zucchini works as well as how to use it in your project, please see the [zucchini wiki](https://github.com/Comcast/zucchini/wiki)
 
-![ZOMBIE ZUKES](http://www.fruitycuties.com/images/humour/138-cartoon-zucchini-joke.gif)
+![Zucchini](http://comcast.github.io/zucchini/images/zukeshield.png)
 
-Image courtesy of [http://www.fruitycuties.com/](http://www.fruitycuties.com/)
 
 ##Additional Features
 
@@ -15,6 +15,6 @@ Image courtesy of [http://www.fruitycuties.com/](http://www.fruitycuties.com/)
  - Barrier sync - When the test contexts need to phased, Zucchini is able to enforce this with barrier synchronization.  The provided barrier synchronization is robust, and is able to accommodate tests that fail prior to reaching the barrier, as well as tests that get stuck or timeout.  Enabling a barrier sync is as easy as calling `Barrier.sync()`.  To enable barrier synchronization for a test, the `canBarrier` method of the `AbstractZucchiniTest` must be overridden.  Available as of version 2.2.
 
 ##More Information
-For more information on what Zucchini is and how to use it please see :  [http://comcast.github.io/zucchini/](http://comcast.github.io/zucchini/)
+For more information on what Zucchini is and how to use it please see the [zucchini wiki](https://github.com/Comcast/zucchini/wiki) 
 
 [![Build Status](https://travis-ci.org/Comcast/zucchini.svg)](https://travis-ci.org/Comcast/zucchini)
