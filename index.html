@@ -1,201 +1,122 @@
-<!doctype html>
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Zucchini by Comcast</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="images/zukeshield.png">
 
+    <title>Zucchini - Power up your cucumber tests!</title>
   </head>
+
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/Comcast/zucchini">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/Comcast/zucchini/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/Comcast/zucchini/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
 
-    <div class="wrapper">
-
-      <section>
-        <div id="title">
-          <h1>Zucchini</h1>
-          <p>An army of zucchini zombies to take your cucumber testing to the next level</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/Comcast">Comcast</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">
+              ZUCCHINI<!-- <img alt="Zucchini" src="images/zukebanner.png" height="100%"> -->
+            </a>
         </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          </ul>
+          
+          <ul class="nav navbar-nav navbar-right">
+            <!-- <li><a href="#"><img alt="Zucchini" src="images/zukebanner.png" height="100%"></a></li> -->
+            <li><a href="https://github.com/Comcast/zucchini" target="_blank">View on Github</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Downloads<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="https://github.com/Comcast/zucchini/zipball/master" target="_blank">ZIP</a></li>
+            <li><a href="https://github.com/Comcast/zucchini/tarball/master" target="_blank">TAR</a></li>
+          </ul>
+        </li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
 
-        <h1>
-<a name="what-is-it" class="anchor" href="#what-is-it"><span class="octicon octicon-link"></span></a>What is it?</h1>
-
-<div>Zucchini makes running the same cucumber tests across multiple different devices or browsers super simple.  Write the test for one device and watch it run on EVERYTHING!</div><div><img src="http://www.fruitycuties.com/images/humour/138-cartoon-zucchini-joke.gif" alt="Zombie Zukes"></div>
-
-<p>Image courtesy of <a href="http://www.fruitycuties.com/">http://www.fruitycuties.com/</a></p>
-
-<h1>
-<a name="how-do-i-use-it" class="anchor" href="#how-do-i-use-it"><span class="octicon octicon-link"></span></a>How do I use it?</h1>
-
-<h2>
-<a name="write-cucumber-feature-files" class="anchor" href="#write-cucumber-feature-files"><span class="octicon octicon-link"></span></a>write cucumber feature files</h2>
-
-<p>A zucchini test makes use of feature files written in Gherkin as well as all the other great features of <a href="https://github.com/cucumber/cucumber-jvm">cucumber-jvm</a> and <a href="https://github.com/masterthought/cucumber-reporting">cucumber-reporting</a>.  </p>
-
-<p>Please refer to the excellent documentation available on <a href="http://cukes.info/">cukes.info</a> for details on how to write great feature files.</p>
-
-<h2>
-<a name="add-dependency-to-your-project" class="anchor" href="#add-dependency-to-your-project"><span class="octicon octicon-link"></span></a>add dependency to your project</h2>
-
-<p>If you are using maven for dependency management, add the artifact below to your pom (the artifacts are deployed to maven central):</p>
-
-<div class="highlight highlight-xml"><pre><span class="nt">&lt;dependency&gt;</span>
-  <span class="nt">&lt;groupId&gt;</span>com.comcast.zucchini<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>zucchini<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</pre></div>
-
-<p>If you are managing your dependencies in some other way, manually download the jar and include it in your classpath in whatever way you feel comfortable</p>
-
-<h2>
-<a name="configure-your-abstractzucchinitest" class="anchor" href="#configure-your-abstractzucchinitest"><span class="octicon octicon-link"></span></a>Configure your AbstractZucchiniTest</h2>
-
-<p>To make use of zucchini in a test, the easiest method is to implement the abstract test class:</p>
-
-<div class="highlight highlight-java"><pre><span class="n">AbstractZucchiniTest</span>
-</pre></div>
-
-<p>Next, override this method:</p>
-
-<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">TestContext</span><span class="o">&gt;</span> <span class="nf">getTestContexts</span><span class="o">();</span>
-</pre></div>
-
-<p>within that method, you will create a zucchini <code>TestContext</code>.  For details on the test context, please refer to the javadocs.  Put simply, a TestContext has a name and a Map of strings and java objects.  Its up to you what you put into the test context.  </p>
-
-<h3>
-<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h3>
-
-<p>The example below is a common one which shows the power of zucchini.  Using this code (and a factory method to generate web driver objects) you can run your feature files against all the browsers your project supports, simultaneously.</p>
-
-<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">TestContext</span><span class="o">&gt;</span> <span class="nf">getTestContexts</span><span class="o">()</span> <span class="o">{</span>
-    <span class="c1">// Create the list of test contexts.  Zucchini will run your tests against each of the test contexts</span>
-    <span class="n">List</span><span class="o">&lt;</span><span class="n">TestContext</span><span class="o">&gt;</span> <span class="n">contexts</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">TestContext</span><span class="o">&gt;();</span>
-    <span class="c1">// Create a list of the web browsers which we want to run the test against</span>
-    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">browsers</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> 
-        <span class="s">"CHROME"</span><span class="o">,</span> 
-        <span class="s">"FIREFOX"</span><span class="o">,</span> 
-        <span class="s">"SAFARI"</span><span class="o">,</span> 
-        <span class="s">"IPHONE_SAFARI"</span><span class="o">,</span>
-        <span class="s">"IPAD_SAFARI"</span><span class="o">,</span>
-        <span class="s">"ANDROID_BROWSER_PHONE"</span><span class="o">,</span>
-        <span class="s">"ANDROID_BROWSER_TABLET"</span><span class="o">});</span>
-
-    <span class="c1">// Create a test context for each of the browsers we want to test against and populate it with a reference to the selenium webdriver object for each of them</span>
-    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">browser</span> <span class="o">:</span> <span class="n">browsers</span><span class="o">)</span>
-    <span class="o">{</span>
-        <span class="c1">// Instantiate a selenium webdriver for the given browser name</span>
-        <span class="n">WebDriver</span> <span class="n">webDriverObj</span> <span class="o">=</span> <span class="n">SeleniumWebDriverFactory</span><span class="o">.</span><span class="na">getWebDriver</span><span class="o">(</span><span class="n">browser</span><span class="o">);</span>
-        <span class="c1">// Create a new hash map and add the newly created selenium web driver object to it with the name "browser"</span>
-        <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">webDriverMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">Object</span><span class="o">&gt;();</span>
-        <span class="n">webDriverMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"browser"</span><span class="o">,</span> <span class="n">webDriverObj</span><span class="o">);</span>
-        <span class="c1">// Create the test context object from the webDriverMap and name the test context after the browser object which it is providing</span>
-        <span class="n">contexts</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nf">TestContext</span><span class="o">(</span><span class="n">browser</span><span class="o">,</span> <span class="n">webDriverMap</span><span class="o">));</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
-<h2>
-<a name="getting-objects-from-the-test-context" class="anchor" href="#getting-objects-from-the-test-context"><span class="octicon octicon-link"></span></a>Getting objects from the test context</h2>
-
-<p>Finally, you will need to get at the test context in your glue code in order to do something with the java objects you put in them.  This can be done using the following method:</p>
-
-<div class="highlight highlight-java"><pre><span class="n">TestContext</span><span class="o">.</span><span class="na">getCurrent</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="n">String</span> <span class="n">nameOfObject</span><span class="o">)</span>
-</pre></div>
-
-<h3>
-<a name="example-1" class="anchor" href="#example-1"><span class="octicon octicon-link"></span></a>Example</h3>
-
-<p>Using the previous example, if we wanted to get access to our SeleniumWebDriver object inside our glue code we would simply do the following</p>
-
-<div class="highlight highlight-java"><pre>    <span class="nd">@When</span><span class="o">(</span><span class="s">"^i do something cool$"</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">loadTheHomePage</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">// Get the WebDriver object out of the TestContext</span>
-        <span class="n">WebDriver</span> <span class="n">webDriverObj</span> <span class="o">=</span> <span class="n">TestContext</span><span class="o">.</span><span class="na">getCurrent</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"browser"</span><span class="o">);</span>
-        <span class="n">Boolean</span> <span class="n">result</span> <span class="o">=</span> <span class="n">webDriverObj</span><span class="o">.</span><span class="na">doSomethingCool</span><span class="o">();</span>
-    <span class="o">}</span>
-</pre></div>
-
-<h2>
-<a name="adding-objects-to-the-test-context" class="anchor" href="#adding-objects-to-the-test-context"><span class="octicon octicon-link"></span></a>Adding objects to the test context</h2>
-
-<p>Just as you can obtain objects from the test context, you can just as easily add things into the test context for use in subsequent steps.  This can take the place of singleton object or other such things and should make your glue code simpler.  To set objects into the test context, you call this method:</p>
-
-<div class="highlight highlight-java"><pre><span class="n">TestContext</span><span class="o">.</span><span class="na">getCurrent</span><span class="o">().</span><span class="na">set</span><span class="o">(</span><span class="n">String</span> <span class="n">nameOfObject</span><span class="o">,</span> <span class="n">Object</span> <span class="n">objectReference</span><span class="o">)</span>
-</pre></div>
-
-<h3>
-<a name="example-2" class="anchor" href="#example-2"><span class="octicon octicon-link"></span></a>Example</h3>
-
-<p>Again using the previous example, if we 'did something cool' with the webDriverObject and wanted to save off the results, we can do so like so</p>
-
-<div class="highlight highlight-java"><pre>    <span class="nd">@When</span><span class="o">(</span><span class="s">"^i do something cool$"</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">loadTheHomePage</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">// Get the WebDriver object out of the TestContext</span>
-        <span class="n">WebDriver</span> <span class="n">webDriverObj</span> <span class="o">=</span> <span class="n">TestContext</span><span class="o">.</span><span class="na">getCurrent</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"browser"</span><span class="o">);</span>
-        <span class="n">Boolean</span> <span class="n">result</span> <span class="o">=</span> <span class="n">webDriverObj</span><span class="o">.</span><span class="na">doSomethingCool</span><span class="o">();</span>
-
-        <span class="c1">// save off the boolean result from the doSomethingCool method</span>
-        <span class="n">TestContext</span><span class="o">.</span><span class="na">getCurrent</span><span class="o">().</span><span class="na">set</span><span class="o">(</span><span class="s">"do-something-cool-result"</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
-    <span class="o">}</span>
-    <span class="nd">@Then</span><span class="o">(</span><span class="s">"^pay me lots of money$"</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">payMeMoney</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">// Get the results of the page load from the test context</span>
-        <span class="n">Boolean</span> <span class="n">somethingCoolHappened</span> <span class="o">=</span> <span class="n">TestContext</span><span class="o">.</span><span class="na">getCurrent</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"do-something-cool-result"</span><span class="o">);</span>
-        <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">somethingCoolHappened</span><span class="o">,</span><span class="s">"Something cool didnt happen, better luck next time"</span><span class="o">);</span>
-    <span class="o">}</span>
-
-</pre></div>
-
-<h1>
-<a name="working-with-existing-cucumber-projects" class="anchor" href="#working-with-existing-cucumber-projects"><span class="octicon octicon-link"></span></a>Working with existing cucumber projects</h1>
-
-<p>Coming soon!</p>
-
-<h1>
-<a name="test-reporting" class="anchor" href="#test-reporting"><span class="octicon octicon-link"></span></a>Test Reporting</h1>
-
-<p>Zucchini incorporates the <a href="https://github.com/masterthought/cucumber-reporting">cucumber-reporting</a> plugin developed by masterthought as a means by which beautiful test reports can be generated to be dispersed to your stakeholders.  You can invoke this plugin by simply adding the following annotation on your AbstractZucchiniTest</p>
-
-<div class="highlight highlight-java"><pre><span class="nd">@ZucchiniOutput</span>
-</pre></div>
-
-<p>Alternatively, you can include the plugin (or any of the other nice cucumber reporting plugins available through the cucumber-jvm community) through the standard means (as described on their site)</p>
-
-<h1>
-<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h1>
-
-<p>We welcome contributions to the project.  Please see <a href="https://github.com/Comcast/zucchini/blob/develop/CONTRIBUTING.txt">CONTRIBUTING</a> for more details</p>
-
-<h2>
-<a name="reporting-issues" class="anchor" href="#reporting-issues"><span class="octicon octicon-link"></span></a>Reporting issues</h2>
-
-<p>If you find an bug with zucchini, please feel free to submit a github issue for it.  Please include reproducible steps and, ideally, a cucumber feature file which can be used to expose the defect.</p>
-      </section>
-
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <div class="row">
+            <hr>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <img alt="Zukes-Shield" src="images/zukebanner.png">
+            <h1><small>Concurrent cucumber testing made simple</small></h1>
+          </div>
+        </div>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+  </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+            <img alt="Zukes-Shield" src="images/zukeshield.png">
+          </div>
+        <div class="col-md-9">
+          <h2>Why Zucchini?</h2>
+          <p>If any of the following describes you, zucchini is here to help!</p>
+           <ul>
+            <li>You have a product which supports a number of different mobile devices and browsers</li>
+            <li>You have cucumber-jvm tests that work on a single mobile device or browser but are horrified at the thought of trying to scale out your tests</li>
+            <li>You have tried a number of different means of running tests in parallel but have given up due to the complexity involved</li>
+            <li>Have no tests for your product, but are enamored with the simplicity of Cucumber</li>
+            <li>Really into test frameworks named after vegetables</li>
+            </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-7">
+          <h2>What is Zucchini?</h2>
+          <p>
+            Zucchini sits on top of <a href="https://github.com/cucumber/cucumber-jvm/">cucumber-jvm</a> and maven to provide higher testing throughput by enabling concurrent test execution. A test author need only specify a description of each of the devices (or browsers) under test as well as the cucumber feature files to execute and zucchini runs the tests in parallel with a separate backing cucumber runtime for each device under test. Upon completion, all of these tests are compiled into a single report made available in an html format.
+
+            For more details on how zucchini works as well as how to use it in your project, please see the <a href="https://github.com/Comcast/zucchini/wiki">zucchini wiki</a>
+          </p>
+        </div>
+        <div class="col-md-5">
+          <img src="images/cucumber-logo.png">
+          <img src="images/apache_maven.png">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Contributing</h2>
+          <p>We welcome contributions to the project. Please see <a href="https://github.com/Comcast/zucchini/blob/develop/CONTRIBUTING.txt">here</a> for more detailsclick the button below for more details</p>
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="javascripts/jquery.min.js"></script>
     
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+    <!-- Stuff overriding bootstrap -->
+    <link rel="stylesheet" href="stylesheets/styles.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="stylesheets/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="javascripts/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>
