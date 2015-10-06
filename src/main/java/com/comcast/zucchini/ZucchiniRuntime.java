@@ -28,6 +28,10 @@ import cucumber.runtime.RuntimeGlue;
 import cucumber.runtime.ClassFinder;
 import cucumber.runtime.StopWatch;
 
+import cucumber.runtime.model.CucumberScenario;
+import cucumber.runtime.model.CucumberExamples;
+import cucumber.runtime.model.CucumberScenarioOutline;
+
 import cucumber.runtime.io.ResourceLoader;
 import cucumber.runtime.model.CucumberFeature;
 import cucumber.runtime.model.CucumberTagStatement;
@@ -179,24 +183,51 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
             for(CucumberTagStatement statement : cf.getFeatureElements()) {
 
-                if(azt.canBarrier()) {
-                    if(azt.isParallel())
-                        order = azt.phase0.await();
-                    else
-                        order = 0;
+                if(statement instanceof CucumberScenarioOutline) {
+                    CucumberScenarioOutline cso = (CucumberScenarioOutline)statement;
+                    cso.formatOutlineScenario(formatter);
+                    for(CucumberExamples cucumberExamples : cso.getCucumberExamplesList()) {
+                        cucumberExamples.format(formatter);
+                        for(CucumberScenario cs : cucumberExamples.createExampleScenarios()) {
+                            if(azt.canBarrier()) {
+                                if(azt.isParallel())
+                                    order = azt.phase0.await();
+                                else
+                                    order = 0;
 
-                    //reset the lock and scenario state
-                    if(order == 0) {
-                        //clear configuration here for per-scenario state
-                        azt.failedContexts.clear();
-                        azt.flexBarrier.refresh();
+                                if(order == 0) {
+                                    azt.failedContexts.clear();
+                                    azt.flexBarrier.refresh();
+                                }
+
+                                if(azt.isParallel())
+                                    order = azt.phase1.await();
+                            }
+
+                            cs.run(formatter, reporter, this);
+                        }
+                    }
+                }
+                else {
+                    if(azt.canBarrier()) {
+                        if(azt.isParallel())
+                            order = azt.phase0.await();
+                        else
+                            order = 0;
+
+                        //reset the lock and scenario state
+                        if(order == 0) {
+                            //clear configuration here for per-scenario state
+                            azt.failedContexts.clear();
+                            azt.flexBarrier.refresh();
+                        }
+
+                        if(azt.isParallel())
+                            order = azt.phase1.await();
                     }
 
-                    if(azt.isParallel())
-                        order = azt.phase1.await();
+                    statement.run(formatter, reporter, this);
                 }
-
-                statement.run(formatter, reporter, this);
             }
 
             formatter.eof();
