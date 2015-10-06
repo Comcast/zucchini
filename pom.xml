@@ -5,7 +5,7 @@
     <groupId>com.comcast.zucchini</groupId>
     <artifactId>zucchini</artifactId>
     <version>2.2.5-SNAPSHOT</version>
-    <name>(${project.organization.name}) ${project.artifactId}</name>
+    <name>(Comcast) ${project.artifactId}</name>
     <inceptionYear>2014</inceptionYear>
     <description>Add parallelization to Cucumber</description>
     <url>http://comcast.github.io/${project.artifactId}/</url>
