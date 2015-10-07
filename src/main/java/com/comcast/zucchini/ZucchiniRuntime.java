@@ -159,8 +159,8 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         }
     }
 
-    private static void lockResetLockRun(AbstractZucchiniTest azt, Formatter f, Reporter r, boolean parallel, ZucchiniRuntime rt, CucumberTagStatement cs) {
-        if(azt.canBarrier()) {
+    private static void lockResetLockRun(AbstractZucchiniTest azt, Formatter f, Reporter r, boolean parallel, boolean barrierEnabled, ZucchiniRuntime rt, CucumberTagStatement cs) {
+        if(barrierEnabled) {
             int order = -1; //invalid order
 
             if(parallel)
@@ -197,6 +197,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         AbstractZucchiniTest azt = tc.getParentTest();
 
         boolean parallel = azt.isParallel();
+        boolean barrierEnabled = azt.canBarrier();
 
         for(CucumberFeature cf : features) {
             formatter.uri(cf.getPath());
@@ -209,12 +210,12 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
                     for(CucumberExamples cucumberExamples : cso.getCucumberExamplesList()) {
                         cucumberExamples.format(formatter);
                         for(CucumberScenario cs : cucumberExamples.createExampleScenarios()) {
-                            ZucchiniRuntime.lockResetLockRun(azt, formatter, reporter, parallel, this, cs);
+                            ZucchiniRuntime.lockResetLockRun(azt, formatter, reporter, parallel, barrierEnabled, this, cs);
                         }
                     }
                 }
                 else {
-                    ZucchiniRuntime.lockResetLockRun(azt, formatter, reporter, parallel, this, statement);
+                    ZucchiniRuntime.lockResetLockRun(azt, formatter, reporter, parallel, barrierEnabled, this, statement);
                 }
             }
 
