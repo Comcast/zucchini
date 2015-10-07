@@ -159,6 +159,27 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         }
     }
 
+    private static void lockResetLockRun(AbstractZucchiniTest azt, Formatter f, Reporter r, boolean parallel, boolean barrierEnabled, ZucchiniRuntime rt, CucumberTagStatement cs) {
+        if(barrierEnabled) {
+            int order = -1; //invalid order
+
+            if(parallel)
+                order = azt.phase0.await();
+            else
+                order = 0;
+
+            if(order == 0) {
+                azt.failedContexts.clear();
+                azt.flexBarrier.refresh();
+            }
+
+            if(parallel)
+                order = azt.phase1.await();
+        }
+
+        cs.run(f, r, rt);
+    }
+
     /**
      * This replaces the function of the cucumber.runtime.model.CucumberFeature so that it can handle barrier syncs between scenarios and prevent odd behavior based on the actions of previous scenarios.
      */
@@ -175,58 +196,26 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         TestContext tc = TestContext.getCurrent();
         AbstractZucchiniTest azt = tc.getParentTest();
 
-        int order = 0;
+        boolean parallel = azt.isParallel();
+        boolean barrierEnabled = azt.canBarrier();
 
         for(CucumberFeature cf : features) {
             formatter.uri(cf.getPath());
             formatter.feature(cf.getGherkinFeature());
 
             for(CucumberTagStatement statement : cf.getFeatureElements()) {
-
                 if(statement instanceof CucumberScenarioOutline) {
                     CucumberScenarioOutline cso = (CucumberScenarioOutline)statement;
                     cso.formatOutlineScenario(formatter);
                     for(CucumberExamples cucumberExamples : cso.getCucumberExamplesList()) {
                         cucumberExamples.format(formatter);
                         for(CucumberScenario cs : cucumberExamples.createExampleScenarios()) {
-                            if(azt.canBarrier()) {
-                                if(azt.isParallel())
-                                    order = azt.phase0.await();
-                                else
-                                    order = 0;
-
-                                if(order == 0) {
-                                    azt.failedContexts.clear();
-                                    azt.flexBarrier.refresh();
-                                }
-
-                                if(azt.isParallel())
-                                    order = azt.phase1.await();
-                            }
-
-                            cs.run(formatter, reporter, this);
+                            ZucchiniRuntime.lockResetLockRun(azt, formatter, reporter, parallel, barrierEnabled, this, cs);
                         }
                     }
                 }
                 else {
-                    if(azt.canBarrier()) {
-                        if(azt.isParallel())
-                            order = azt.phase0.await();
-                        else
-                            order = 0;
-
-                        //reset the lock and scenario state
-                        if(order == 0) {
-                            //clear configuration here for per-scenario state
-                            azt.failedContexts.clear();
-                            azt.flexBarrier.refresh();
-                        }
-
-                        if(azt.isParallel())
-                            order = azt.phase1.await();
-                    }
-
-                    statement.run(formatter, reporter, this);
+                    ZucchiniRuntime.lockResetLockRun(azt, formatter, reporter, parallel, barrierEnabled, this, statement);
                 }
             }
 
