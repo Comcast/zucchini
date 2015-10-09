@@ -1,5 +1,7 @@
 Zucchini
 ========
+[![Build Status](https://travis-ci.org/Comcast/zucchini.svg)](https://travis-ci.org/Comcast/zucchini)
+
 [http://comcast.github.io/zucchini/](http://comcast.github.io/zucchini/)
 
 ##Summary
@@ -17,4 +19,5 @@ Zucchini sits on top of cucumber-jvm and maven to provide higher testing through
 ##More Information
 For more information on what Zucchini is and how to use it please see the [zucchini wiki](https://github.com/Comcast/zucchini/wiki) 
 
-[![Build Status](https://travis-ci.org/Comcast/zucchini.svg)](https://travis-ci.org/Comcast/zucchini)
+##Submitting issues
+Please file a github issue for any problems or feature requests (or better yet, submit a pull request!)
