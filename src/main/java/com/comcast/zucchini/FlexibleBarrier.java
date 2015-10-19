@@ -47,6 +47,7 @@ class FlexibleBarrier {
     private int primaryOrder;
     private boolean timedout;
     private int secondaryOrder;
+    private int size;
 
     /**
      * Create a FlexibleBarrier and size it based on the number on contexts in <code>azt</code>.
@@ -62,8 +63,9 @@ class FlexibleBarrier {
      */
     FlexibleBarrier(AbstractZucchiniTest azt, int size) {
         this.azt = azt;
-        this.primary = new Phaser(size);
-        this.secondary = new Phaser(size);
+        this.size = size;
+        this.primary = new Phaser(this.size);
+        this.secondary = new Phaser(this.size);
         this.arrivedThreads = Collections.newSetFromMap(new ConcurrentHashMap<TestContext, Boolean>());
         this.timedout = false;
         this.primaryOrder = 0;
@@ -86,7 +88,6 @@ class FlexibleBarrier {
                             this.dec();
                             if(tc.canKill) {
                                 tc.getThread().stop();
-                                LOGGER.trace("Calling ZucchiniThreadTimeout from {} on {}", tcname(), tc.name());
                             }
                         }
                     }
@@ -137,8 +138,6 @@ class FlexibleBarrier {
 
         //clear thread interrupt
         Thread.interrupted();
-
-        LOGGER.trace("lock {}", tcname());
 
         int phase = this.primary.arrive();
 
@@ -191,7 +190,7 @@ class FlexibleBarrier {
             this.primaryOrder = 0;
         }
 
-        LOGGER.trace("free {} as order {}", tcname(), ret);
+        LOGGER.debug("free {} as order {}", tcname(), ret);
 
         return ret;
     }
@@ -212,6 +211,8 @@ class FlexibleBarrier {
     synchronized void reset() {
         this.arrivedThreads.clear();
         this.timedout = false;
+        this.primary = new Phaser(this.size);
+        this.secondary = new Phaser(this.size);
         this.primaryOrder = 0;
         this.secondaryOrder = 0;
     }
