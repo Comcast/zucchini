@@ -57,10 +57,10 @@ public class ZucchiniBarrierFailureGlue {
         if(ztffp == null)
             ztffp = "0";
 
-        if(("1").equals(ztffp))
+        if(("1").equals(ztffp)) {
+            Barrier.sync();
             Assert.fail("FORCE ALL CONTEXT TEST FAILURE");
-        else
-            Thread.sleep(100);
+        }
     }
 
     @Then("we don\'t fail")
