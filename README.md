@@ -17,7 +17,7 @@ Zucchini sits on top of cucumber-jvm and maven to provide higher testing through
  - Barrier sync - When the test contexts need to phased, Zucchini is able to enforce this with barrier synchronization.  The provided barrier synchronization is robust, and is able to accommodate tests that fail prior to reaching the barrier, as well as tests that get stuck or timeout.  Enabling a barrier sync is as easy as calling `Barrier.sync()`.  To enable barrier synchronization for a test, the `canBarrier` method of the `AbstractZucchiniTest` must be overridden.  Available as of version 2.2.
 
 ##Maven Integration
-To pull zucchini from maven central add the following to the dependencies:
+To pull Zucchini from maven central, add the following to the pom.xml dependencies or dependencyManagement section:
 
 ```xml
 <dependency>
@@ -26,6 +26,8 @@ To pull zucchini from maven central add the following to the dependencies:
     <version>[2.2, 3)</version>
 </dependency>
 ```
+
+The provided version string is suggested, though others will work as per Maven versioning.
 
 ##More Information
 For more information on what Zucchini is and how to use it please see the [zucchini wiki](https://github.com/Comcast/zucchini/wiki) 
