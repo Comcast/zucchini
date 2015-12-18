@@ -19,5 +19,5 @@ Zucchini sits on top of cucumber-jvm and maven to provide higher testing through
 ##More Information
 For more information on what Zucchini is and how to use it please see the [zucchini wiki](https://github.com/Comcast/zucchini/wiki) 
 
-##Submitting issues
+##Submitting Issues
 Please file a github issue for any problems or feature requests (or better yet, submit a pull request!)
