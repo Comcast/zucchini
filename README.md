@@ -16,6 +16,19 @@ Zucchini sits on top of cucumber-jvm and maven to provide higher testing through
  - Multiple report concatenation - When running multiple test files, regardless of tags, all tests will have their output preserved. The generated report is available by default at `target/zucchini-reports/feature-overview.html`.  Available as of version 2.0
  - Barrier sync - When the test contexts need to phased, Zucchini is able to enforce this with barrier synchronization.  The provided barrier synchronization is robust, and is able to accommodate tests that fail prior to reaching the barrier, as well as tests that get stuck or timeout.  Enabling a barrier sync is as easy as calling `Barrier.sync()`.  To enable barrier synchronization for a test, the `canBarrier` method of the `AbstractZucchiniTest` must be overridden.  Available as of version 2.2.
 
+##Maven Integration
+To pull Zucchini from maven central, add the following to the pom.xml dependencies or dependencyManagement section:
+
+```xml
+<dependency>
+    <groupId>com.comcast.zucchini</groupId>
+    <artifactId>zucchini</artifactId>
+    <version>[2.2, 3)</version>
+</dependency>
+```
+
+The provided version string is suggested, though others will work as per Maven versioning.
+
 ##More Information
 For more information on what Zucchini is and how to use it please see the [zucchini wiki](https://github.com/Comcast/zucchini/wiki) 
 
