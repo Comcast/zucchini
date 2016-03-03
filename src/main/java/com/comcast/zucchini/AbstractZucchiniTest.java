@@ -165,7 +165,7 @@ public abstract class AbstractZucchiniTest {
                 joinCount++;
             }
             catch(InterruptedException e) {
-                LOGGER.error("ERROR on Thread.join(): {}", e);
+                LOGGER.error("ERROR on Thread.join():", e);
             }
         }
 
@@ -218,7 +218,7 @@ public abstract class AbstractZucchiniTest {
             runner.runCukes();
             ret = true;
         } catch (RuntimeException t) {
-            LOGGER.error("ERROR running test: {}", t);
+            LOGGER.error("ERROR running test:", t);
             ret = false;
         } finally {
             LOGGER.debug(String.format("ZucchiniTest[%s] finished", context.name));

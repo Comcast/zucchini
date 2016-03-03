@@ -60,9 +60,15 @@ class ZucchiniShutdownHook extends Thread {
 
     @Override
     public void run() {
+        LOGGER.trace("Running ZucchiniShutdownHook");
         FileWriter writer = null;
         try {
+            if (0 == AbstractZucchiniTest.featureSet.size()) {
+                LOGGER.warn("There are 0 features run");
+            }
+
             for(String fileName : AbstractZucchiniTest.featureSet.keySet()) {
+                LOGGER.trace("Writing feature set out to {}", fileName);
                 /* write the json first, needed for html generation */
                 File json = new File(fileName);
                 JsonArray features = AbstractZucchiniTest.featureSet.get(fileName);
@@ -129,7 +135,7 @@ class ZucchiniShutdownHook extends Thread {
                     writer.close();
                 }
                 catch(IOException ex) {
-                    LOGGER.error("ERROR writing report: {}", ex);
+                    LOGGER.error("ERROR writing report:", ex);
                 }
             }
         }
