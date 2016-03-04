@@ -86,6 +86,7 @@ public abstract class AbstractZucchiniTest {
         /* add a shutdown hook, as this will allow all Zucchini tests to complete without
          * knowledge of each other's existence */
         Runtime.getRuntime().addShutdownHook(ZucchiniShutdownHook.getDefault());
+        LOGGER.trace("Added the ZucchiniShutdownHook");
     }
 
     /**
@@ -147,6 +148,8 @@ public abstract class AbstractZucchiniTest {
      * @param contexts The list of contexts that will be run.
      */
     public void runParallel(List<TestContext> contexts) {
+        LOGGER.trace("Running zucchini tests in parallel.");
+
         List<Thread> threads = new ArrayList<Thread>(contexts.size());
 
         MutableInt mi = new MutableInt();
@@ -155,6 +158,7 @@ public abstract class AbstractZucchiniTest {
             Thread t = new Thread(new TestRunner(this, tc, mi), tc.name);
             threads.add(t);
             t.start();
+            LOGGER.trace(String.format("Started test runner[%s, %s, %s] on thread [%s]", this.toString(), tc.toString(), mi.toString(), t.toString()));
         }
 
         int joinCount = 0;
@@ -162,6 +166,7 @@ public abstract class AbstractZucchiniTest {
         for(Thread t : threads) {
             try {
                 t.join();
+                LOGGER.trace("Joined thread {}", t);
                 joinCount++;
             }
             catch(InterruptedException e) {
@@ -179,6 +184,8 @@ public abstract class AbstractZucchiniTest {
      * @param contexts The list of contexts that will be run.
      */
     public void runSerial(List<TestContext> contexts) {
+        LOGGER.trace("Running zucchini tests in serial.");
+
         int failures = 0;
 
         for(TestContext tc : contexts)
@@ -205,8 +212,10 @@ public abstract class AbstractZucchiniTest {
         boolean ret = false;
 
         try {
-            setup(context);
-            setupFormatter(context, runner);
+            LOGGER.trace("Running test setup on [{}]", context);
+            this.setup(context);
+            LOGGER.trace("Running formatter setup on [{}, {}]", context, runner);
+            this.setupFormatter(context, runner);
         } catch (RuntimeException rex) {
             String errString = String.format("ERROR configuring test: {}", rex);
             LOGGER.error(errString);
@@ -234,45 +243,46 @@ public abstract class AbstractZucchiniTest {
             JsonParser parser = new JsonParser();
             JsonElement result = parser.parse(runner.getJSONOutput());
 
-            synchronized(featureSet) {
-                JsonArray features = null;
+            JsonArray features = new JsonArray();
 
-                if(!AbstractZucchiniTest.featureSet.containsKey(fileName))
-                    AbstractZucchiniTest.featureSet.put(fileName, new JsonArray());
+            if(result.isJsonArray()) {
+                JsonArray jarr = (JsonArray)result;
+                JsonElement jel = null;
+                JsonObject jobj = null;
 
-                features = AbstractZucchiniTest.featureSet.get(fileName);
+                Iterator<JsonElement> jels = jarr.iterator();
 
-                if(result.isJsonArray()) {
-                    JsonArray jarr = (JsonArray)result;
-                    JsonElement jel = null;
-                    JsonObject jobj = null;
+                while(jels.hasNext()) {
+                    jel = jels.next();
 
-                    Iterator<JsonElement> jels = jarr.iterator();
-
-                    while(jels.hasNext()) {
-                        jel = jels.next();
-
-                        if(jel.isJsonObject()) {
-                            jobj = (JsonObject)jel;
-                            upgradeObject(jobj, context.name);
-                            features.add(jobj);
-                        }
-                        else {
-                            features.add(jel);
-                        }
+                    if(jel.isJsonObject()) {
+                        jobj = (JsonObject)jel;
+                        upgradeObject(jobj, context.name);
+                        features.add(jobj);
+                    }
+                    else {
+                        features.add(jel);
                     }
                 }
-                else if(result.isJsonObject()) {
-                    JsonObject jobj = (JsonObject)result;
-                    upgradeObject(jobj, context.name);
-                    features.add(jobj);
-                }
-                else {
-                    features.add(result);
-                }
+            }
+            else if(result.isJsonObject()) {
+                JsonObject jobj = (JsonObject)result;
+                upgradeObject(jobj, context.name);
+                features.add(jobj);
+            }
+            else {
+                features.add(result);
+            }
+
+            synchronized(featureSet) {
+                if(!AbstractZucchiniTest.featureSet.containsKey(fileName))
+                    AbstractZucchiniTest.featureSet.put(fileName, features);
+                else
+                    AbstractZucchiniTest.featureSet.get(fileName).addAll(features);
             }
 
             try {
+                LOGGER.trace("Running cleanup on [{}]", context);
                 cleanup(context);
             }
             catch(RuntimeException rex) {
