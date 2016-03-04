@@ -16,7 +16,6 @@
 package com.comcast.zucchini;
 
 import java.util.List;
-import java.util.Set;
 import java.util.Collection;
 
 import java.io.IOException;
@@ -24,7 +23,6 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.runtime.Glue;
 import cucumber.runtime.Backend;
 import cucumber.runtime.RuntimeOptions;
 import cucumber.runtime.RuntimeGlue;
@@ -43,11 +41,7 @@ import cucumber.api.StepDefinitionReporter;
 import gherkin.I18n;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.Reporter;
-import gherkin.formatter.model.DataTableRow;
-import gherkin.formatter.model.DocString;
-import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.Step;
-import gherkin.formatter.model.Tag;
 
 /**
  * Extends a wraps {@link cucumber.runtime.Runtime} object for Zucchini's extended functionality.
