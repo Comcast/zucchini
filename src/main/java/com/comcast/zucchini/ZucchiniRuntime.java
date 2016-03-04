@@ -21,6 +21,9 @@ import java.util.Collection;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cucumber.runtime.Glue;
 import cucumber.runtime.Backend;
 import cucumber.runtime.RuntimeOptions;
@@ -52,6 +55,8 @@ import gherkin.formatter.model.Tag;
  * @author Andrew Benton
  */
 public class ZucchiniRuntime extends cucumber.runtime.Runtime {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZucchiniRuntime.class);
 
     protected ResourceLoader rl;
     protected ClassLoader cl;
@@ -232,6 +237,8 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
      */
     @Override
     public void runStep(String featurePath, Step step, Reporter reporter, I18n i18n) {
+        LOGGER.trace(String.format("Running step from ZucchiniRuntime: [%s, %s, %s, %s]", featurePath.toString(), step.toString(), reporter.toString(), i18n.toString()));
+
         TestContext tc = TestContext.getCurrent();
 
         try {

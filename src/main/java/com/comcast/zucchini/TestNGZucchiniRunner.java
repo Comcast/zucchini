@@ -71,6 +71,7 @@ public class TestNGZucchiniRunner {
      */
     public void runCukes() {
         try {
+            LOGGER.trace("Running cucumber tests on [{}]", TestContext.getCurrent());
             runtime.run();
         } catch (IOException ex) {
             throw new RuntimeException(ex);

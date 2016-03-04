@@ -100,6 +100,13 @@ public class TestContext {
         this.canKill = false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+        return super.toString() + String.format("[%s, %s]", this.name, this.beans.toString());
+    }
+
     Thread getThread() {
         return this.owningThread;
     }
