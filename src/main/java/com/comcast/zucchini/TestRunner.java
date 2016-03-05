@@ -54,4 +54,9 @@ public class TestRunner implements Runnable {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + String.format("[%s, %s]", this.tc.toString(), this.mi.toInteger());
+    }
 }
