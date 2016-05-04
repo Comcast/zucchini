@@ -220,6 +220,7 @@ public abstract class AbstractZucchiniTest {
             String errString = String.format("ERROR configuring test: {}", rex);
             LOGGER.error(errString);
             ZucchiniShutdownHook.getDefault().addFailureCause(errString);
+            runCleanup(context);
             return false;
         }
 
@@ -281,20 +282,24 @@ public abstract class AbstractZucchiniTest {
                     AbstractZucchiniTest.featureSet.get(fileName).addAll(features);
             }
 
-            try {
-                LOGGER.trace("Running cleanup on [{}]", context);
-                cleanup(context);
-            }
-            catch(RuntimeException rex) {
-                String errString = String.format("ERROR cleaning up test: {}", rex);
-                LOGGER.error(errString);
-                ZucchiniShutdownHook.getDefault().addFailureCause(errString);
-            }
+            runCleanup(context);
 
             TestContext.removeCurrent();
         }
 
         return ret;
+    }
+
+    private void runCleanup(TestContext context) {
+        try {
+            LOGGER.trace("Running cleanup on [{}]", context);
+            cleanup(context);
+        }
+        catch(RuntimeException rex) {
+            String errString = String.format("ERROR cleaning up test: {}", rex);
+            LOGGER.error(errString);
+            ZucchiniShutdownHook.getDefault().addFailureCause(errString);
+        }
     }
 
     private void upgradeObject(JsonObject jobj, String ctxName) {
