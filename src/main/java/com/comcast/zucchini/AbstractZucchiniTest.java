@@ -195,6 +195,10 @@ public abstract class AbstractZucchiniTest {
         Assert.assertEquals(failures, 0, String.format("There were %d executions against a TestContext", failures));
     }
 
+    List<String> ignoredTests() {
+        return new ArrayList();
+    }
+
     /**
      * Run all configured cucumber features and scenarios against the given TestContext.
      *
@@ -217,9 +221,11 @@ public abstract class AbstractZucchiniTest {
             LOGGER.trace("Running formatter setup on [{}, {}]", context, runner);
             this.setupFormatter(context, runner);
         } catch (RuntimeException rex) {
-            String errString = String.format("ERROR configuring test: {}", rex);
+            String errString = String.format("ERROR configuring test: %s", rex.getMessage());
             LOGGER.error(errString);
-            ZucchiniShutdownHook.getDefault().addFailureCause(errString);
+            if (!this.ignoredTests().contains(context.name())) {
+                ZucchiniShutdownHook.getDefault().addFailureCause(errString);
+            }
             runCleanup(context);
             return false;
         }
