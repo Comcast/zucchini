@@ -1,5 +1,7 @@
 Zucchini
 ========
+
+[![Join the chat at https://gitter.im/Comcast/zucchini](https://badges.gitter.im/Comcast/zucchini.svg)](https://gitter.im/Comcast/zucchini?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/Comcast/zucchini.svg)](https://travis-ci.org/Comcast/zucchini)
 
 [http://comcast.github.io/zucchini/](http://comcast.github.io/zucchini/)
