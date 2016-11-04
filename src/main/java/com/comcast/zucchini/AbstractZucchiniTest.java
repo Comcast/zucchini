@@ -428,7 +428,7 @@ public abstract class AbstractZucchiniTest {
             if (null == runfastIterator) {
                 synchronized(lock) {
                     if (null == runfastIterator) {
-                        runfastIterator = iterator;
+                        runfastIterator = new RunfastIterator<>(iterator);
                     }
                 }
             }
