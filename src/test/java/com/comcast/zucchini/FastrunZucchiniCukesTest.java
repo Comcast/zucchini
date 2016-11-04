@@ -18,6 +18,8 @@ package com.comcast.zucchini;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 
 import java.util.LinkedList;
@@ -38,6 +40,7 @@ import cucumber.runtime.model.CucumberFeature;
     )
 @ZucchiniOutput()
 class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FastrunZucchiniCukesTest.class);
 
     @Override
     public List<TestContext> getTestContexts() {
@@ -94,8 +97,8 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
     private TestIterator<CucumberFeature> wrapped;
 
     @Override
-    public Iterator<CucumberFeature> fastrunIterator(Iterator<CucumberFeature> iterator) {
-        Iterator<CucumberFeature> response = super.fastrunIterator(iterator);
+    public Iterator<CucumberFeature> fastrunIteratorFactory(Iterator<CucumberFeature> iterator) {
+        Iterator<CucumberFeature> response = super.fastrunIteratorFactory(iterator);
 
         if (null == singleton) {
             synchronized (this) {
@@ -105,7 +108,7 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
                 }
             }
         }
-        Assert.assertEquals(singleton, response);
+        Assert.assertTrue(singleton == response, "The iterators returned from fastrun should be the same one as it is a singleton");
 
         return wrapped;
     }

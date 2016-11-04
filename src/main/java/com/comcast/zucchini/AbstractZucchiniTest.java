@@ -423,7 +423,7 @@ public abstract class AbstractZucchiniTest {
      * @param iterator
      * @return CucumberFeature iterator
      */
-    public Iterator<CucumberFeature> fastrunIterator(Iterator<CucumberFeature> iterator) {
+    public Iterator<CucumberFeature> fastrunIteratorFactory(Iterator<CucumberFeature> iterator) {
         if (this.isRunfast()) {
             if (null == runfastIterator) {
                 synchronized(lock) {

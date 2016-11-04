@@ -194,7 +194,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         TestContext tc = TestContext.getCurrent();
         AbstractZucchiniTest azt = tc.getParentTest();
 
-        Iterator<CucumberFeature> features = azt.fastrunIterator(this.ros.cucumberFeatures(this.rl).iterator());
+        Iterator<CucumberFeature> features = azt.fastrunIteratorFactory(this.ros.cucumberFeatures(this.rl).iterator());
 
         boolean parallel = azt.isParallel();
         boolean barrierEnabled = azt.canBarrier();
