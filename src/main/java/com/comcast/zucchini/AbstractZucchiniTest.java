@@ -131,7 +131,12 @@ public abstract class AbstractZucchiniTest {
     }
 
     private boolean getEnv(String envVar, String defaultValue) {
-        String val = System.getProperty(envVar, defaultValue).toLowerCase().trim();
+        String val = System.getenv().get(envVar);
+
+        if (null == val) {
+            val = defaultValue;
+        }
+        val = val.toLowerCase().trim();
 
         return ("yes" ).equals(val) ||
                ("y"   ).equals(val) ||
