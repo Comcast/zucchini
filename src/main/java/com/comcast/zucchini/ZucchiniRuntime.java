@@ -16,8 +16,9 @@
 package com.comcast.zucchini;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Collection;
-
+import java.util.Iterator;
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -184,8 +185,6 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
      */
     @Override
     public void run() throws IOException {
-        List<CucumberFeature> features = this.ros.cucumberFeatures(this.rl);
-
         Formatter formatter = this.ros.formatter(this.cl);
         Reporter reporter = this.ros.reporter(this.cl);
 
@@ -195,10 +194,18 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         TestContext tc = TestContext.getCurrent();
         AbstractZucchiniTest azt = tc.getParentTest();
 
+        Iterator<CucumberFeature> features = azt.fastrunIterator(this.ros.cucumberFeatures(this.rl).iterator());
+
         boolean parallel = azt.isParallel();
         boolean barrierEnabled = azt.canBarrier();
 
-        for(CucumberFeature cf : features) {
+        while (true) {
+            CucumberFeature cf = null;
+            try {
+                cf = features.next();
+            } catch (NoSuchElementException ee) {
+                break;
+            }
             formatter.uri(cf.getPath());
             formatter.feature(cf.getGherkinFeature());
 
