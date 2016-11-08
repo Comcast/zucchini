@@ -213,7 +213,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
             CucumberTagStatement statement = cfh.getStatement();
 
             if(    null == lastCFH
-                || lastCFH.getFeature() == cf) {
+                || lastCFH.getFeature() != cf) {
                 /* Setup a new feature IF the feature is different than the last time */
                 if (null != lastCFH) {
                     /* Send the eof of a feature as we are on a new feature file */
