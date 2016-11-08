@@ -110,6 +110,7 @@ public abstract class AbstractZucchiniTest {
      */
     @Test
     public void run() {
+        this.validateRunParams();
         this.contexts = this.getTestContexts();
         this.failedContexts = Collections.newSetFromMap(new ConcurrentHashMap<TestContext, Boolean>());
 
@@ -150,6 +151,13 @@ public abstract class AbstractZucchiniTest {
 
     private boolean envFastrun() {
         return this.getEnv("ZUCCHINI_FASTRUN", "no");
+    }
+
+    private void validateRunParams() {
+        if (true == this.isRunfast() && true == this.canBarrier()) {
+            String e = "USER ERROR in configuration setup: isRunFast() and canBarrier() have conflicting experiences.  Only one can be enabled at a time.";
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -218,6 +226,7 @@ public abstract class AbstractZucchiniTest {
      * @return true if successful, otherwise false
      */
     public boolean runWith(TestContext context) {
+        this.validateRunParams();
         this.genHook();
 
         TestContext.setCurrent(context);
