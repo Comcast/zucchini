@@ -60,7 +60,7 @@ public abstract class AbstractZucchiniTest {
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Object lock = new Object();
     private static Boolean hooked = false;
-    private static Iterator<CucumberFeature> runfastIterator;
+    private static Iterator<CucumberFeatureHolder> runfastIterator;
 
 
     /* store the list of contexts here */
@@ -428,17 +428,17 @@ public abstract class AbstractZucchiniTest {
      * @param iterator
      * @return CucumberFeature iterator
      */
-    public Iterator<CucumberFeature> fastrunIteratorFactory(Iterator<CucumberFeature> iterator) {
+    public Iterator<CucumberFeatureHolder> fastrunIteratorFactory(Iterator<CucumberFeature> features) {
         if (this.isRunfast()) {
             if (null == runfastIterator) {
                 synchronized(lock) {
                     if (null == runfastIterator) {
-                        runfastIterator = new RunfastIterator<>(iterator);
+                        runfastIterator = new RunfastIterator(features, true);
                     }
                 }
             }
             return runfastIterator;
         }
-        return iterator;
+        return new RunfastIterator(features, false);
     }
 }

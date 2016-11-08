@@ -79,10 +79,11 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
         public T next() {
             T rv = this.iter.next();
             /* Hardcode this for our feature file
-             * Should only be called twice (based on feature files)
+             * Should only be called 4 times (based on feature files)
              */
+            int SCENARIOS_RUN_COUNT = 4;
             int calledCount = counter.incrementAndGet();
-            Assert.assertTrue(calledCount <= 2, "The next() ["+calledCount+"] operator should only return twice");
+            Assert.assertTrue(calledCount <= SCENARIOS_RUN_COUNT, "The next() ["+calledCount+"] operator should only return ["+SCENARIOS_RUN_COUNT+"] times");
             return rv;
         }
 
@@ -93,18 +94,18 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
 
     }
 
-    private Iterator<CucumberFeature> singleton;
-    private TestIterator<CucumberFeature> wrapped;
+    private Iterator<CucumberFeatureHolder> singleton;
+    private TestIterator<CucumberFeatureHolder> wrapped;
 
     @Override
-    public Iterator<CucumberFeature> fastrunIteratorFactory(Iterator<CucumberFeature> iterator) {
-        Iterator<CucumberFeature> response = super.fastrunIteratorFactory(iterator);
+    public Iterator<CucumberFeatureHolder> fastrunIteratorFactory(Iterator<CucumberFeature> iterator) {
+        Iterator<CucumberFeatureHolder> response = super.fastrunIteratorFactory(iterator);
 
         if (null == singleton) {
             synchronized (this) {
                 if (null == singleton) {
                     singleton = response;
-                    wrapped = new TestIterator<>(response);
+                    wrapped = new TestIterator<CucumberFeatureHolder>(response);
                 }
             }
         }

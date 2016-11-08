@@ -1,22 +1,84 @@
 package com.comcast.zucchini;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-public class RunfastIterator<T> implements Iterator<T> {
-    Iterator<T> iter;
+import cucumber.runtime.model.CucumberFeature;
+import cucumber.runtime.model.CucumberTagStatement;
 
-    public RunfastIterator(Iterator<T> iter) {
-        this.iter = iter;
+public class RunfastIterator implements Iterator<CucumberFeatureHolder> {
+    Iterator<CucumberFeature> features;
+
+    CucumberFeature currentFeature;
+    Iterator<CucumberTagStatement> scenarios;
+
+    final boolean sync;
+
+    public RunfastIterator(Iterator<CucumberFeature> features, boolean sync) {
+        this.features = features;
+        this.sync = sync;
+    }
+
+    private boolean hasNextNoLock() {
+        if (false == this.features.hasNext()) {
+            return this.scenarios.hasNext();
+        }
+
+        return true;
+    }
+
+    private CucumberFeatureHolder nextNoLock() {
+        CucumberFeatureHolder rv = null;
+
+        if (null == this.scenarios) {
+            this.currentFeature = this.features.next();
+            this.scenarios = null;
+            List<CucumberTagStatement> l = this.currentFeature.getFeatureElements();
+
+            if (l.size() < 1) {
+                /* Obscure situation, where we have a feature with no scenarios */
+                return new CucumberFeatureHolder(this.currentFeature, null);
+            }
+            this.scenarios = l.iterator();
+        }
+
+        try {
+            CucumberTagStatement scenario = this.scenarios.next();
+            rv = new CucumberFeatureHolder(currentFeature, scenario);
+        } catch (NoSuchElementException e) {
+            this.scenarios = null;
+            /* We don't have any scenarios, so we should try the next feature */
+            rv = this.nextNoLock();
+        }
+
+        return rv;
     }
 
     @Override
-    public synchronized boolean hasNext() {
-        return this.iter.hasNext();
+    public boolean hasNext() {
+        boolean rv;
+        if (this.sync) {
+            synchronized (this) {
+                rv = hasNextNoLock();
+            }
+        } else {
+            rv = hasNextNoLock();
+        }
+        return rv;
     }
 
     @Override
-    public synchronized T next() {
-        return this.iter.next();
+    public CucumberFeatureHolder next() {
+        CucumberFeatureHolder rv = null;
+        if (this.sync) {
+            synchronized (this) {
+                rv = this.nextNoLock();
+            }
+        } else {
+            rv = this.nextNoLock();
+        }
+        return rv;
     }
 
     @Override
