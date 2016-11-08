@@ -1,4 +1,4 @@
-@SMOKE-TEST @MULTI-TEST @FASTRUN-TEST
+@SMOKE-TEST @MULTI-TEST
 Feature: Zucchini must be able to run multiple tests in the same folder
 
     Scenario: Verify that this scenario can also run
