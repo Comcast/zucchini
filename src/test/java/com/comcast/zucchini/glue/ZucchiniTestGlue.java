@@ -24,7 +24,6 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 
 public class ZucchiniTestGlue {
-
     @Given("The vegetable is (clean|dirty)")
     public void givenCleanState(String clean_state) {
         Veggie veggie = TestContext.getCurrent().get("veggie");
@@ -41,25 +40,5 @@ public class ZucchiniTestGlue {
     public void verifyTaste(String taste) {
         Veggie veggie = TestContext.getCurrent().get("veggie");
         Assert.assertEquals(veggie.getTaste(), taste);
-    }
-
-    @And("We wait (\\d+) seconds for it to cool")
-    public void waitToCool(long delay) {
-        Long stopTime = System.currentTimeMillis() + (delay * 1000);
-
-        while (true) {
-            Long delta = stopTime - System.currentTimeMillis();
-            if (0 > delta) {
-
-                break;
-            }
-
-            try {
-                Thread.sleep(delta);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 }
