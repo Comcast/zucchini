@@ -56,6 +56,8 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
     protected ClassLoader cl;
     protected ZucchiniRuntimeOptions ros;
 
+    private static Object summaryLock = new Object();
+
     /**
      * Creates a sub-zucchini runtime replacing the {@link RuntimeOptions} with {@link ZucchiniRuntimeOptions}, and then links it for all inherited calls.
      *
@@ -223,7 +225,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
         formatter.done();
         formatter.close();
-        synchronized (ZucchiniRuntime.class) {
+        synchronized (summaryLock) {
             /* Synchronize the summary printing as
              * the Cucumber printers were not written to
              * be called by multiple threads and the summaries
