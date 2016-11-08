@@ -22,6 +22,9 @@ public class RunfastIterator implements Iterator<CucumberFeatureHolder> {
 
     private boolean hasNextNoLock() {
         if (false == this.features.hasNext()) {
+            if (null == this.scenarios) {
+                return false;
+            }
             return this.scenarios.hasNext();
         }
 
@@ -33,7 +36,6 @@ public class RunfastIterator implements Iterator<CucumberFeatureHolder> {
 
         if (null == this.scenarios) {
             this.currentFeature = this.features.next();
-            this.scenarios = null;
             List<CucumberTagStatement> l = this.currentFeature.getFeatureElements();
 
             if (l.size() < 1) {
