@@ -223,7 +223,18 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
 
         formatter.done();
         formatter.close();
-        this.printSummary();
+        synchronized (ZucchiniRuntime.class) {
+            /* Synchronize the summary printing as
+             * the Cucumber printers were not written to
+             * be called by multiple threads and the summaries
+             * will not print properly
+             */
+            this.printSummary();
+        }
+     }
+
+     /**
+
     }
 
     /**
