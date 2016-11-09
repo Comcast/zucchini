@@ -46,7 +46,7 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
     public List<TestContext> getTestContexts() {
         List<TestContext> contexts = new LinkedList<TestContext>();
 
-        String[] inputs = new String[]{"asparagus", "carrots"};
+        String[] inputs = new String[]{"asparagus", "carrots", "potato"};
 
         for(int i = 0; i < inputs.length; i++) {
             contexts.add(new TestContext("Runfast--"+inputs[i], new HashMap<String, Object>() {{
@@ -79,9 +79,9 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
         public T next() {
             T rv = this.iter.next();
             /* Hardcode this for our feature file
-             * Should only be called 4 times (based on feature files)
+             * Should only be called 5 times (based on feature files)
              */
-            int SCENARIOS_RUN_COUNT = 4;
+            int SCENARIOS_RUN_COUNT = 5;
             int calledCount = counter.incrementAndGet();
             Assert.assertTrue(calledCount <= SCENARIOS_RUN_COUNT, "The next() ["+calledCount+"] operator should only return ["+SCENARIOS_RUN_COUNT+"] times");
             return rv;
