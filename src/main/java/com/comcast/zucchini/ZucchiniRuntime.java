@@ -15,7 +15,6 @@
  */
 package com.comcast.zucchini;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -214,8 +213,7 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
             CucumberFeature cf = cfh.getFeature();
             CucumberTagStatement statement = cfh.getStatement();
 
-            if(    null == lastCFH
-                || lastCFH.getFeature() != cf) {
+            if(null == lastCFH || lastCFH.getFeature() != cf) {
                 /* Setup a new feature IF the feature is different than the last time */
                 if (null != lastCFH) {
                     /* Send the eof of a feature as we are on a new feature file */

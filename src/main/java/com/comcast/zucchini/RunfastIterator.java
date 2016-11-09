@@ -7,6 +7,11 @@ import java.util.NoSuchElementException;
 import cucumber.runtime.model.CucumberFeature;
 import cucumber.runtime.model.CucumberTagStatement;
 
+/**
+ * Iterator which allows for iterating through each scenario of the feature files.
+ *
+ * @author Trent Schmidt
+ */
 public class RunfastIterator implements Iterator<CucumberFeatureHolder> {
     Iterator<CucumberFeature> features;
 
