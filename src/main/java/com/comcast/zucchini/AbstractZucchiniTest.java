@@ -323,7 +323,7 @@ public abstract class AbstractZucchiniTest {
             cleanup(context);
         }
         catch(RuntimeException rex) {
-            String errString = String.format("ERROR cleaning up test: {}", rex);
+            String errString = String.format("ERROR cleaning up test: %s", rex);
             LOGGER.error(errString);
             ZucchiniShutdownHook.getDefault().addFailureCause(errString);
         }
