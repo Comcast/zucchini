@@ -29,6 +29,7 @@ import java.util.Iterator;
 import com.comcast.zucchini.AbstractZucchiniTest;
 import com.comcast.zucchini.TestContext;
 import com.comcast.zucchini.ZucchiniOutput;
+import com.comcast.zucchini.glue.ZucchiniFastrunGlue;
 
 import cucumber.api.CucumberOptions;
 import cucumber.runtime.model.CucumberFeature;
@@ -42,11 +43,11 @@ import cucumber.runtime.model.CucumberFeature;
 class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(FastrunZucchiniCukesTest.class);
 
+    private String[] inputs = new String[]{"asparagus", "carrots", "potato"};
+
     @Override
     public List<TestContext> getTestContexts() {
         List<TestContext> contexts = new LinkedList<TestContext>();
-
-        String[] inputs = new String[]{"asparagus", "carrots", "potato"};
 
         for(int i = 0; i < inputs.length; i++) {
             contexts.add(new TestContext("Runfast--"+inputs[i], new HashMap<String, Object>() {{
@@ -92,6 +93,11 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
             this.iter.remove();
         }
 
+    }
+
+    @Override
+    public void cleanup(TestContext out) {
+        ZucchiniFastrunGlue.verifyNumberTestContextsRun(inputs.length);
     }
 
     private Iterator<CucumberFeatureHolder> singleton;

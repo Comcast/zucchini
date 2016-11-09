@@ -18,7 +18,9 @@ package com.comcast.zucchini.glue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.testng.Assert;
 
@@ -38,6 +40,17 @@ public class ZucchiniFastrunGlue {
     }
 
     static private List<RanScenarios> runScenarios = new ArrayList<>();
+
+    static public void verifyNumberTestContextsRun(int expected) {
+        Set<String> uniq = new TreeSet<>();
+
+        synchronized (runScenarios) {
+            for(RanScenarios rs : runScenarios) {
+                uniq.add(rs.runBy.name());
+            }
+        }
+        Assert.assertEquals(uniq.size(), expected, "Expected ["+expected+"] saw ["+uniq.size()+"] Test Contexts seen "+uniq.toString());
+    }
 
     @Given("The scenario (\\d+) is saved to global list")
     public void scenarioMarkedAsRun(int scenarioId) {
