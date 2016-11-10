@@ -65,7 +65,7 @@ public class IllegalParametersTest extends AbstractZucchiniTest {
     }
 
     @Override
-    public boolean isRunfast() {
+    public boolean isFastrun() {
         return true;
     }
 }

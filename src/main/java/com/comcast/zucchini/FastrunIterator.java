@@ -12,7 +12,7 @@ import cucumber.runtime.model.CucumberTagStatement;
  *
  * @author Trent Schmidt
  */
-public class RunfastIterator implements Iterator<CucumberFeatureHolder> {
+public class FastrunIterator implements Iterator<CucumberFeatureHolder> {
     Iterator<CucumberFeature> features;
 
     CucumberFeature currentFeature;
@@ -20,7 +20,7 @@ public class RunfastIterator implements Iterator<CucumberFeatureHolder> {
 
     final boolean sync;
 
-    public RunfastIterator(Iterator<CucumberFeature> features, boolean sync) {
+    public FastrunIterator(Iterator<CucumberFeature> features, boolean sync) {
         this.features = features;
         this.sync = sync;
     }
@@ -90,6 +90,6 @@ public class RunfastIterator implements Iterator<CucumberFeatureHolder> {
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException("Remove not supported for Runfast");
+        throw new UnsupportedOperationException("Remove() not supported for Fastrun");
     }
 }

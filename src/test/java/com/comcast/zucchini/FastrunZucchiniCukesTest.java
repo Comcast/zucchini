@@ -43,7 +43,7 @@ import cucumber.runtime.model.CucumberFeature;
 class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(FastrunZucchiniCukesTest.class);
 
-    private String[] contextNames = new String[]{"runfast--asparagus", "runfast--carrots", "runfast--potato"};
+    private String[] contextNames = new String[]{"fastrun--asparagus", "fastrun--carrots", "fastrun--potato"};
 
     @Override
     public List<TestContext> getTestContexts() {
@@ -57,7 +57,7 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
     }
 
     @Override
-    public boolean isRunfast() {
+    public boolean isFastrun() {
         return true;
     }
 

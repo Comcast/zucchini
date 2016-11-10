@@ -60,7 +60,7 @@ public abstract class AbstractZucchiniTest {
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Object lock = new Object();
     private static Boolean hooked = false;
-    private static Iterator<CucumberFeatureHolder> runfastIterator;
+    private static Iterator<CucumberFeatureHolder> fastrunIterator;
 
 
     /* store the list of contexts here */
@@ -154,8 +154,8 @@ public abstract class AbstractZucchiniTest {
     }
 
     private void validateRunParams() {
-        if (true == this.isRunfast() && true == this.canBarrier()) {
-            String e = "USER ERROR in configuration setup: isRunFast() and canBarrier() have conflicting experiences.  Only one can be enabled at a time.";
+        if (true == this.isFastrun() && true == this.canBarrier()) {
+            String e = "USER ERROR in configuration setup: isFastrun() and canBarrier() have conflicting experiences.  Only one can be enabled at a time.";
             throw new RuntimeException(e);
         }
     }
@@ -368,7 +368,7 @@ public abstract class AbstractZucchiniTest {
      * <b>The default is <code>false</code> so the default behavior is run all tests on against all TestContexts.</b>
      * @return True if Zucchini is going to run through the features once using TestContexts in parallel or False if running all features on all TestContexts
      */
-    public boolean isRunfast() {
+    public boolean isFastrun() {
         return this.envFastrun();
     }
 
@@ -430,7 +430,7 @@ public abstract class AbstractZucchiniTest {
     }
 
     /**
-     * Returns an iterator to the Cucumber Features.  When runfast is enabled, this is a thread safe iterator
+     * Returns an iterator to the Cucumber Features.  When fastrun is enabled, this is a thread safe iterator
      * to be used to go through the features once by any number of contexts.
      * Otherwise, this returns the iterator passed in.
      *
@@ -438,16 +438,16 @@ public abstract class AbstractZucchiniTest {
      * @return CucumberFeature iterator
      */
     public Iterator<CucumberFeatureHolder> fastrunIteratorFactory(Iterator<CucumberFeature> features) {
-        if (this.isRunfast()) {
-            if (null == runfastIterator) {
+        if (this.isFastrun()) {
+            if (null == fastrunIterator) {
                 synchronized(lock) {
-                    if (null == runfastIterator) {
-                        runfastIterator = new RunfastIterator(features, true);
+                    if (null == fastrunIterator) {
+                        fastrunIterator = new FastrunIterator(features, true);
                     }
                 }
             }
-            return runfastIterator;
+            return fastrunIterator;
         }
-        return new RunfastIterator(features, false);
+        return new FastrunIterator(features, false);
     }
 }
