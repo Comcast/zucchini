@@ -434,8 +434,8 @@ public abstract class AbstractZucchiniTest {
      * to be used to go through the features once by any number of contexts.
      * Otherwise, this returns the iterator passed in.
      *
-     * @param iterator
-     * @return CucumberFeature iterator
+     * @param features {@link Iterator} of {@link CucumberFeature}
+     * @return {@link Iterator} of {@link CucumberFeatureHolder}
      */
     public Iterator<CucumberFeatureHolder> fastrunIteratorFactory(Iterator<CucumberFeature> features) {
         if (this.isFastrun()) {
