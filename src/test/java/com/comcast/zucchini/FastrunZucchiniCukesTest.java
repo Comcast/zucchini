@@ -43,14 +43,14 @@ import cucumber.runtime.model.CucumberFeature;
 class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(FastrunZucchiniCukesTest.class);
 
-    private String[] inputs = new String[]{"asparagus", "carrots", "potato"};
+    private String[] inputs = new String[]{"runfast--asparagus", "runfast--carrots", "runfast--potato"};
 
     @Override
     public List<TestContext> getTestContexts() {
         List<TestContext> contexts = new LinkedList<TestContext>();
 
         for(int i = 0; i < inputs.length; i++) {
-            contexts.add(new TestContext("Runfast--"+inputs[i], new HashMap<String, Object>() {{
+            contexts.add(new TestContext(inputs[i], new HashMap<String, Object>() {{
                 put("veggie", new Veggie());
             }}));
         }
