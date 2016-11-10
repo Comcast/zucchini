@@ -24,7 +24,6 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 
 public class ZucchiniTestGlue {
-
     @Given("The vegetable is (clean|dirty)")
     public void givenCleanState(String clean_state) {
         Veggie veggie = TestContext.getCurrent().get("veggie");

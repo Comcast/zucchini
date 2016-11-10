@@ -15,9 +15,9 @@
  */
 package com.comcast.zucchini;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Collection;
-
+import java.util.Iterator;
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -186,8 +186,6 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
      */
     @Override
     public void run() throws IOException {
-        List<CucumberFeature> features = this.ros.cucumberFeatures(this.rl);
-
         Formatter formatter = this.ros.formatter(this.cl);
         Reporter reporter = this.ros.reporter(this.cl);
 
@@ -197,14 +195,35 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
         TestContext tc = TestContext.getCurrent();
         AbstractZucchiniTest azt = tc.getParentTest();
 
+        Iterator<CucumberFeatureHolder> features = azt.fastrunIteratorFactory(this.ros.cucumberFeatures(this.rl).iterator());
+
         boolean parallel = azt.isParallel();
         boolean barrierEnabled = azt.canBarrier();
 
-        for(CucumberFeature cf : features) {
-            formatter.uri(cf.getPath());
-            formatter.feature(cf.getGherkinFeature());
+        CucumberFeatureHolder lastCFH = null;
 
-            for(CucumberTagStatement statement : cf.getFeatureElements()) {
+        while (true) {
+            CucumberFeatureHolder cfh = null;
+            try {
+                cfh = features.next();
+            } catch (NoSuchElementException ee) {
+                break;
+            }
+
+            CucumberFeature cf = cfh.getFeature();
+            CucumberTagStatement statement = cfh.getStatement();
+
+            if(null == lastCFH || lastCFH.getFeature() != cf) {
+                /* Setup a new feature IF the feature is different than the last time */
+                if (null != lastCFH) {
+                    /* Send the eof of a feature as we are on a new feature file */
+                    formatter.eof();
+                }
+                formatter.uri(cf.getPath());
+                formatter.feature(cf.getGherkinFeature());
+            }
+
+            if(null != statement) {
                 if(statement instanceof CucumberScenarioOutline) {
                     CucumberScenarioOutline cso = (CucumberScenarioOutline)statement;
                     cso.formatOutlineScenario(formatter);
@@ -220,6 +239,10 @@ public class ZucchiniRuntime extends cucumber.runtime.Runtime {
                 }
             }
 
+            lastCFH = cfh;
+        }
+        /* Send the eof of a feature file as this hasn't been called on the last CucumberFeature */
+        if (null != lastCFH) {
             formatter.eof();
         }
 

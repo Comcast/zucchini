@@ -36,6 +36,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import cucumber.runtime.model.CucumberFeature;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +60,8 @@ public abstract class AbstractZucchiniTest {
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Object lock = new Object();
     private static Boolean hooked = false;
+    private static Iterator<CucumberFeatureHolder> fastrunIterator;
+
 
     /* store the list of contexts here */
     List<TestContext> contexts;
@@ -106,6 +110,7 @@ public abstract class AbstractZucchiniTest {
      */
     @Test
     public void run() {
+        this.validateRunParams();
         this.contexts = this.getTestContexts();
         this.failedContexts = Collections.newSetFromMap(new ConcurrentHashMap<TestContext, Boolean>());
 
@@ -126,18 +131,33 @@ public abstract class AbstractZucchiniTest {
             this.runSerial(contexts);
     }
 
+    private boolean getEnv(String envVar, String defaultValue) {
+        String val = System.getenv().get(envVar);
+
+        if (null == val) {
+            val = defaultValue;
+        }
+        val = val.toLowerCase().trim();
+
+        return ("yes" ).equals(val) ||
+               ("y"   ).equals(val) ||
+               ("true").equals(val) ||
+               ("1"   ).equals(val);
+    }
+
     private boolean envSerialized() {
-        String zucchiniSerialize = System.getenv().get("ZUCCHINI_SERIALIZE");
+        return this.getEnv("ZUCCHINI_SERIALIZE", "no");
+    }
 
-        if(zucchiniSerialize == null)
-            zucchiniSerialize = "no";
+    private boolean envFastrun() {
+        return this.getEnv("ZUCCHINI_FASTRUN", "no");
+    }
 
-        zucchiniSerialize = zucchiniSerialize.toLowerCase();
-
-        return ("yes" ).equals(zucchiniSerialize) ||
-               ("y"   ).equals(zucchiniSerialize) ||
-               ("true").equals(zucchiniSerialize) ||
-               ("1"   ).equals(zucchiniSerialize);
+    private void validateRunParams() {
+        if (true == this.isFastrun() && true == this.canBarrier()) {
+            String e = "USER ERROR in configuration setup: isFastrun() and canBarrier() have conflicting experiences.  Only one can be enabled at a time.";
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -206,6 +226,7 @@ public abstract class AbstractZucchiniTest {
      * @return true if successful, otherwise false
      */
     public boolean runWith(TestContext context) {
+        this.validateRunParams();
         this.genHook();
 
         TestContext.setCurrent(context);
@@ -302,7 +323,7 @@ public abstract class AbstractZucchiniTest {
             cleanup(context);
         }
         catch(RuntimeException rex) {
-            String errString = String.format("ERROR cleaning up test: {}", rex);
+            String errString = String.format("ERROR cleaning up test: %s", rex);
             LOGGER.error(errString);
             ZucchiniShutdownHook.getDefault().addFailureCause(errString);
         }
@@ -338,6 +359,17 @@ public abstract class AbstractZucchiniTest {
      */
     public boolean isParallel() {
         return !this.envSerialized();
+    }
+
+    /**
+     * If this returns true, all cucumber features will run against one of the TestContexts in parallel, otherwise
+     * all features will run against all of the TestContexts in parallel.
+     *
+     * <b>The default is <code>false</code> so the default behavior is run all tests on against all TestContexts.</b>
+     * @return True if Zucchini is going to run through the features once using TestContexts in parallel or False if running all features on all TestContexts
+     */
+    public boolean isFastrun() {
+        return this.envFastrun();
     }
 
     /**
@@ -395,5 +427,27 @@ public abstract class AbstractZucchiniTest {
      */
     public boolean canBarrier() {
         return false;
+    }
+
+    /**
+     * Returns an iterator to the Cucumber Features.  When fastrun is enabled, this is a thread safe iterator
+     * to be used to go through the features once by any number of contexts.
+     * Otherwise, this returns the iterator passed in.
+     *
+     * @param iterator
+     * @return CucumberFeature iterator
+     */
+    public Iterator<CucumberFeatureHolder> fastrunIteratorFactory(Iterator<CucumberFeature> features) {
+        if (this.isFastrun()) {
+            if (null == fastrunIterator) {
+                synchronized(lock) {
+                    if (null == fastrunIterator) {
+                        fastrunIterator = new FastrunIterator(features, true);
+                    }
+                }
+            }
+            return fastrunIterator;
+        }
+        return new FastrunIterator(features, false);
     }
 }
