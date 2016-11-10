@@ -4,7 +4,7 @@
 
     <groupId>com.comcast.zucchini</groupId>
     <artifactId>zucchini</artifactId>
-    <version>2.2.9-SNAPSHOT</version>
+    <version>2.2.9</version>
     <name>(Comcast) ${project.artifactId}</name>
     <inceptionYear>2014</inceptionYear>
     <description>Add parallelization to Cucumber</description>
@@ -71,7 +71,7 @@
         <connection>scm:git:git@${git.url}:${git.org}/${git.repo}.git</connection>
         <developerConnection>scm:git:git@${git.url}:${git.org}/${git.repo}.git</developerConnection>
         <url>https://${git.url}/${git.org}/${git.repo}</url>
-        <tag>HEAD</tag>
+        <tag>zucchini-2.2.9</tag>
     </scm>
 
     <build>
