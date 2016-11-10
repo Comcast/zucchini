@@ -49,8 +49,8 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
     public List<TestContext> getTestContexts() {
         List<TestContext> contexts = new LinkedList<TestContext>();
 
-        for(int i = 0; i < contextNames.length; i++) {
-            contexts.add(new TestContext(contextNames[i]));
+        for(String name : contextNames) {
+            contexts.add(new TestContext(name));
         }
 
         return contexts;
