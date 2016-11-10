@@ -60,6 +60,21 @@ public class ZucchiniFastrunGlue {
         }
     }
 
+    @Given("^We take a (\\d+) ms nap$")
+    public void we_take_a_ms_nap(long sleepyTime)  {
+        long endTime = System.currentTimeMillis() + sleepyTime;
+        while (endTime > System.currentTimeMillis()) {
+            long delay = endTime - System.currentTimeMillis();
+            if (0 >= delay) {
+                delay = 1;
+            }
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
     @Then("Verify no scenario duplicates")
     public void verifyNoDuplicateScenarios() {
         Map<Integer, TestContext> sort = new TreeMap<>();
