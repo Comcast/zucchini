@@ -15,27 +15,30 @@
  */
 package com.comcast.zucchini;
 
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Properties;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonArray;
 
+import net.masterthought.cucumber.Configuration;
 import net.masterthought.cucumber.ReportBuilder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.masterthought.cucumber.Reportable;
 
 class ZucchiniShutdownHook extends Thread {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ZucchiniShutdownHook.class);
     private static final String NAME_ENV_VAR = "ZUCCHINI_REPORT_NAME";
-
+    public static final org.apache.logging.log4j.Logger NOOP = LogManager.getLogger(ReportBuilder.class); // Workaround: LogManager needs to be statically initialized outside of a shutdown hook
     private static ZucchiniShutdownHook instance = null;
 
     public static ZucchiniShutdownHook getDefault() {
@@ -117,10 +120,14 @@ class ZucchiniShutdownHook extends Thread {
                     rptName = System.getenv(NAME_ENV_VAR);
 
 
-                ReportBuilder reportBuilder = new ReportBuilder(pathList, html, "", rptName + version, "Zucchini" + version, true, true, true, false, false, "", false);
-                reportBuilder.generateReports();
+                Configuration reportConfig = new Configuration(html, "Zucchini" + version);
+                reportConfig.setBuildNumber(rptName + version);
+                ReportBuilder reportBuilder = new ReportBuilder(pathList, reportConfig);
+                Reportable reportable = reportBuilder.generateReports();
+                FileUtils.copyDirectory(new File(html, ReportBuilder.BASE_DIRECTORY), html); // move the cucumber base directory into zucchini
+                FileUtils.deleteDirectory((new File(html, ReportBuilder.BASE_DIRECTORY)));
 
-                boolean buildResult = reportBuilder.getBuildStatus();
+                boolean buildResult = (reportable != null) && reportable.getFailedSteps() == 0;
                 if(!buildResult)
                     throw new Exception("BUILD FAILED - Check Report For Details");
             }
