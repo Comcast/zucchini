@@ -105,12 +105,10 @@ class FastrunZucchiniCukesTest extends AbstractZucchiniTest {
     public Iterator<CucumberFeatureHolder> fastrunIteratorFactory(Iterator<CucumberFeature> iterator) {
         Iterator<CucumberFeatureHolder> response = super.fastrunIteratorFactory(iterator);
 
-        if (null == singleton) {
-            synchronized (this) {
-                if (null == singleton) {
-                    singleton = response;
-                    wrapped = new TestIterator<CucumberFeatureHolder>(response);
-                }
+        synchronized (this) {
+            if (null == singleton) {
+                singleton = response;
+                wrapped = new TestIterator<CucumberFeatureHolder>(response);
             }
         }
         Assert.assertTrue(singleton == response, "The iterators returned from fastrun should be the same one as it is a singleton");
