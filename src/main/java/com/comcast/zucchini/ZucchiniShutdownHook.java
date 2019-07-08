@@ -70,23 +70,19 @@ class ZucchiniShutdownHook extends Thread {
                 LOGGER.warn("There are 0 features run");
             }
 
-            for(String fileName : AbstractZucchiniTest.featureSet.keySet()) {
+            for(Class<?> testClass : AbstractZucchiniTest.featureSet.keySet()) {
+                ZucchiniOutput options = testClass.getAnnotation(ZucchiniOutput.class);
+                String fileName = options != null ? options.json() : "target/zucchini.json";
+                File html = options != null ? new File(options.html()) : new File("target/zucchini-reports");
+  
                 LOGGER.trace("Writing feature set out to {}", fileName);
                 /* write the json first, needed for html generation */
                 File json = new File(fileName);
-                JsonArray features = AbstractZucchiniTest.featureSet.get(fileName);
+                JsonArray features = AbstractZucchiniTest.featureSet.get(testClass);
                 writer = new FileWriter(json);
                 writer.write(features.toString());
                 writer.close();
                 writer = null;
-
-                /* write the html report files */
-                ZucchiniOutput options = getClass().getAnnotation(ZucchiniOutput.class);
-                File html;
-                if(options != null)
-                    html = new File(options.html());
-                else
-                    html = new File("target/zucchini-reports");
 
                 List<String> pathList = new LinkedList<String>();
                 pathList.add(json.getAbsolutePath());

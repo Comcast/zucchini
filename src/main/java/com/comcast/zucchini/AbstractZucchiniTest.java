@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractZucchiniTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractZucchiniTest.class);
-    static Map<String, JsonArray> featureSet = new HashMap<String, JsonArray>();
+    static Map<Class<?>, JsonArray> featureSet = new HashMap<>();
 
     /* Synchronization and global variables.  DO NOT TOUCH! */
     private static Object lock = new Object();
@@ -260,14 +260,6 @@ public abstract class AbstractZucchiniTest {
         } finally {
             LOGGER.debug(String.format("ZucchiniTest[%s] finished", context.name));
 
-            ZucchiniOutput options = this.getClass().getAnnotation(ZucchiniOutput.class);
-            String fileName;
-
-            if(options!= null)
-                fileName = options.json();
-            else
-                fileName = "target/zucchini.json";
-
             JsonParser parser = new JsonParser();
             JsonElement result = parser.parse(runner.getJSONOutput());
 
@@ -303,10 +295,10 @@ public abstract class AbstractZucchiniTest {
             }
 
             synchronized(featureSet) {
-                if(!AbstractZucchiniTest.featureSet.containsKey(fileName))
-                    AbstractZucchiniTest.featureSet.put(fileName, features);
+                if(!AbstractZucchiniTest.featureSet.containsKey(this.getClass()))
+                    AbstractZucchiniTest.featureSet.put(this.getClass(), features);
                 else
-                    AbstractZucchiniTest.featureSet.get(fileName).addAll(features);
+                    AbstractZucchiniTest.featureSet.get(this.getClass()).addAll(features);
             }
 
             runCleanup(context);
